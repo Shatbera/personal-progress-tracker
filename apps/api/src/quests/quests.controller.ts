@@ -1,42 +1,40 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { QuestsService } from './quests.service';
-import { Quest } from './quest.model';
 import { CreateQuestDto } from './dto/create-quest.dto';
 import { GetQuestsFilterDto } from './dto/get-quests-filter.dto';
+import { UpdateQuestStatusDto } from './dto/update-quest-status.dto';
+import { Quest } from './quest.entity';
 
 @Controller('quests')
 export class QuestsController {
     constructor(private readonly questsService: QuestsService) { }
 
     @Get()
-    public getQuests(@Query() filterDto: GetQuestsFilterDto): Quest[] {
-        if (Object.keys(filterDto).length) {
-            return this.questsService.getQuestsWithFilters(filterDto);
-        } else {
-            return this.questsService.getAllQuests();
-        }
+    public getQuests(@Query() filterDto: GetQuestsFilterDto): Promise<Quest[]> {
+        return this.questsService.getQuests(filterDto);
     }
 
     @Post()
-    public createQuest(@Body() createQuestDto: CreateQuestDto): void {
-        this.questsService.createQuest(createQuestDto);
+    public createQuest(@Body() createQuestDto: CreateQuestDto): Promise<Quest> {
+        return this.questsService.createQuest(createQuestDto);
     }
 
     @Get('/:id')
-    public getQuestById(@Param('id') id: string): Quest | undefined {
+    public getQuestById(@Param('id') id: string): Promise<Quest> {
         return this.questsService.getQuestById(id);
     }
 
     @Delete('/:id')
-    public deleteQuestById(@Param('id') id: string): void {
-        this.questsService.deleteQuestById(id);
+    public deleteQuestById(@Param('id') id: string): Promise<void> {
+        return this.questsService.deleteQuestById(id);
     }
 
     @Patch('/:id/status')
     public updateQuestStatus(
         @Param('id') id: string,
-        @Body('status') status: string,
-    ): Quest | undefined {
-        return this.questsService.updateQuestStatus(id, status as any);
+        @Body() updateQuestStatusDto: UpdateQuestStatusDto,
+    ): Promise<Quest> {
+        const { status } = updateQuestStatusDto;
+        return this.questsService.updateQuestStatus(id, status);
     }
 }

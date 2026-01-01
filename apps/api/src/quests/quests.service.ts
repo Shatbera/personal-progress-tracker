@@ -1,60 +1,45 @@
-import { Injectable } from '@nestjs/common';
-import { Quest, QuestStatus } from './quest.model';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { QuestStatus } from './quest-status.enum';
 import { CreateQuestDto } from './dto/create-quest.dto';
-import { v4 as uuid } from 'uuid';
 import { GetQuestsFilterDto } from './dto/get-quests-filter.dto';
+import { QuestsRepository } from './quests.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Quest } from './quest.entity';
 
 @Injectable()
 export class QuestsService {
 
-    private quests: Quest[] = [];
+    constructor(
+        @InjectRepository(QuestsRepository) private readonly questsRepository: QuestsRepository
+    ) { }
 
-    public getAllQuests(): Quest[] {
-        return this.quests;
+    public getQuests(filterDto: GetQuestsFilterDto): Promise<Quest[]> {
+        return this.questsRepository.getQuests(filterDto);
     }
-    
-    getQuestsWithFilters(filterDto: GetQuestsFilterDto): Quest[] {
-        const { status, search } = filterDto;
-        let quests = this.getAllQuests();
-        if(status) {
-            quests = quests.filter(quest => quest.status === status);
+
+    public async getQuestById(id: string): Promise<Quest> {
+        const found = await this.questsRepository.findOne({ where: { id } });
+        if (!found) {
+            throw new NotFoundException(`Quest with ID "${id}" not found`);
         }
-        if(search) {
-            quests = quests.filter(quest => 
-                quest.title.includes(search) || 
-                quest.description.includes(search)
-            );
+        return found;
+    }
+
+    public createQuest(createQuestDto: CreateQuestDto): Promise<Quest> {
+        return this.questsRepository.createQuest(createQuestDto);
+    }
+
+    public async deleteQuestById(id: string): Promise<void> {
+        const result = await this.questsRepository.delete(id);
+        if (result.affected === 0) {
+            throw new NotFoundException(`Quest with ID "${id}" not found`);
         }
-        return quests;
     }
 
-    public createQuest(createQuestDto: CreateQuestDto): void {
-        const { title, description, maxPoints } = createQuestDto;
-
-        const quest: Quest = {
-            id: uuid(),
-            title,
-            description,
-            status: QuestStatus.LOCKED,
-            maxPoints,
-            currentPoints: 0,
-        };
-        this.quests.push(quest);
-    }
-
-    public getQuestById(id: string): Quest | undefined {
-        return this.quests.find((quest) => quest.id === id);
-    }
-
-    public deleteQuestById(id: string): void {
-        this.quests = this.quests.filter((quest) => quest.id !== id);
-    }
-
-    public updateQuestStatus(id: string, status: QuestStatus): Quest | undefined {
-        const quest = this.getQuestById(id);
-        if (quest) {
-            quest.status = status;
-        }
+    public async updateQuestStatus(id: string, status: QuestStatus): Promise<Quest> {
+        const quest = await this.getQuestById(id);
+        quest.status = status;
+        await this.questsRepository.save(quest);
         return quest;
     }
 }
