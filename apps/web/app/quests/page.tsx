@@ -12,7 +12,7 @@ export default function QuestsPage() {
     useEffect(() => {
         async function fetchQuests() {
             setIsLoading(true);
-            const response = await fetch("http://localhost:3000/api/quests");
+            const response = await fetch("http://localhost:3000/quests");
             if (!response.ok) {
                 setError('Failed to fetch quests');
                 setIsLoading(false);
