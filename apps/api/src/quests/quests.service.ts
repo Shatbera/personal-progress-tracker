@@ -3,7 +3,6 @@ import { QuestStatus } from './quest-status.enum';
 import { CreateQuestDto } from './dto/create-quest.dto';
 import { GetQuestsFilterDto } from './dto/get-quests-filter.dto';
 import { QuestsRepository } from './quests.repository';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Quest } from './quest.entity';
 import { User } from 'src/auth/user.entity';
 
@@ -11,7 +10,7 @@ import { User } from 'src/auth/user.entity';
 export class QuestsService {
 
     constructor(
-        @InjectRepository(QuestsRepository) private readonly questsRepository: QuestsRepository
+        private readonly questsRepository: QuestsRepository
     ) { }
 
     public getQuests(filterDto: GetQuestsFilterDto, user: User): Promise<Quest[]> {

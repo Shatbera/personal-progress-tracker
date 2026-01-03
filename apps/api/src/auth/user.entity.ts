@@ -9,6 +9,6 @@ export class User {
     username: string;
     @Column()
     password: string;
-    @OneToMany(_type => Quest, task => task.user, { eager: true })
-    tasks: Quest[];
+    @OneToMany(_type => Quest, quest => quest.user, { eager: true })
+    quests: Quest[];
 }

@@ -2,15 +2,16 @@ import { Module } from '@nestjs/common';
 import { QuestsController } from './quests.controller';
 import { QuestsService } from './quests.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Quest } from './quest.entity';
 import { QuestsRepository } from './quests.repository';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([QuestsRepository]),
+    TypeOrmModule.forFeature([Quest]),
     AuthModule
   ],
   controllers: [QuestsController],
-  providers: [QuestsService]
+  providers: [QuestsService, QuestsRepository]
 })
 export class QuestsModule { }

@@ -16,7 +16,7 @@ export class Quest {
     maxPoints: number;
     @Column()
     currentPoints: number;
-    @ManyToOne(_type => User, user => user.tasks, { eager: false })
+    @ManyToOne(_type => User, user => user.quests, { eager: false })
     @Exclude({ toPlainOnly: true })
     user: User;
 }

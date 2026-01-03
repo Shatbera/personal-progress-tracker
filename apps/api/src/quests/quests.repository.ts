@@ -1,14 +1,19 @@
-import { Repository } from "typeorm";
+import { Injectable } from "@nestjs/common";
+import { DataSource, Repository } from "typeorm";
 import { Quest } from "./quest.entity";
 import { QuestStatus } from "./quest-status.enum";
 import { GetQuestsFilterDto } from "./dto/get-quests-filter.dto";
 import { User } from "src/auth/user.entity";
 
+@Injectable()
 export class QuestsRepository extends Repository<Quest> {
+    constructor(private dataSource: DataSource) {
+        super(Quest, dataSource.createEntityManager());
+    }
     public async getQuests(filterDto: GetQuestsFilterDto, user: User): Promise<Quest[]> {
         const { status, search } = filterDto;
         const query = this.createQueryBuilder('quest');
-        query.where({ user });
+        // query.where({ user });
 
         if (status) {
             query.andWhere('quest.status = :status', { status });
