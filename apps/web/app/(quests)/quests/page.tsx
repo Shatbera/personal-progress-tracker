@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import QuestsList from "./_components/quests-list";
-import { Quest } from "./types";
-import { getQuests } from "@/lib/quests";
+import { Quest } from "../types";
+import { getQuests } from "@/lib/api/quests";
 import styles from "./page.module.css";
 
 async function QuestsContent() {

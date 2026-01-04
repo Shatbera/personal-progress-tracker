@@ -1,4 +1,4 @@
-import { Quest } from "../types";
+import { Quest } from "../../types";
 import styles from "./quest-item.module.css";
 
 export default function QuestItem({quest}: {quest: Quest}) {

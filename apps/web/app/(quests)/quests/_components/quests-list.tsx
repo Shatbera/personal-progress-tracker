@@ -1,4 +1,4 @@
-import { Quest } from "../types";
+import { Quest } from "../../types";
 import QuestItem from "./quest-item";
 import styles from "./quests-list.module.css";
 

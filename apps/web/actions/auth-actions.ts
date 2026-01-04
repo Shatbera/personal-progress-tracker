@@ -1,5 +1,5 @@
 'use server';
-import { signIn as signInApi, signUp as signUpApi } from '@/lib/auth';
+import { signIn as signInApi, signUp as signUpApi } from '@/lib/api/auth';
 import { redirect } from 'next/navigation';
 import { setAuthToken } from '@/lib/auth-server';
 
