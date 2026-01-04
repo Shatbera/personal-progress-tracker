@@ -13,7 +13,7 @@ export class QuestsRepository extends Repository<Quest> {
     public async getQuests(filterDto: GetQuestsFilterDto, user: User): Promise<Quest[]> {
         const { status, search } = filterDto;
         const query = this.createQueryBuilder('quest');
-        // query.where({ user });
+        query.where({ user });
 
         if (status) {
             query.andWhere('quest.status = :status', { status });

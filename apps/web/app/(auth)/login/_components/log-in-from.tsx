@@ -1,8 +1,9 @@
 'use client';
 
-import styles from './log-in-form.module.css';
+import styles from '../../auth-form.module.css';
 import { logIn } from '@/actions/auth-actions';
 import { useActionState } from 'react';
+import Link from 'next/link';
 
 export default function LogInForm() {
     const [formState, formAction] = useActionState(logIn, { error: '' });
@@ -19,6 +20,9 @@ export default function LogInForm() {
         {formState.error && <p className={styles.error}>{formState.error}</p>}
         <p className={styles.field}>
             <button type="submit">Log In</button>
+        </p>
+        <p className={styles.link}>
+            Don't have an account? <Link href="/signup">Sign up</Link>
         </p>
     </form>
 }
