@@ -1,6 +1,7 @@
+import { Quest } from "../types";
 import QuestItem from "./quest-item";
 
-export default function QuestsList({quests}: {quests: any[]}) {
+export default function QuestsList({quests}: {quests: Quest[]}) {
     return <ul>
         {quests.map((quest) => (
             <li key={quest.id}>

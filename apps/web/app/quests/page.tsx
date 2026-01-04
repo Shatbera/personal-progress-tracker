@@ -1,44 +1,23 @@
-'use client';
-
-import { useEffect } from "react";
-import { useState } from "react";
+import { Suspense } from "react";
 import QuestsList from "./_components/quests-list";
+import { Quest } from "./types";
+import { getQuests } from "@/lib/quests";
 
-export default function QuestsPage() {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [quests, setQuests] = useState([]);
+async function QuestsContent() {
+    const quests: Quest[] = await getQuests();
 
-    useEffect(() => {
-        async function fetchQuests() {
-            setIsLoading(true);
-            const response = await fetch("http://localhost:3000/quests");
-            if (!response.ok) {
-                setError('Failed to fetch quests');
-                setIsLoading(false);
-            }
-            const quests = await response.json();
-            setIsLoading(false);
-            setQuests(quests);
-        }
-
-        fetchQuests();
-    }, []);
-
-    if (isLoading) {
-        return <p>Loading...</p>
+    let questsContent = <p>No quests found.</p>;
+    if (quests.length > 0) {
+        questsContent = <QuestsList quests={quests}></QuestsList>;
     }
-    if (error) {
-        return <p>{error}</p>
-    }
+    return questsContent;
+}
 
-    let questsContent;
-    if (quests) {
-        questsContent = <QuestsList quests={quests}></QuestsList>
-    }
-
+export default async function QuestsPage() {
     return <main>
         <h1>Quests Page</h1>
-        {questsContent}
+        <Suspense fallback={<p>Loading quests...</p>}>
+            <QuestsContent />
+        </Suspense>
     </main>;
 }
