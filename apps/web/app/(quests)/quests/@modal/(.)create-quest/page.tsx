@@ -1,8 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import CreateQuestForm from '../../create-quest/_components/create-quest-form';
-import styles from './modal.module.css';
+import CreateOrEditQuestForm from '../../_components/create-or-edit-quest-form';
+import styles from '../modal.module.css';
 
 export default function InterceptedCreateQuestPage(){
     const router = useRouter();
@@ -10,7 +10,7 @@ export default function InterceptedCreateQuestPage(){
     return (
         <div className={styles.overlay} onClick={() => router.back()}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-                <CreateQuestForm onSuccess={() => router.back()} />
+                <CreateOrEditQuestForm onSuccess={() => router.back()} />
             </div>
         </div>
     );

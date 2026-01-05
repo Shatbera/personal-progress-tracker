@@ -8,7 +8,6 @@ import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class QuestsService {
-
     constructor(
         private readonly questsRepository: QuestsRepository
     ) { }
@@ -28,6 +27,17 @@ export class QuestsService {
     public createQuest(createQuestDto: CreateQuestDto, user: User): Promise<Quest> {
         return this.questsRepository.createQuest(createQuestDto, user);
     }
+
+    public async updateQuestById(id: string, updateQuestDto: CreateQuestDto, user: User): Promise<Quest> {
+        const { title, description, maxPoints } = updateQuestDto;
+        const quest = await this.getQuestById(id, user);
+        quest.title = title;
+        quest.description = description;
+        quest.maxPoints = maxPoints;
+        await this.questsRepository.save(quest);
+        return quest;
+    }
+
 
     public async deleteQuestById(id: string, user: User): Promise<void> {
         const result = await this.questsRepository.delete({ id, user });

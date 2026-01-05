@@ -4,6 +4,7 @@ import { Quest } from "./quest.entity";
 import { QuestStatus } from "./quest-status.enum";
 import { GetQuestsFilterDto } from "./dto/get-quests-filter.dto";
 import { User } from "src/auth/user.entity";
+import { CreateQuestDto } from "./dto/create-quest.dto";
 
 @Injectable()
 export class QuestsRepository extends Repository<Quest> {

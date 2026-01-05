@@ -54,3 +54,50 @@ export async function createQuest(title: string, description: string, maxPoints:
 
     return await response.json();
 }
+
+export async function updateQuest(id: string, title: string, description: string, maxPoints: number): Promise<Quest> {
+    const token = await getAuthToken();
+    
+    const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+    };
+    
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${API_URL}/quests/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ title, description, maxPoints }),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error("API Error:", response.status, errorText);
+        throw new Error(`Failed to update quest: ${response.status} ${errorText}`);
+    }
+
+    return await response.json();
+}
+
+export async function getQuestById(questId: string): Promise<Quest> {
+    const token = await getAuthToken();
+    
+    const headers: HeadersInit = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    const response = await fetch(`${API_URL}/quests/${questId}`, {
+        method: 'GET',
+        headers,
+    });
+    
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error("API Error:", response.status, errorText);
+        throw new Error(`Failed to fetch quest: ${response.status} ${errorText}`);
+    }
+
+    return await response.json();
+}

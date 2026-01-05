@@ -33,6 +33,15 @@ export class QuestsController {
         return this.questsService.deleteQuestById(id, user);
     }
 
+    @Patch('/:id')
+    public updateQuestById(
+        @Param('id') id: string,
+        @Body() updateQuestDto: CreateQuestDto,
+        @GetUser() user: User
+    ): Promise<Quest> {
+        return this.questsService.updateQuestById(id, updateQuestDto, user);
+    }
+
     @Patch('/:id/status')
     public updateQuestStatus(
         @Param('id') id: string,
