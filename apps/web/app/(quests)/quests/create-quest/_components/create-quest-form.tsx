@@ -1,11 +1,21 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { createQuest } from '@/actions/quest-actions';
 import styles from './create-quest-form.module.css';
 
-export default function CreateQuestForm() {
+type CreateQuestFormProps = {
+    onSuccess?: () => void;
+};
+
+export default function CreateQuestForm({ onSuccess }: CreateQuestFormProps) {
     const [formState, formAction] = useActionState(createQuest, { error: '' });
+
+    useEffect(() => {
+        if (formState && 'success' in formState && formState.success) {
+            onSuccess?.();
+        }
+    }, [formState, onSuccess]);
 
     return (
         <form className={styles.form} action={formAction}>

@@ -20,11 +20,10 @@ export async function createQuest(prevState: any, formData: FormData) {
     try {
         await createQuestApi(title, description, maxPoints);
         revalidatePath('/quests');
+        return { success: true };
     } catch (error) {
         return {
             error: error instanceof Error ? error.message : 'Failed to create quest'
         };
     }
-
-    redirect('/quests');
 }

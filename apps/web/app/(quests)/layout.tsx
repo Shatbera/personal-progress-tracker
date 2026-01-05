@@ -14,7 +14,7 @@ export default function QuestsLayout({
                     <Link href="/quests" className={styles.navLink}>
                         Quests
                     </Link>
-                    <Link href="/create-quest" className={styles.navLink}>
+                    <Link href="/quests/create-quest" className={styles.navLink} scroll={false}>
                         Create Quest
                     </Link>
                 </nav>

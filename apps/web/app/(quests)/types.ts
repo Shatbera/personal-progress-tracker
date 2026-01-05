@@ -1,5 +1,5 @@
 export enum QuestStatus {
-    NOT_STARTED = 'NOT_STARTED',
+    LOCKED = 'LOCKED',
     IN_PROGRESS = 'IN_PROGRESS',
     COMPLETED = 'COMPLETED',
 }
