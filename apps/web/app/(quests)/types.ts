@@ -11,4 +11,5 @@ export type Quest = {
     status: QuestStatus;
     maxPoints: number;
     currentPoints: number;
+    createdAt: string;
 };

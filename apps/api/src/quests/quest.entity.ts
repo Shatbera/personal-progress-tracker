@@ -1,6 +1,6 @@
 import { Exclude } from "class-transformer";
 import { User } from "src/auth/user.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Quest {
@@ -16,6 +16,8 @@ export class Quest {
     maxPoints: number;
     @Column()
     currentPoints: number;
+    @Column()
+    createdAt: Date = new Date();
     @ManyToOne(_type => User, user => user.quests, { eager: false })
     @Exclude({ toPlainOnly: true })
     user: User;

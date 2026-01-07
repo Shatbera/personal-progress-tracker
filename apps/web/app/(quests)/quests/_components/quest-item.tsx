@@ -31,7 +31,6 @@ export default function QuestItem({quest}: {quest: Quest}) {
         <div className={styles.questItem}>
             <div className={styles.header}>
                 <h3 className={styles.questTitle}>{quest.title}</h3>
-                
                 <div className={styles.menuContainer}>
                     <button 
                         className={styles.menuButton}
