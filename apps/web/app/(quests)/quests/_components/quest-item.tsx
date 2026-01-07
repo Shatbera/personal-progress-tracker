@@ -4,15 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Quest, QuestStatus } from "../../types";
 import styles from "./quest-item.module.css";
+import { deleteQuest } from "@/lib/api/quests";
 
-export default function QuestItem({quest}: {quest: Quest}) {
+export default function QuestItem({ quest }: { quest: Quest }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const router = useRouter();
 
-    const progressPercentage = quest.maxPoints > 0 
-        ? (quest.currentPoints / quest.maxPoints) * 100 
+    const progressPercentage = quest.maxPoints > 0
+        ? (quest.currentPoints / quest.maxPoints) * 100
         : 0;
-    
+
     const isCompleted = quest.status === QuestStatus.COMPLETED;
     const isLocked = quest.status === QuestStatus.LOCKED;
 
@@ -23,8 +24,17 @@ export default function QuestItem({quest}: {quest: Quest}) {
 
     const handleDelete = () => {
         setMenuOpen(false);
-        // Add delete logic here
-        console.log("Delete quest:", quest.id);
+        if (!window.confirm(`Are you sure you want to delete "${quest.title}"?`)) {
+            return;
+        }
+
+        deleteQuest(quest.id)
+            .then(() => {
+                router.refresh();
+            })
+            .catch((error) => {
+                console.error("Failed to delete quest:", error);
+            });
     };
 
     return (
@@ -32,14 +42,14 @@ export default function QuestItem({quest}: {quest: Quest}) {
             <div className={styles.header}>
                 <h3 className={styles.questTitle}>{quest.title}</h3>
                 <div className={styles.menuContainer}>
-                    <button 
+                    <button
                         className={styles.menuButton}
                         onClick={() => setMenuOpen(!menuOpen)}
                         aria-label="Quest options"
                     >
                         ⋮
                     </button>
-                    
+
                     {menuOpen && (
                         <div className={styles.menu}>
                             <button onClick={handleEdit}>Edit</button>
@@ -48,9 +58,9 @@ export default function QuestItem({quest}: {quest: Quest}) {
                     )}
                 </div>
             </div>
-            
+
             <p className={styles.description}>{quest.description}</p>
-            
+
             <div className={styles.progressContainer}>
                 {isCompleted ? (
                     <div className={styles.completedBadge}>
@@ -62,8 +72,8 @@ export default function QuestItem({quest}: {quest: Quest}) {
                     </div>
                 ) : (
                     <div className={styles.progressBar}>
-                        <div 
-                            className={styles.progressFill} 
+                        <div
+                            className={styles.progressFill}
                             style={{ width: `${progressPercentage}%` }}
                         />
                         <span className={styles.progressText}>
