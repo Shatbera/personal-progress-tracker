@@ -37,6 +37,11 @@ export default function QuestItem({ quest }: { quest: Quest }) {
             });
     };
 
+    const handleLogProgress = () => {
+        // TODO: Implement progress logging
+        console.log("Log progress for quest:", quest.id);
+    };
+
     return (
         <div className={styles.questItem}>
             <div className={styles.header}>
@@ -71,14 +76,19 @@ export default function QuestItem({ quest }: { quest: Quest }) {
                         🔒 Locked
                     </div>
                 ) : (
-                    <div className={styles.progressBar}>
-                        <div
-                            className={styles.progressFill}
-                            style={{ width: `${progressPercentage}%` }}
-                        />
-                        <span className={styles.progressText}>
-                            {quest.currentPoints} / {quest.maxPoints}
-                        </span>
+                    <div className={styles.progressWrapper}>
+                        <div className={styles.progressBar}>
+                            <div
+                                className={styles.progressFill}
+                                style={{ width: `${progressPercentage}%` }}
+                            />
+                            <span className={styles.progressText}>
+                                {quest.currentPoints} / {quest.maxPoints}
+                            </span>
+                        </div>
+                        <button className={styles.logProgressButton} onClick={handleLogProgress}>
+                            Log Progress
+                        </button>
                     </div>
                 )}
             </div>
