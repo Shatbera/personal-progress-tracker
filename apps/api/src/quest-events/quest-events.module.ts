@@ -1,0 +1,17 @@
+import { Module } from '@nestjs/common';
+import { QuestEventsController } from './quest-events.controller';
+import { QuestEventsService } from './quest-events.service';
+import { AuthModule } from 'src/auth/auth.module';
+import { QuestEvent } from './quest-event.entity';
+import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
+import { QuestEventsRepository } from './quest-events.repository';
+
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([QuestEvent]),
+    AuthModule,
+  ],
+  controllers: [QuestEventsController],
+  providers: [QuestEventsService, QuestEventsRepository]
+})
+export class QuestEventsModule { }
