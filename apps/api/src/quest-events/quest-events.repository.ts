@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
 import { QuestEvent } from "./quest-event.entity";
 import { User } from "src/auth/user.entity";
-import { QuestEventType } from "./quest-event-type.enum";
 import { Quest } from "src/quests/quest.entity";
 import { LogEventDto } from "./dto/log-event.dto";
 
@@ -12,8 +11,8 @@ export class QuestEventsRepository extends Repository<QuestEvent> {
         super(QuestEvent, dataSource.createEntityManager());
     }
 
-    public async createQuestEvent(logEventDto: LogEventDto, user: User): Promise<QuestEvent> {
-        const { questId, eventType, pointsChanged } = logEventDto;
+    public async createQuestEvent(questId: string, logEventDto: LogEventDto, user: User): Promise<QuestEvent> {
+        const { eventType, pointsChanged } = logEventDto;
         const questEvent = this.create({
             eventType,
             pointsChanged,
