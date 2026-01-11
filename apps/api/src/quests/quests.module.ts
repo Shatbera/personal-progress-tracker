@@ -12,6 +12,7 @@ import { AuthModule } from 'src/auth/auth.module';
     AuthModule
   ],
   controllers: [QuestsController],
-  providers: [QuestsService, QuestsRepository]
+  providers: [QuestsService, QuestsRepository],
+  exports: [QuestsRepository]
 })
 export class QuestsModule { }

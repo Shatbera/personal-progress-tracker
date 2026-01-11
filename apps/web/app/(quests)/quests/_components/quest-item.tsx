@@ -1,14 +1,20 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Quest, QuestStatus } from "../../types";
 import styles from "./quest-item.module.css";
 import { deleteQuest } from "@/lib/api/quests";
+import { logProgress } from "@/actions/quest-event-actions";
 
-export default function QuestItem({ quest }: { quest: Quest }) {
+export default function QuestItem({ quest: initialQuest }: { quest: Quest }) {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [quest, setQuest] = useState(initialQuest);
     const router = useRouter();
+
+    useEffect(() => {
+        setQuest(initialQuest);
+    }, [initialQuest]);
 
     const progressPercentage = quest.maxPoints > 0
         ? (quest.currentPoints / quest.maxPoints) * 100
@@ -37,9 +43,30 @@ export default function QuestItem({ quest }: { quest: Quest }) {
             });
     };
 
-    const handleLogProgress = () => {
-        // TODO: Implement progress logging
-        console.log("Log progress for quest:", quest.id);
+    const handleLogProgress = async () => {
+        const previousQuest = { ...quest };
+        const newPoints = Math.min(quest.currentPoints + 1, quest.maxPoints);
+        
+        // Instant UI update
+        setQuest(prev => ({
+            ...prev,
+            currentPoints: newPoints,
+            status: newPoints >= quest.maxPoints 
+                ? QuestStatus.COMPLETED 
+                : (prev.status === QuestStatus.LOCKED ? QuestStatus.IN_PROGRESS : prev.status)
+        }));
+
+        try {
+            const result = await logProgress(quest.id);
+            if (result.error) {
+                setQuest(previousQuest); // Revert on error
+                alert(result.error);
+            }
+        } catch (error) {
+            setQuest(previousQuest); // Revert on error
+            console.error("Failed to log progress:", error);
+            alert("Failed to log progress. Please try again.");
+        }
     };
 
     return (
@@ -86,7 +113,10 @@ export default function QuestItem({ quest }: { quest: Quest }) {
                                 {quest.currentPoints} / {quest.maxPoints}
                             </span>
                         </div>
-                        <button className={styles.logProgressButton} onClick={handleLogProgress}>
+                        <button 
+                            className={styles.logProgressButton} 
+                            onClick={handleLogProgress}
+                        >
                             Log Progress
                         </button>
                     </div>

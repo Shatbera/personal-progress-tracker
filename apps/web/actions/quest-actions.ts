@@ -2,7 +2,6 @@
 
 import { createQuest as createQuestApi, updateQuest as updateQuestApi} from '@/lib/api/quests';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
 export async function createQuest(prevState: any, formData: FormData) {
     const title = formData.get('title') as string;
