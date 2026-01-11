@@ -86,7 +86,7 @@ export class QuestEventsService {
 
         // Reset quest points
         quest.currentPoints = 0;
-        quest.status = QuestStatus.LOCKED;
+        quest.status = QuestStatus.IN_PROGRESS;
         
         await this.questsRepository.save(quest);
 

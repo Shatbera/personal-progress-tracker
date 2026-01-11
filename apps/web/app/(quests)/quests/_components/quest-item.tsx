@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Quest, QuestStatus } from "../../types";
 import styles from "./quest-item.module.css";
 import { deleteQuest } from "@/lib/api/quests";
-import { logProgress } from "@/actions/quest-event-actions";
+import { logProgress, resetProgress } from "@/actions/quest-event-actions";
 
 export default function QuestItem({ quest: initialQuest }: { quest: Quest }) {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -40,6 +40,25 @@ export default function QuestItem({ quest: initialQuest }: { quest: Quest }) {
             })
             .catch((error) => {
                 console.error("Failed to delete quest:", error);
+            });
+    };
+
+    const handleReset = () => {
+        setMenuOpen(false);
+        if (!window.confirm(`Are you sure you want to reset progress for "${quest.title}"?`)) {
+            return;
+        }
+        resetProgress(quest.id)
+            .then((result) => {
+                if (result.error) {
+                    alert(result.error);
+                } else {
+                    router.refresh();
+                }
+            })
+            .catch((error) => {
+                console.error("Failed to reset progress:", error);
+                alert("Failed to reset progress. Please try again.");
             });
     };
 
@@ -86,6 +105,7 @@ export default function QuestItem({ quest: initialQuest }: { quest: Quest }) {
                         <div className={styles.menu}>
                             <button onClick={handleEdit}>Edit</button>
                             <button onClick={handleDelete}>Delete</button>
+                            <button onClick={handleReset}>Reset</button>
                         </div>
                     )}
                 </div>

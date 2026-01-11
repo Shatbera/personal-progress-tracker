@@ -51,7 +51,7 @@ async function seed() {
                 description: 'Read an entire book',
                 maxPoints: 1,
                 currentPoints: 0,
-                status: QuestStatus.LOCKED,
+                status: QuestStatus.IN_PROGRESS,
             },
             {
                 title: 'Drink Water',
@@ -86,7 +86,7 @@ async function seed() {
                 description: 'Complete 5 tutorials on a new technology',
                 maxPoints: 5,
                 currentPoints: 0,
-                status: QuestStatus.LOCKED,
+                status: QuestStatus.IN_PROGRESS,
             },
             {
                 title: 'Exercise Streak',
