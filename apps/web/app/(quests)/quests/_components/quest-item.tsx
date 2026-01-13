@@ -124,20 +124,23 @@ export default function QuestItem({ quest: initialQuest }: { quest: Quest }) {
                     </div>
                 ) : (
                     <div className={styles.progressWrapper}>
+                        <div className={styles.progressHeader}>
+                            <span className={styles.progressLabel}>Progress</span>
+                            <span className={styles.progressNumbers}>
+                                {quest.currentPoints} / {quest.maxPoints}
+                            </span>
+                        </div>
                         <div className={styles.progressBar}>
                             <div
                                 className={styles.progressFill}
                                 style={{ width: `${progressPercentage}%` }}
                             />
-                            <span className={styles.progressText}>
-                                {quest.currentPoints} / {quest.maxPoints}
-                            </span>
                         </div>
                         <button 
                             className={styles.logProgressButton} 
                             onClick={handleLogProgress}
                         >
-                            Log Progress
+                            + Log Progress
                         </button>
                     </div>
                 )}

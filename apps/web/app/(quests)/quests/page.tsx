@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import QuestsList from "./_components/quests-list";
 import { Quest } from "../types";
 import { getQuests } from "@/lib/api/quests";
@@ -17,7 +18,15 @@ async function QuestsContent() {
 export default async function QuestsPage() {
     return (
         <main className={styles.main}>
-            <h1 className={styles.title}>Quests Page</h1>
+            <div className={styles.header}>
+                <div>
+                    <h1 className={styles.title}>Your Quests</h1>
+                    <p className={styles.subtitle}>Track your daily progress toward meaningful goals</p>
+                </div>
+                <Link href="/quests/create-quest" className={styles.newQuestButton} scroll={false}>
+                    + New Quest
+                </Link>
+            </div>
             <Suspense fallback={<p className={styles.loading}>Loading quests...</p>}>
                 <QuestsContent />
             </Suspense>
