@@ -1,9 +1,9 @@
 'use server';
 import { signIn as signInApi, signUp as signUpApi } from '@/lib/api/auth';
 import { redirect } from 'next/navigation';
-import { setAuthToken } from '@/lib/auth-server';
+import { setAuthToken, clearAuthToken } from '@/lib/auth-server';
 
-export async function logIn(prevState: any, formData: FormData) {
+export async function logIn(callbackUrl: string, prevState: any, formData: FormData) {
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;
 
@@ -20,7 +20,7 @@ export async function logIn(prevState: any, formData: FormData) {
         };
     }
 
-    redirect('/quests');
+    redirect(callbackUrl);
 }
 
 export async function signUp(prevState: any, formData: FormData) {
@@ -51,4 +51,9 @@ export async function signUp(prevState: any, formData: FormData) {
     }
 
     redirect('/quests');
+}
+
+export async function signOut() {
+    await clearAuthToken();
+    redirect('/');
 }
