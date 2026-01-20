@@ -42,3 +42,35 @@ personal-progress-tracker/
 - **Frontend:** Next.js, React, TypeScript
 - **Database:** PostgreSQL 16
 - **Authentication:** JWT
+
+## Quick Start
+
+### 1. Start the Database
+
+```bash
+cd apps/api
+docker-compose up -d
+```
+
+### 2. Seed the Database (Optional)
+
+```bash
+cd apps/api
+yarn run seed
+```
+
+This populates the database with sample data for development.
+
+### 3. Run the API
+
+```bash
+cd apps/api
+yarn run start:dev
+```
+
+### 4. Run the Web App
+
+```bash
+cd apps/web
+yarn run dev
+```
