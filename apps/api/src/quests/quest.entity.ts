@@ -1,5 +1,6 @@
 import { Exclude } from "class-transformer";
 import { User } from "src/auth/user.entity";
+import { QuestCategory } from "src/quest-categories/quest-category.entity";
 import { QuestEvent } from "src/quest-events/quest-event.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -24,4 +25,6 @@ export class Quest {
     user: User;
     @OneToMany(() => QuestEvent, (event) => event.quest)
     events: QuestEvent[];
+    @ManyToOne(() => QuestCategory, category => category.quests, { nullable: true, eager: true })
+    category: QuestCategory;
 }
