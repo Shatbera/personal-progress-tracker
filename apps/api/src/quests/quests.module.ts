@@ -5,11 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Quest } from './quest.entity';
 import { QuestsRepository } from './quests.repository';
 import { AuthModule } from 'src/auth/auth.module';
+import { QuestCategoriesModule } from 'src/quest-categories/quest-categories.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Quest]),
-    AuthModule
+    AuthModule,
+    QuestCategoriesModule,
   ],
   controllers: [QuestsController],
   providers: [QuestsService, QuestsRepository],

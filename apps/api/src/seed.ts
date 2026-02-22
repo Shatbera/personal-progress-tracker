@@ -6,6 +6,8 @@ import { Quest } from './quests/quest.entity';
 import { QuestStatus } from './quests/quest-status.enum';
 import { QuestEventsRepository } from './quest-events/quest-events.repository';
 import { QuestEventType } from './quest-events/quest-event-type.enum';
+import { QuestCategoriesRepository } from './quest-categories/quest-categories.repository';
+import { BUILT_IN_CATEGORIES } from './quest-categories/built-in-categories.constant';
 import * as bcrypt from 'bcrypt';
 import { DataSource } from 'typeorm';
 
@@ -15,6 +17,7 @@ async function seed() {
     const usersRepository = app.get(UsersRepository);
     const questsRepository = app.get(QuestsRepository);
     const questEventsRepository = app.get(QuestEventsRepository);
+    const questCategoriesRepository = app.get(QuestCategoriesRepository);
     const dataSource = app.get(DataSource);
 
     console.log('🌱 Starting database seeding...');
@@ -25,7 +28,19 @@ async function seed() {
         await dataSource.query('TRUNCATE TABLE "quest_event" CASCADE');
         await dataSource.query('TRUNCATE TABLE "quest" CASCADE');
         await dataSource.query('TRUNCATE TABLE "user" CASCADE');
+        await dataSource.query('TRUNCATE TABLE "quest_category" CASCADE');
         console.log('✅ Database cleared');
+
+        // Seed built-in categories
+        console.log('Creating built-in categories...');
+        for (const name of BUILT_IN_CATEGORIES) {
+            await questCategoriesRepository.save(
+                questCategoriesRepository.create({ name, isBuiltIn: true, user: null }),
+            );
+        }
+        const categories = await questCategoriesRepository.find({ where: { isBuiltIn: true } });
+        const getCategory = (name: string) => categories.find(c => c.name === name) ?? undefined;
+        console.log(`✅ Built-in categories created: ${BUILT_IN_CATEGORIES.length}`);
 
         // Create a user
         console.log('Creating user...');
@@ -45,6 +60,7 @@ async function seed() {
                 maxPoints: 1,
                 currentPoints: 0,
                 status: QuestStatus.IN_PROGRESS,
+                category: getCategory('Health & Fitness'),
             },
             {
                 title: 'Read a Book',
@@ -52,6 +68,7 @@ async function seed() {
                 maxPoints: 1,
                 currentPoints: 0,
                 status: QuestStatus.IN_PROGRESS,
+                category: getCategory('Learning & Education'),
             },
             {
                 title: 'Drink Water',
@@ -59,6 +76,7 @@ async function seed() {
                 maxPoints: 8,
                 currentPoints: 5,
                 status: QuestStatus.IN_PROGRESS,
+                category: getCategory('Health & Fitness'),
             },
             {
                 title: 'Practice Coding',
@@ -66,6 +84,7 @@ async function seed() {
                 maxPoints: 10,
                 currentPoints: 3,
                 status: QuestStatus.IN_PROGRESS,
+                category: getCategory('Learning & Education'),
             },
             {
                 title: 'Meditate',
@@ -73,6 +92,7 @@ async function seed() {
                 maxPoints: 7,
                 currentPoints: 7,
                 status: QuestStatus.COMPLETED,
+                category: getCategory('Personal Development'),
             },
             {
                 title: 'Write Journal Entry',
@@ -80,6 +100,7 @@ async function seed() {
                 maxPoints: 1,
                 currentPoints: 1,
                 status: QuestStatus.COMPLETED,
+                category: getCategory('Personal Development'),
             },
             {
                 title: 'Learn New Skill',
@@ -87,6 +108,7 @@ async function seed() {
                 maxPoints: 5,
                 currentPoints: 0,
                 status: QuestStatus.IN_PROGRESS,
+                category: getCategory('Learning & Education'),
             },
             {
                 title: 'Exercise Streak',
@@ -94,6 +116,7 @@ async function seed() {
                 maxPoints: 30,
                 currentPoints: 12,
                 status: QuestStatus.IN_PROGRESS,
+                category: getCategory('Health & Fitness'),
             },
             {
                 title: 'Call a Friend',
@@ -101,6 +124,7 @@ async function seed() {
                 maxPoints: 1,
                 currentPoints: 0,
                 status: QuestStatus.IN_PROGRESS,
+                category: getCategory('Hobbies'),
             },
             {
                 title: 'Complete Project Tasks',
@@ -108,6 +132,7 @@ async function seed() {
                 maxPoints: 15,
                 currentPoints: 8,
                 status: QuestStatus.IN_PROGRESS,
+                category: getCategory('Work & Career'),
             },
         ];
 
@@ -235,6 +260,7 @@ async function seed() {
 
         console.log('\n🎉 Database seeding completed successfully!');
         console.log(`\n📊 Summary:`);
+        console.log(`   - Built-in categories created: ${BUILT_IN_CATEGORIES.length}`);
         console.log(`   - Users created: 1`);
         console.log(`   - Quests created: ${questsData.length}`);
         console.log(`   - Quest events created: ${eventCount}`);

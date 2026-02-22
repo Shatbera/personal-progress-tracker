@@ -13,6 +13,7 @@ export class QuestsRepository extends Repository<Quest> {
     public async getQuests(filterDto: GetQuestsFilterDto, user: User): Promise<Quest[]> {
         const { status, search } = filterDto;
         const query = this.createQueryBuilder('quest');
+        query.leftJoinAndSelect('quest.category', 'category');
         query.where({ user });
 
         if (status) {
@@ -30,14 +31,15 @@ export class QuestsRepository extends Repository<Quest> {
     }
 
     public async createQuest(createQuestDto: any, user: User): Promise<Quest> {
-        const { title, description, maxPoints } = createQuestDto;
+        const { title, description, maxPoints, categoryId } = createQuestDto;
         const quest = this.create({
             title,
             description,
             maxPoints,
             status: QuestStatus.LOCKED,
             currentPoints: 0,
-            user
+            user,
+            category: categoryId ? { id: categoryId } as any : undefined,
         });
         await this.save(quest);
         return quest;

@@ -4,22 +4,25 @@ import { useRouter } from 'next/navigation';
 import CreateOrEditQuestForm from '../../../_components/create-or-edit-quest-form';
 import styles from '../../modal.module.css';
 import { useEffect, useState } from 'react';
-import { Quest } from '@/app/(quests)/types';
+import { Quest, QuestCategory } from '@/app/(quests)/types';
 import { getQuestById } from '@/lib/api/quests';
+import { getCategories } from '@/lib/api/quest-categories';
 
 export default function InterceptedEditQuestPage({ params }: { params: { id: string } }) {
     const router = useRouter();
-    const [quest, setQuest] = useState<Quest>()
+    const [quest, setQuest] = useState<Quest>();
+    const [categories, setCategories] = useState<QuestCategory[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        async function loadQuest() {
+        async function loadData() {
             const { id } = await params;
-            const quest = await getQuestById(id);
+            const [quest, cats] = await Promise.all([getQuestById(id), getCategories()]);
             setQuest(quest);
+            setCategories(cats);
             setLoading(false);
         }
-        loadQuest();
+        loadData();
     }, []);
 
     if (loading) {
@@ -33,7 +36,7 @@ export default function InterceptedEditQuestPage({ params }: { params: { id: str
     return (
         <div className={styles.overlay} onClick={() => router.back()}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-                <CreateOrEditQuestForm quest={quest} onSuccess={() => router.back()} />
+                <CreateOrEditQuestForm quest={quest} categories={categories} onSuccess={() => router.back()} />
             </div>
         </div>
     );

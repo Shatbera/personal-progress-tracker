@@ -2,16 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { QuestCategory } from './quest-category.entity';
-
-const BUILT_IN_CATEGORIES = [
-    'Health & Fitness',
-    'Learning & Education',
-    'Work & Career',
-    'Personal Development',
-    'Finance',
-    'Hobbies',
-    'Other',
-];
+import { BUILT_IN_CATEGORIES } from './built-in-categories.constant';
 
 @Injectable()
 export class QuestCategoriesSeed implements OnModuleInit {

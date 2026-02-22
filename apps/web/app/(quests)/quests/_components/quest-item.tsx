@@ -113,6 +113,12 @@ export default function QuestItem({ quest: initialQuest }: { quest: Quest }) {
 
             <p className={styles.description}>{quest.description}</p>
 
+            {quest.category ? (
+                <span className={styles.categoryBadge}>{quest.category.name}</span>
+            ) : (
+                <span className={styles.categoryBadge}>Uncategorized</span>
+            )}
+
             <div className={styles.progressContainer}>
                 {isCompleted ? (
                     <div className={styles.completedBadge}>

@@ -2,24 +2,27 @@
 
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
-import { Quest } from '@/app/(quests)/types';
+import { Quest, QuestCategory } from '@/app/(quests)/types';
 import { useEffect, useState } from 'react';
 import { getQuestById } from '@/lib/api/quests';
+import { getCategories } from '@/lib/api/quest-categories';
 import CreateOrEditQuestForm from '../../_components/create-or-edit-quest-form';
 
 export default function EditQuestPage({ params }: { params: { id: string } }) {
     const router = useRouter();
     const [quest, setQuest] = useState<Quest>();
+    const [categories, setCategories] = useState<QuestCategory[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        async function loadQuest() {
+        async function loadData() {
             const { id } = await params;
-            const quest = await getQuestById(id);
+            const [quest, cats] = await Promise.all([getQuestById(id), getCategories()]);
             setQuest(quest);
+            setCategories(cats);
             setLoading(false);
         }
-        loadQuest();
+        loadData();
     }, []);
 
     if (loading) {
@@ -32,7 +35,7 @@ export default function EditQuestPage({ params }: { params: { id: string } }) {
 
     return (
         <div className={styles.container}>
-            <CreateOrEditQuestForm quest={ quest } onSuccess={() => router.push('/quests')} />
+            <CreateOrEditQuestForm quest={quest} categories={categories} onSuccess={() => router.push('/quests')} />
         </div>
     );
 }

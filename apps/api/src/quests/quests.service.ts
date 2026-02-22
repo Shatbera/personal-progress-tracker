@@ -29,11 +29,12 @@ export class QuestsService {
     }
 
     public async updateQuestById(id: string, updateQuestDto: CreateQuestDto, user: User): Promise<Quest> {
-        const { title, description, maxPoints } = updateQuestDto;
+        const { title, description, maxPoints, categoryId } = updateQuestDto;
         const quest = await this.getQuestById(id, user);
         quest.title = title;
         quest.description = description;
         quest.maxPoints = maxPoints;
+        quest.category = categoryId ? { id: categoryId } as any : null;
         await this.questsRepository.save(quest);
         return quest;
     }

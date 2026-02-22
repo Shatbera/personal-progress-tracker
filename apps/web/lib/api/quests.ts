@@ -18,13 +18,13 @@ export async function getQuests(): Promise<Quest[]> {
     return await response.json();
 }
 
-export async function createQuest(title: string, description: string, maxPoints: number): Promise<Quest> {
+export async function createQuest(title: string, description: string, maxPoints: number, categoryId?: string): Promise<Quest> {
     const response = await apiFetch('/quests', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, description, maxPoints }),
+        body: JSON.stringify({ title, description, maxPoints, ...(categoryId && { categoryId }) }),
     });
 
     if (!response.ok) {
@@ -36,13 +36,13 @@ export async function createQuest(title: string, description: string, maxPoints:
     return await response.json();
 }
 
-export async function updateQuest(id: string, title: string, description: string, maxPoints: number): Promise<Quest> {
+export async function updateQuest(id: string, title: string, description: string, maxPoints: number, categoryId?: string): Promise<Quest> {
     const response = await apiFetch(`/quests/${id}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, description, maxPoints }),
+        body: JSON.stringify({ title, description, maxPoints, categoryId: categoryId ?? null }),
     });
 
     if (!response.ok) {

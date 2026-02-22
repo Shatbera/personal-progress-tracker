@@ -7,6 +7,7 @@ export async function createQuest(prevState: any, formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const maxPoints = parseInt(formData.get('maxPoints') as string);
+    const categoryId = formData.get('categoryId') as string | null;
 
     if (!title || !description || !maxPoints) {
         return { error: 'All fields are required' };
@@ -17,7 +18,7 @@ export async function createQuest(prevState: any, formData: FormData) {
     }
 
     try {
-        await createQuestApi(title, description, maxPoints);
+        await createQuestApi(title, description, maxPoints, categoryId ?? undefined);
         revalidatePath('/quests');
         return { success: true };
     } catch (error) {
@@ -33,6 +34,7 @@ export async function updateQuest(prevState: any, formData: FormData) {
     const maxPoints = parseInt(formData.get('maxPoints') as string);
     const currentPoints = parseInt(formData.get('currentPoints') as string);
     const id = formData.get('id') as string;
+    const categoryId = formData.get('categoryId') as string | null;
 
     if (!title || !description || !maxPoints) {
         return { error: 'All fields are required' };
@@ -43,7 +45,7 @@ export async function updateQuest(prevState: any, formData: FormData) {
     }
 
     try {
-        await updateQuestApi(id, title, description, maxPoints);
+        await updateQuestApi(id, title, description, maxPoints, categoryId ?? undefined);
         revalidatePath('/quests');
         return { success: true };
     } catch (error) {

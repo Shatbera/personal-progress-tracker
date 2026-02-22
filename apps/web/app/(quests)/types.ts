@@ -4,6 +4,12 @@ export enum QuestStatus {
     COMPLETED = 'COMPLETED',
 }
 
+export type QuestCategory = {
+    id: string;
+    name: string;
+    isBuiltIn: boolean;
+};
+
 export type Quest = {
     id: string;
     title: string;
@@ -12,4 +18,5 @@ export type Quest = {
     maxPoints: number;
     currentPoints: number;
     createdAt: string;
+    category: QuestCategory | null;
 };

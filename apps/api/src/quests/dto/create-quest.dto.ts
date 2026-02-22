@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateQuestDto {
     @IsNotEmpty()
@@ -6,4 +6,7 @@ export class CreateQuestDto {
     @IsNotEmpty()
     description: string;
     maxPoints: number;
+    @IsOptional()
+    @IsString()
+    categoryId?: string;
 }
