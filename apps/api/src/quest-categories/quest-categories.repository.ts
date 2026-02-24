@@ -11,7 +11,7 @@ export class QuestCategoriesRepository extends Repository<QuestCategory> {
     }
 
     private async findOrFail(id: string): Promise<QuestCategory> {
-        const category = await this.findOne({ where: { id } });
+        const category = await this.findOne({ where: { id }, relations: ['user'] });
         if (!category) {
             throw new NotFoundException(`Category "${id}" not found`);
         }

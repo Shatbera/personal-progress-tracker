@@ -1,9 +1,20 @@
 'use client';
 
 import { useActionState, useEffect } from 'react';
+import { useFormStatus } from 'react-dom';
 import { createQuest, updateQuest } from '@/actions/quest-actions';
 import styles from './create-or-edit-quest-form.module.css';
 import { Quest, QuestCategory } from '../../types';
+import CategorySelect from './category-select';
+
+function SubmitButton({ label }: { label: string }) {
+    const { pending } = useFormStatus();
+    return (
+        <button type="submit" className={styles.button} disabled={pending} style={pending ? { opacity: 0.5 } : undefined}>
+            {label}
+        </button>
+    );
+}
 
 type CreateOrEditQuestFormProps = {
     quest?: Quest;
@@ -24,7 +35,7 @@ export default function CreateOrEditQuestForm({ quest, categories, onSuccess }: 
 
     return (
         <form className={styles.form} action={formAction}>
-            <h1 className={styles.title}>{isEditting ? 'Edit Quest' : 'Create Quest'}</h1>
+            <h1 className={styles.title}>{isEditting ? 'Save Changes' : 'Create Quest'}</h1>
 
             {formState.error && (
                 <div className={styles.error}>{formState.error}</div>
@@ -72,21 +83,13 @@ export default function CreateOrEditQuestForm({ quest, categories, onSuccess }: 
 
             <div className={styles.field}>
                 <label htmlFor="categoryId">Category</label>
-                <select
-                    id="categoryId"
-                    name="categoryId"
+                <CategorySelect
+                    categories={categories}
                     defaultValue={quest?.category?.id ?? ''}
-                >
-                    <option value="">No category</option>
-                    {categories.map(cat => (
-                        <option key={cat.id} value={cat.id}>{cat.name}</option>
-                    ))}
-                </select>
+                />
             </div>
 
-            <button type="submit" className={styles.button}>
-                {isEditting ? 'Edit Quest' : 'Create Quest'}
-            </button>
+            <SubmitButton label={isEditting ? 'Edit Quest' : 'Create Quest'} />
         </form>
     );
 }
