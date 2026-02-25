@@ -16,6 +16,14 @@ export type DashboardRecentActivity = {
     createdAt: string;
 };
 
+export type DashboardStats = {
+    pointsToday: number;
+    pointsThisWeek: number;
+    logsToday: number;
+    completedQuests: number;
+    activeQuestsCount: number;
+};
+
 export type DashboardDto = {
     recentActivity: {
         recentActivities: DashboardRecentActivity[];
@@ -23,4 +31,5 @@ export type DashboardDto = {
     activeQuests: {
         activeQuests: Quest[];
     };
+    stats: DashboardStats;
 };

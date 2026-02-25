@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, MoreThanOrEqual } from 'typeorm';
 import { QuestEvent } from 'src/quest-events/quest-event.entity';
 import { User } from 'src/auth/user.entity';
 import { Quest } from 'src/quests/quest.entity';
 import { QuestStatus } from 'src/quests/quest-status.enum';
+import { QuestEventType } from 'src/quest-events/quest-event-type.enum';
 import { DashboardDto } from './dto/dashboard.dto';
 import { DashboardRecentActivityDto, DashboardRecentActivityItemDto } from './dto/dashboard-recent-activity.dto';
+import { DashboardStatsDto } from './dto/dashboard-stats.dto';
 
 @Injectable()
 export class DashboardService {
@@ -18,13 +20,13 @@ export class DashboardService {
     ) { }
 
     async getDashboard(user: User): Promise<DashboardDto> {
-        const recentActivity = await this.getRecentActivity(user);
-        const activeQuests = await this.getActiveQuests(user);
+        const [recentActivity, activeQuests, stats] = await Promise.all([
+            this.getRecentActivity(user),
+            this.getActiveQuests(user),
+            this.getStats(user),
+        ]);
 
-        return {
-            recentActivity,
-            activeQuests,
-        };
+        return { recentActivity, activeQuests, stats };
     }
 
     async getRecentActivity(user: User): Promise<DashboardRecentActivityDto> {
@@ -54,4 +56,33 @@ export class DashboardService {
 
         return { activeQuests };
     }
-}
+
+    async getStats(user: User): Promise<DashboardStatsDto> {
+        const now = new Date();
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const startOfWeek = new Date(startOfToday);
+        startOfWeek.setDate(startOfToday.getDate() - startOfToday.getDay());
+
+        const [weekEvents, completedCount, activeCount] = await Promise.all([
+            this.questEventRepository.find({
+                where: { user: { id: user.id }, createdAt: MoreThanOrEqual(startOfWeek) },
+            }),
+            this.questRepository.count({
+                where: { user: { id: user.id }, status: QuestStatus.COMPLETED },
+            }),
+            this.questRepository.count({
+                where: { user: { id: user.id }, status: QuestStatus.IN_PROGRESS },
+            }),
+        ]);
+
+        const progressEvents = weekEvents.filter(e => e.eventType === QuestEventType.PROGRESS);
+        const todayEvents = progressEvents.filter(e => e.createdAt >= startOfToday);
+
+        return {
+            pointsToday: todayEvents.reduce((sum, e) => sum + e.pointsChanged, 0),
+            pointsThisWeek: progressEvents.reduce((sum, e) => sum + e.pointsChanged, 0),
+            logsToday: todayEvents.length,
+            completedQuests: completedCount,
+            activeQuestsCount: activeCount,
+        };
+    }}
