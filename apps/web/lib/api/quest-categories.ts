@@ -1,4 +1,4 @@
-import { QuestCategory } from '@/app/(quests)/types';
+import { QuestCategory } from '@/app/(workspace)/(quests)/types';
 import { apiFetch } from './client';
 
 export async function createCategory(name: string): Promise<QuestCategory> {

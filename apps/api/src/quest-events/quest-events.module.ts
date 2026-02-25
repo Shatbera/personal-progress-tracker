@@ -14,6 +14,6 @@ import { QuestEventsRepository } from './quest-events.repository';
     QuestsModule,
   ],
   controllers: [QuestEventsController],
-  providers: [QuestEventsService, QuestEventsRepository]
+  providers: [QuestEventsService, QuestEventsRepository],
 })
 export class QuestEventsModule { }

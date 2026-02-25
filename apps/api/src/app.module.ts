@@ -4,6 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from './auth/auth.module';
 import { QuestEventsModule } from './quest-events/quest-events.module';
 import { QuestCategoriesModule } from './quest-categories/quest-categories.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { QuestCategoriesModule } from './quest-categories/quest-categories.modul
     AuthModule,
     QuestEventsModule,
     QuestCategoriesModule,
+    DashboardModule,
   ],
 })
 export class AppModule { }

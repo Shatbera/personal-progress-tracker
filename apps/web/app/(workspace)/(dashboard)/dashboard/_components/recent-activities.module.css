@@ -1,0 +1,110 @@
+.container {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 1.25rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
+}
+
+.placeholder {
+    font-size: 0.9375rem;
+    color: #9ca3af;
+    margin: 0;
+}
+
+.list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+.section {
+    list-style: none;
+    padding-top: 0.25rem;
+}
+
+.section + .section {
+    margin-top: 0.75rem;
+    padding-top: 0.5rem;
+}
+
+.sectionTitle {
+    margin: 0 0 0.625rem 0;
+    padding: 0 0 0.5rem 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.sectionList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: #f9fafb;
+}
+
+.item:last-child {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.questTitle {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #111827;
+}
+
+.meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.eventType {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.eventTypeProgress {
+    color: #48bd56;
+}
+
+.points {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #2563eb;
+}

@@ -7,7 +7,7 @@ import styles from "./quest-item.module.css";
 import { deleteQuest } from "@/lib/api/quests";
 import { logProgress, resetProgress } from "@/actions/quest-event-actions";
 
-export default function QuestItem({ quest: initialQuest }: { quest: Quest }) {
+export default function QuestItem({ quest: initialQuest, hideMenu = false }: { quest: Quest; hideMenu?: boolean }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [quest, setQuest] = useState(initialQuest);
     const router = useRouter();
@@ -92,6 +92,7 @@ export default function QuestItem({ quest: initialQuest }: { quest: Quest }) {
         <div className={styles.questItem}>
             <div className={styles.header}>
                 <h3 className={styles.questTitle}>{quest.title}</h3>
+                {!hideMenu && (
                 <div className={styles.menuContainer}>
                     <button
                         className={styles.menuButton}
@@ -109,6 +110,7 @@ export default function QuestItem({ quest: initialQuest }: { quest: Quest }) {
                         </div>
                     )}
                 </div>
+                )}
             </div>
 
             <p className={styles.description}>{quest.description}</p>

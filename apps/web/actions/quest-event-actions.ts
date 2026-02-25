@@ -7,6 +7,7 @@ export async function logProgress(questId: string) {
     try {
         await logProgressApi(questId);
         revalidatePath('/quests');
+        revalidatePath('/dashboard');
         return { success: true };
     } catch (error) {
         return {

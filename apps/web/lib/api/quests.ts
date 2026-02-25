@@ -1,4 +1,4 @@
-import { Quest } from "@/app/(quests)/types";
+import { Quest } from "@/app/(workspace)/(quests)/types";
 import { apiFetch } from "./client";
 
 export async function getQuests(): Promise<Quest[]> {
