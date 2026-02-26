@@ -5,7 +5,6 @@ export class LogEventDto {
     @IsEnum(QuestEventType)
     @IsNotEmpty()
     eventType: QuestEventType;
-
     @IsNumber()
     pointsChanged: number;
 }

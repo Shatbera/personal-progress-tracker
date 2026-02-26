@@ -175,27 +175,28 @@ async function seed() {
             }
         }
 
-        // Events for "Meditate" quest (7 progress events to completion)
+        // Events for "Meditate" quest (6 progress + 1 complete event)
         const meditateQuest = createdQuests.find(q => q.title === 'Meditate');
         if (meditateQuest) {
             for (let i = 0; i < 7; i++) {
+                const isLast = i === 6;
                 const event = questEventsRepository.create({
-                    eventType: QuestEventType.PROGRESS,
+                    eventType: isLast ? QuestEventType.COMPLETE : QuestEventType.PROGRESS,
                     pointsChanged: 1,
                     quest: meditateQuest,
                     user,
-                    createdAt: new Date(Date.now() - (7 - i) * 86400000), // Spread over last 7 days
+                    createdAt: new Date(Date.now() - (7 - i) * 86400000),
                 });
                 await questEventsRepository.save(event);
                 eventCount++;
             }
         }
 
-        // Events for "Write Journal Entry" quest (1 progress event to completion)
+        // Events for "Write Journal Entry" quest (1 complete event)
         const journalQuest = createdQuests.find(q => q.title === 'Write Journal Entry');
         if (journalQuest) {
             const event = questEventsRepository.create({
-                eventType: QuestEventType.PROGRESS,
+                eventType: QuestEventType.COMPLETE,
                 pointsChanged: 1,
                 quest: journalQuest,
                 user,

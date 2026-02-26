@@ -29,14 +29,15 @@ export class QuestEventsService {
         quest.currentPoints += 1;
         
         // Mark as completed if max points reached
-        if (quest.currentPoints >= quest.maxPoints) {
+        const justCompleted = quest.currentPoints >= quest.maxPoints;
+        if (justCompleted) {
             quest.completedAt = new Date();
         }
         
         await this.questsRepository.save(quest);
 
         return await this.questEventsRepository.createQuestEvent(questId, {
-            eventType: QuestEventType.PROGRESS,
+            eventType: justCompleted ? QuestEventType.COMPLETE : QuestEventType.PROGRESS,
             pointsChanged: 1,
         }, user);
     }

@@ -3,6 +3,7 @@ import { DashboardRecentActivity, QuestEventType } from '../../types';
 
 const eventLabel: Record<QuestEventType, string> = {
     [QuestEventType.PROGRESS]: '▲ Progress',
+    [QuestEventType.COMPLETE]: '★ Completed',
     [QuestEventType.UNDO]: '↩ Undo',
     [QuestEventType.RESET]: '↺ Reset',
 };
@@ -77,7 +78,7 @@ export default function RecentActivities({ items }: { items: DashboardRecentActi
                                     <li key={`${item.questId}-${item.createdAt}-${i}`} className={styles.item}>
                                         <span className={styles.questTitle}>{item.questTitle}</span>
                                         <span className={styles.meta}>
-                                            <span className={`${styles.eventType} ${item.eventType === QuestEventType.PROGRESS ? styles.eventTypeProgress : ''}`}>{eventLabel[item.eventType]}</span>
+                                            <span className={`${styles.eventType} ${item.eventType === QuestEventType.PROGRESS ? styles.eventTypeProgress : ''} ${item.eventType === QuestEventType.COMPLETE ? styles.eventTypeComplete : ''}`}>{eventLabel[item.eventType]}</span>
                                             <span className={styles.points}>{item.pointsChanged > 0 ? `+${item.pointsChanged}` : item.pointsChanged} pts</span>
                                         </span>
                                     </li>

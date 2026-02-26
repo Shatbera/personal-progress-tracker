@@ -83,6 +83,11 @@ export default function CategorySelect({ categories: initialCategories, defaultV
     const triggerRef = useRef<HTMLButtonElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    // Sync when parent loads categories asynchronously (e.g. create modal)
+    useEffect(() => {
+        setCategories(initialCategories);
+    }, [initialCategories]);
+
     const selectedCategory = categories.find(c => c.id === selectedId);
     const displayLabel = selectedCategory?.name ?? 'No category';
 
