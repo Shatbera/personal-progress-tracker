@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { QuestEventsRepository } from './quest-events.repository';
 import { QuestsRepository } from 'src/quests/quests.repository';
-import { QuestStatus } from 'src/quests/quest-status.enum';
 import { QuestEventType } from './quest-event-type.enum';
 import { User } from 'src/auth/user.entity';
 import { QuestEvent } from './quest-event.entity';
@@ -29,11 +28,9 @@ export class QuestEventsService {
         // Update quest points
         quest.currentPoints += 1;
         
-        // Update status to COMPLETED if max points reached
+        // Mark as completed if max points reached
         if (quest.currentPoints >= quest.maxPoints) {
-            quest.status = QuestStatus.COMPLETED;
-        } else if (quest.status === QuestStatus.LOCKED) {
-            quest.status = QuestStatus.IN_PROGRESS;
+            quest.completedAt = new Date();
         }
         
         await this.questsRepository.save(quest);
@@ -60,9 +57,9 @@ export class QuestEventsService {
         // Update quest points
         quest.currentPoints -= 1;
         
-        // Update status if needed
-        if (quest.status === QuestStatus.COMPLETED && quest.currentPoints < quest.maxPoints) {
-            quest.status = QuestStatus.IN_PROGRESS;
+        // Unmark completion if points drop below max
+        if (quest.completedAt && quest.currentPoints < quest.maxPoints) {
+            quest.completedAt = null;
         }
         
         await this.questsRepository.save(quest);
@@ -86,7 +83,7 @@ export class QuestEventsService {
 
         // Reset quest points
         quest.currentPoints = 0;
-        quest.status = QuestStatus.IN_PROGRESS;
+        quest.completedAt = null;
         
         await this.questsRepository.save(quest);
 

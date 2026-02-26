@@ -13,13 +13,15 @@ export class Quest {
     @Column()
     description: string;
     @Column()
-    status: string;
-    @Column()
     maxPoints: number;
     @Column()
     currentPoints: number;
     @Column()
     createdAt: Date = new Date();
+    @Column({ type: 'timestamp', nullable: true })
+    completedAt: Date | null = null;
+    @Column({ type: 'timestamp', nullable: true })
+    archivedAt: Date | null = null;
     @ManyToOne(_type => User, user => user.quests, { eager: false })
     @Exclude({ toPlainOnly: true })
     user: User;

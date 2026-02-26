@@ -6,8 +6,8 @@ export async function getQuests(): Promise<Quest[]> {
         cache: 'no-store'
     });
     
-    console.log("Fetching quests from API...");
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // console.log("Fetching quests from API...");
+    // await new Promise(resolve => setTimeout(resolve, 500));
 
     if (!response.ok) {
         const errorText = await response.text();
@@ -77,4 +77,28 @@ export async function deleteQuest(questId: string): Promise<void> {
         console.error("API Error:", response.status, errorText);
         throw new Error(`Failed to delete quest: ${response.status} ${errorText}`);
     }
+}
+
+export async function archiveQuest(questId: string): Promise<Quest> {
+    const response = await apiFetch(`/quests/${questId}/archive`, {
+        method: 'PATCH'
+    });
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error("API Error:", response.status, errorText);
+        throw new Error(`Failed to archive quest: ${response.status} ${errorText}`);
+    }
+    return await response.json();
+}
+
+export async function unarchiveQuest(questId: string): Promise<Quest> {
+    const response = await apiFetch(`/quests/${questId}/unarchive`, {
+        method: 'PATCH'
+    });
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error("API Error:", response.status, errorText);
+        throw new Error(`Failed to unarchive quest: ${response.status} ${errorText}`);
+    }
+    return await response.json();
 }

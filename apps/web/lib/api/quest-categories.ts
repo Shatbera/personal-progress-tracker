@@ -40,7 +40,7 @@ export async function deleteCategory(id: string): Promise<void> {
 }
 
 export async function getCategories(): Promise<QuestCategory[]> {
-    const response = await apiFetch('/quest-categories', { cache: 'no-store' });
+    const response = await apiFetch('/quest-categories');
 
     if (!response.ok) {
         throw new Error(`Failed to fetch categories: ${response.status}`);

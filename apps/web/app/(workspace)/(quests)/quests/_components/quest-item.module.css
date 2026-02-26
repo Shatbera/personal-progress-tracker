@@ -202,7 +202,6 @@
     border-radius: 8px;
     font-weight: 600;
     font-size: 1rem;
-    min-height: 120px;
 }
 
 .lockedBadge {
@@ -216,4 +215,29 @@
     font-weight: 600;
     font-size: 1rem;
     min-height: 120px;
+}
+
+.archivedItem {
+    opacity: 0.55;
+    background-color: #f8f8f8;
+    border-color: #d0d0d0;
+    box-shadow: none;
+}
+
+.archivedItem:hover {
+    box-shadow: none;
+    opacity: 0.7;
+}
+
+.archivedBadge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.75rem;
+    background-color: #e9ecef;
+    color: #6c757d;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
 }

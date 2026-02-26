@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThanOrEqual } from 'typeorm';
+import { Repository, MoreThanOrEqual, IsNull, Not } from 'typeorm';
 import { QuestEvent } from 'src/quest-events/quest-event.entity';
 import { User } from 'src/auth/user.entity';
 import { Quest } from 'src/quests/quest.entity';
-import { QuestStatus } from 'src/quests/quest-status.enum';
 import { QuestEventType } from 'src/quest-events/quest-event-type.enum';
 import { DashboardDto } from './dto/dashboard.dto';
 import { DashboardRecentActivityDto, DashboardRecentActivityItemDto } from './dto/dashboard-recent-activity.dto';
@@ -50,7 +49,7 @@ export class DashboardService {
 
     async getActiveQuests(user: User): Promise<{ activeQuests: Quest[] }> {
         const activeQuests = await this.questRepository.find({
-            where: { user: { id: user.id }, status: QuestStatus.IN_PROGRESS },
+            where: { user: { id: user.id }, completedAt: IsNull(), archivedAt: IsNull() },
             order: { createdAt: 'DESC' },
         });
 
@@ -68,10 +67,10 @@ export class DashboardService {
                 where: { user: { id: user.id }, createdAt: MoreThanOrEqual(startOfWeek) },
             }),
             this.questRepository.count({
-                where: { user: { id: user.id }, status: QuestStatus.COMPLETED },
+                where: { user: { id: user.id }, completedAt: Not(IsNull()) },
             }),
             this.questRepository.count({
-                where: { user: { id: user.id }, status: QuestStatus.IN_PROGRESS },
+                where: { user: { id: user.id }, completedAt: IsNull(), archivedAt: IsNull() },
             }),
         ]);
 

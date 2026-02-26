@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { QuestStatus } from './quest-status.enum';
 import { CreateQuestDto } from './dto/create-quest.dto';
 import { GetQuestsFilterDto } from './dto/get-quests-filter.dto';
 import { QuestsRepository } from './quests.repository';
@@ -40,17 +39,24 @@ export class QuestsService {
     }
 
 
+    public async archiveQuestById(id: string, user: User): Promise<Quest> {
+        const quest = await this.getQuestById(id, user);
+        quest.archivedAt = new Date();
+        await this.questsRepository.save(quest);
+        return quest;
+    }
+
+    public async unarchiveQuestById(id: string, user: User): Promise<Quest> {
+        const quest = await this.getQuestById(id, user);
+        quest.archivedAt = null;
+        await this.questsRepository.save(quest);
+        return quest;
+    }
+
     public async deleteQuestById(id: string, user: User): Promise<void> {
         const result = await this.questsRepository.delete({ id, user });
         if (result.affected === 0) {
             throw new NotFoundException(`Quest with ID "${id}" not found`);
         }
-    }
-
-    public async updateQuestStatus(id: string, status: QuestStatus, user: User): Promise<Quest> {
-        const quest = await this.getQuestById(id, user);
-        quest.status = status;
-        await this.questsRepository.save(quest);
-        return quest;
     }
 }

@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { UsersRepository } from './auth/users.repository';
 import { QuestsRepository } from './quests/quests.repository';
 import { Quest } from './quests/quest.entity';
-import { QuestStatus } from './quests/quest-status.enum';
 import { QuestEventsRepository } from './quest-events/quest-events.repository';
 import { QuestEventType } from './quest-events/quest-event-type.enum';
 import { QuestCategoriesRepository } from './quest-categories/quest-categories.repository';
@@ -59,7 +58,6 @@ async function seed() {
                 description: 'Finish your workout routine',
                 maxPoints: 1,
                 currentPoints: 0,
-                status: QuestStatus.IN_PROGRESS,
                 category: getCategory('Health & Fitness'),
             },
             {
@@ -67,7 +65,6 @@ async function seed() {
                 description: 'Read an entire book',
                 maxPoints: 1,
                 currentPoints: 0,
-                status: QuestStatus.IN_PROGRESS,
                 category: getCategory('Learning & Education'),
             },
             {
@@ -75,7 +72,6 @@ async function seed() {
                 description: 'Drink 8 glasses of water',
                 maxPoints: 8,
                 currentPoints: 5,
-                status: QuestStatus.IN_PROGRESS,
                 category: getCategory('Health & Fitness'),
             },
             {
@@ -83,7 +79,6 @@ async function seed() {
                 description: 'Complete 10 coding challenges',
                 maxPoints: 10,
                 currentPoints: 3,
-                status: QuestStatus.IN_PROGRESS,
                 category: getCategory('Learning & Education'),
             },
             {
@@ -91,7 +86,7 @@ async function seed() {
                 description: 'Complete 7 meditation sessions',
                 maxPoints: 7,
                 currentPoints: 7,
-                status: QuestStatus.COMPLETED,
+                completedAt: new Date(),
                 category: getCategory('Personal Development'),
             },
             {
@@ -99,7 +94,7 @@ async function seed() {
                 description: 'Write in your journal',
                 maxPoints: 1,
                 currentPoints: 1,
-                status: QuestStatus.COMPLETED,
+                completedAt: new Date(),
                 category: getCategory('Personal Development'),
             },
             {
@@ -107,7 +102,6 @@ async function seed() {
                 description: 'Complete 5 tutorials on a new technology',
                 maxPoints: 5,
                 currentPoints: 0,
-                status: QuestStatus.IN_PROGRESS,
                 category: getCategory('Learning & Education'),
             },
             {
@@ -115,7 +109,6 @@ async function seed() {
                 description: 'Exercise 30 days in a row',
                 maxPoints: 30,
                 currentPoints: 12,
-                status: QuestStatus.IN_PROGRESS,
                 category: getCategory('Health & Fitness'),
             },
             {
@@ -123,7 +116,6 @@ async function seed() {
                 description: 'Have a meaningful conversation',
                 maxPoints: 1,
                 currentPoints: 0,
-                status: QuestStatus.IN_PROGRESS,
                 category: getCategory('Hobbies'),
             },
             {
@@ -131,7 +123,6 @@ async function seed() {
                 description: 'Finish 15 project tasks',
                 maxPoints: 15,
                 currentPoints: 8,
-                status: QuestStatus.IN_PROGRESS,
                 category: getCategory('Work & Career'),
             },
         ];

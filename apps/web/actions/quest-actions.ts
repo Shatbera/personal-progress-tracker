@@ -1,6 +1,6 @@
 'use server';
 
-import { createQuest as createQuestApi, updateQuest as updateQuestApi} from '@/lib/api/quests';
+import { createQuest as createQuestApi, updateQuest as updateQuestApi, archiveQuest as archiveQuestApi, unarchiveQuest as unarchiveQuestApi, deleteQuest as deleteQuestApi } from '@/lib/api/quests';
 import { revalidatePath } from 'next/cache';
 
 export async function createQuest(prevState: any, formData: FormData) {
@@ -51,6 +51,42 @@ export async function updateQuest(prevState: any, formData: FormData) {
     } catch (error) {
         return {
             error: error instanceof Error ? error.message : 'Failed to create quest'
+        };
+    }
+}
+
+export async function deleteQuest(id: string) {
+    try {
+        await deleteQuestApi(id);
+        revalidatePath('/quests');
+        return { success: true };
+    } catch (error) {
+        return {
+            error: error instanceof Error ? error.message : 'Failed to delete quest'
+        };
+    }
+}
+
+export async function archiveQuest(id: string) {
+    try {
+        await archiveQuestApi(id);
+        revalidatePath('/quests');
+        return { success: true };
+    } catch (error) {
+        return {
+            error: error instanceof Error ? error.message : 'Failed to archive quest'
+        };
+    }
+}
+
+export async function unarchiveQuest(id: string) {
+    try {
+        await unarchiveQuestApi(id);
+        revalidatePath('/quests');
+        return { success: true };
+    } catch (error) {
+        return {
+            error: error instanceof Error ? error.message : 'Failed to unarchive quest'
         };
     }
 }
