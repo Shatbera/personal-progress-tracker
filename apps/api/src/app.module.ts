@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { QuestEventsModule } from './quest-events/quest-events.module';
 import { QuestCategoriesModule } from './quest-categories/quest-categories.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { DailyTrackModule } from './daily-track/daily-track.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     QuestEventsModule,
     QuestCategoriesModule,
     DashboardModule,
+    DailyTrackModule,
   ],
 })
 export class AppModule { }
