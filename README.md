@@ -1,6 +1,6 @@
 # Personal Progress Tracker
 
-A full-stack application for creating, managing, and tracking personal quests and progress.
+A full-stack application for creating, managing, and tracking personal quests and daily habits.
 
 Built with NestJS (backend) and Next.js (frontend) with PostgreSQL database.
 
@@ -9,32 +9,42 @@ Built with NestJS (backend) and Next.js (frontend) with PostgreSQL database.
 ```
 personal-progress-tracker/
 ├── apps/
-│   ├── api/                 # NestJS backend
+│   ├── api/                        # NestJS backend
 │   │   ├── src/
-│   │   │   ├── auth/        # JWT authentication & user management
-│   │   │   ├── quests/      # Quest CRUD operations
-│   │   │   ├── quest-events/ # Event logging for quest progress
-│   │   │   ├── app.module.ts # Database & module configuration
-│   │   │   └── main.ts      # App entry point
-│   │   └── docker-compose.yml # PostgreSQL service
+│   │   │   ├── auth/               # JWT authentication & user management
+│   │   │   ├── quests/             # Quest CRUD operations (Simple Goal & Daily Track types)
+│   │   │   ├── quest-categories/   # Built-in & custom quest categories
+│   │   │   ├── quest-events/       # Event logging for quest progress
+│   │   │   ├── daily-track/        # Daily habit tracking with entries
+│   │   │   ├── dashboard/          # Aggregated stats & recent activity
+│   │   │   ├── app.module.ts       # Database & module configuration
+│   │   │   ├── seed.ts             # Database seeding script
+│   │   │   └── main.ts             # App entry point
+│   │   └── docker-compose.yml      # PostgreSQL service
 │   │
-│   └── web/                 # Next.js frontend
-│       ├── app/             # App router (Next.js 13+)
-│       │   ├── (auth)/      # Auth pages (login, signup)
-│       │   └── (quests)/    # Quest management pages
-│       ├── actions/         # Server actions (API communication)
-│       ├── lib/             # Utilities & API client
-│       └── public/          # Static assets
+│   └── web/                        # Next.js frontend
+│       ├── app/                    # App router (Next.js 13+)
+│       │   ├── (auth)/             # Auth pages (login, signup)
+│       │   └── (workspace)/        # Authenticated area
+│       │       ├── (dashboard)/    # Dashboard overview page
+│       │       ├── (quests)/       # Quest management pages
+│       │       └── (daily-track)/  # Daily track detail pages
+│       ├── actions/                # Server actions (API communication)
+│       ├── lib/                    # Utilities & API client
+│       └── public/                 # Static assets
 │
-└── README.md                # This file
+└── README.md                       # This file
 ```
 
 ## Features
 
 - **User Authentication** — JWT-based login/signup
-- **Quest Management** — Create, update, and track quests
-- **Progress Tracking** — Log quest events and monitor progress
-- **Responsive UI** — Modern Next.js frontend with server actions
+- **Quest Management** — Create, update, archive, and complete quests with point tracking
+- **Quest Types** — Simple Goal (one-off tasks) and Daily Track (recurring habit tracking)
+- **Quest Categories** — Organize quests with built-in or custom categories
+- **Progress Events** — Log events (complete, fail, partial, etc.) to update quest points
+- **Daily Tracking** — Track daily habit streaks with per-day entry logging
+- **Dashboard** — Overview of active quests, recent activity, and personal stats
 
 ## Technology Stack
 

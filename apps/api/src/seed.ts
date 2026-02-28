@@ -3,10 +3,13 @@ import { AppModule } from './app.module';
 import { UsersRepository } from './auth/users.repository';
 import { QuestsRepository } from './quests/quests.repository';
 import { Quest } from './quests/quest.entity';
+import { QuestType } from './quests/quest-type.enum';
 import { QuestEventsRepository } from './quest-events/quest-events.repository';
 import { QuestEventType } from './quest-events/quest-event-type.enum';
 import { QuestCategoriesRepository } from './quest-categories/quest-categories.repository';
 import { BUILT_IN_CATEGORIES } from './quest-categories/built-in-categories.constant';
+import { DailyTrackRepository } from './daily-track/daily-track.repository';
+import { DailyTrackEntry } from './daily-track/daily-track-entry.entity';
 import * as bcrypt from 'bcrypt';
 import { DataSource } from 'typeorm';
 
@@ -17,6 +20,7 @@ async function seed() {
     const questsRepository = app.get(QuestsRepository);
     const questEventsRepository = app.get(QuestEventsRepository);
     const questCategoriesRepository = app.get(QuestCategoriesRepository);
+    const dailyTrackRepository = app.get(DailyTrackRepository);
     const dataSource = app.get(DataSource);
 
     console.log('🌱 Starting database seeding...');
@@ -25,6 +29,8 @@ async function seed() {
         // Clear all existing data using raw SQL to handle foreign keys
         console.log('Clearing existing data...');
         await dataSource.query('TRUNCATE TABLE "quest_event" CASCADE');
+        await dataSource.query('TRUNCATE TABLE "daily_track_entry" CASCADE');
+        await dataSource.query('TRUNCATE TABLE "daily_track" CASCADE');
         await dataSource.query('TRUNCATE TABLE "quest" CASCADE');
         await dataSource.query('TRUNCATE TABLE "user" CASCADE');
         await dataSource.query('TRUNCATE TABLE "quest_category" CASCADE');
@@ -125,6 +131,32 @@ async function seed() {
                 currentPoints: 8,
                 category: getCategory('Work & Career'),
             },
+            // Daily Track quests
+            {
+                title: 'Morning Run',
+                description: 'Run every morning for 21 days to build a lasting habit',
+                maxPoints: 21,
+                currentPoints: 15,
+                questType: QuestType.DAILY_TRACK,
+                category: getCategory('Health & Fitness'),
+            },
+            {
+                title: 'Read Every Day',
+                description: 'Read for at least 20 minutes every day for 14 days',
+                maxPoints: 14,
+                currentPoints: 8,
+                questType: QuestType.DAILY_TRACK,
+                category: getCategory('Learning & Education'),
+            },
+            {
+                title: '30-Day Yoga Challenge',
+                description: 'Complete a yoga session every day for 30 days',
+                maxPoints: 30,
+                currentPoints: 30,
+                questType: QuestType.DAILY_TRACK,
+                completedAt: new Date(Date.now() - 5 * 86400000),
+                category: getCategory('Health & Fitness'),
+            },
         ];
 
         console.log('Creating quests...');
@@ -138,6 +170,65 @@ async function seed() {
             createdQuests.push(quest);
             console.log(`✅ Quest created: ${quest.title} (${quest.currentPoints}/${quest.maxPoints} points)`);
         }
+
+        // Create DailyTrack records for DAILY_TRACK quests
+        console.log('\nCreating daily track records...');
+        const entryRepo = dataSource.getRepository(DailyTrackEntry);
+        let dailyTrackCount = 0;
+
+        const morningRunQuest = createdQuests.find(q => q.title === 'Morning Run');
+        if (morningRunQuest) {
+            const startDate = new Date(Date.now() - 20 * 86400000);
+            const dt = await dailyTrackRepository.createForQuest(morningRunQuest.id, {
+                startDate: startDate.toISOString().split('T')[0],
+                durationDays: 21,
+            });
+            // Mark first 15 entries as checked
+            const entries = await entryRepo.find({ where: { dailyTrackId: dt.id }, order: { day: 'ASC' } });
+            for (let i = 0; i < 15; i++) {
+                entries[i].checkedAt = new Date(startDate.getTime() + i * 86400000 + 7 * 3600000);
+            }
+            await entryRepo.save(entries);
+            dailyTrackCount++;
+            console.log(`✅ DailyTrack created: ${morningRunQuest.title} (15/21 days checked)`);
+        }
+
+        const readEveryDayQuest = createdQuests.find(q => q.title === 'Read Every Day');
+        if (readEveryDayQuest) {
+            const startDate = new Date(Date.now() - 13 * 86400000);
+            const dt = await dailyTrackRepository.createForQuest(readEveryDayQuest.id, {
+                startDate: startDate.toISOString().split('T')[0],
+                durationDays: 14,
+            });
+            // Mark first 8 entries as checked
+            const entries = await entryRepo.find({ where: { dailyTrackId: dt.id }, order: { day: 'ASC' } });
+            for (let i = 0; i < 8; i++) {
+                entries[i].checkedAt = new Date(startDate.getTime() + i * 86400000 + 21 * 3600000);
+                entries[i].note = i % 3 === 0 ? 'Great session today!' : '';
+            }
+            await entryRepo.save(entries);
+            dailyTrackCount++;
+            console.log(`✅ DailyTrack created: ${readEveryDayQuest.title} (8/14 days checked)`);
+        }
+
+        const yogaQuest = createdQuests.find(q => q.title === '30-Day Yoga Challenge');
+        if (yogaQuest) {
+            const startDate = new Date(Date.now() - 35 * 86400000);
+            const dt = await dailyTrackRepository.createForQuest(yogaQuest.id, {
+                startDate: startDate.toISOString().split('T')[0],
+                durationDays: 30,
+            });
+            // Mark all 30 entries as checked
+            const entries = await entryRepo.find({ where: { dailyTrackId: dt.id }, order: { day: 'ASC' } });
+            for (let i = 0; i < 30; i++) {
+                entries[i].checkedAt = new Date(startDate.getTime() + i * 86400000 + 8 * 3600000);
+            }
+            await entryRepo.save(entries);
+            dailyTrackCount++;
+            console.log(`✅ DailyTrack created: ${yogaQuest.title} (30/30 days checked, completed)`);
+        }
+
+        console.log(`✅ Daily track records created: ${dailyTrackCount}`);
 
         // Create quest events for quests with progress
         console.log('\nCreating quest events...');
@@ -254,7 +345,8 @@ async function seed() {
         console.log(`\n📊 Summary:`);
         console.log(`   - Built-in categories created: ${BUILT_IN_CATEGORIES.length}`);
         console.log(`   - Users created: 1`);
-        console.log(`   - Quests created: ${questsData.length}`);
+        console.log(`   - Quests created: ${questsData.length} (${questsData.filter(q => (q as any).questType === QuestType.DAILY_TRACK).length} daily track, ${questsData.filter(q => (q as any).questType !== QuestType.DAILY_TRACK).length} simple goal)`);
+        console.log(`   - Daily track records created: ${dailyTrackCount}`);
         console.log(`   - Quest events created: ${eventCount}`);
         console.log(`\n👤 Demo user credentials:`);
         console.log(`   - Username: demo`);
