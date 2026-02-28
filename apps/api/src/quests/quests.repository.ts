@@ -27,12 +27,13 @@ export class QuestsRepository extends Repository<Quest> {
     }
 
     public async createQuest(createQuestDto: any, user: User): Promise<Quest> {
-        const { title, description, maxPoints, categoryId } = createQuestDto;
+        const { title, description, maxPoints, categoryId, questType } = createQuestDto;
         const quest = this.create({
             title,
             description,
             maxPoints,
             currentPoints: 0,
+            questType,
             user,
             category: categoryId ? { id: categoryId } as any : undefined,
         });

@@ -1,0 +1,52 @@
+.container {
+    width: 100%;
+}
+
+.note {
+    color: #374151;
+    cursor: pointer;
+    word-break: break-word;
+}
+
+.note:hover {
+    color: #111827;
+}
+
+.noNote {
+    color: #9ca3af;
+    cursor: pointer;
+    font-style: italic;
+}
+
+.noNote:hover {
+    color: #6b7280;
+}
+
+.textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    border: 1px solid #6366f1;
+    border-radius: 4px;
+    outline: none;
+    resize: none;
+    color: #111827;
+    line-height: 1.4;
+}
+
+.textarea:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.disabled {
+    opacity: 0.4;
+    border-bottom-color: transparent;
+}
+
+.disabled:hover {
+    border-bottom-color: transparent;
+    color: inherit;
+}

@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { QuestsService } from './quests.service';
 import { CreateQuestDto } from './dto/create-quest.dto';
+import { UpdateQuestHeaderDto } from './dto/update-quest-header.dto';
 import { GetQuestsFilterDto } from './dto/get-quests-filter.dto';
 import { Quest } from './quest.entity';
 import { AuthGuard } from '@nestjs/passport';
@@ -49,5 +50,14 @@ export class QuestsController {
         @GetUser() user: User
     ): Promise<Quest> {
         return this.questsService.updateQuestById(id, updateQuestDto, user);
+    }
+
+    @Patch('/:id/header')
+    public updateQuestHeader(
+        @Param('id') id: string,
+        @Body() dto: UpdateQuestHeaderDto,
+        @GetUser() user: User
+    ): Promise<Quest> {
+        return this.questsService.updateQuestHeader(id, dto, user);
     }
 }

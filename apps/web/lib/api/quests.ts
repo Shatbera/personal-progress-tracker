@@ -18,13 +18,27 @@ export async function getQuests(): Promise<Quest[]> {
     return await response.json();
 }
 
-export async function createQuest(title: string, description: string, maxPoints: number, categoryId?: string): Promise<Quest> {
+export async function createQuest(
+    title: string,
+    description: string,
+    maxPoints: number,
+    questType: string,
+    categoryId?: string,
+    details?: { startDate: string; durationDays: number },
+): Promise<Quest> {
     const response = await apiFetch('/quests', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, description, maxPoints, ...(categoryId && { categoryId }) }),
+        body: JSON.stringify({
+            title,
+            description,
+            maxPoints,
+            questType,
+            ...(categoryId && { categoryId }),
+            ...(details && { details }),
+        }),
     });
 
     if (!response.ok) {
@@ -43,6 +57,24 @@ export async function updateQuest(id: string, title: string, description: string
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ title, description, maxPoints, categoryId: categoryId ?? null }),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error("API Error:", response.status, errorText);
+        throw new Error(`Failed to update quest: ${response.status} ${errorText}`);
+    }
+
+    return await response.json();
+}
+
+export async function updateQuestHeader(id: string, title: string, description: string, categoryId?: string | null): Promise<Quest> {
+    const response = await apiFetch(`/quests/${id}/header`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, description, categoryId: categoryId ?? null }),
     });
 
     if (!response.ok) {

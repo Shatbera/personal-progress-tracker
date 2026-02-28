@@ -1,12 +1,13 @@
+import { DailyTrackEntry } from './daily-track-entry.entity';
 import { Quest } from "src/quests/quest.entity";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class DayTrack {
+export class DailyTrack {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @OneToOne(() => Quest, { eager: false })
+    @OneToOne(() => Quest, { eager: false, onDelete: 'CASCADE' })
     @JoinColumn()
     quest: Quest;
 
@@ -24,4 +25,7 @@ export class DayTrack {
 
     @Column()
     createdAt: Date = new Date();
+
+    @OneToMany(() => DailyTrackEntry, (entry) => entry.dailyTrack)
+    entries: DailyTrackEntry[];
 }

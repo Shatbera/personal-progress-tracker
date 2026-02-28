@@ -22,6 +22,16 @@
     gap: 1rem;
 }
 
+.questTitleLink {
+    text-decoration: none;
+    color: inherit;
+}
+
+.questTitleLink:hover .questTitle {
+    text-decoration: underline;
+    color: #333;
+}
+
 .questTitle {
     margin: 0;
     font-size: 1.125rem;

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Quest } from "../../types";
 import styles from "./quest-item.module.css";
 import { logProgress, resetProgress } from "@/actions/quest-event-actions";
@@ -22,11 +23,6 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, onQue
 
     const isCompleted = quest.completedAt !== null;
     const isArchived = quest.archivedAt !== null;
-
-    const handleEdit = () => {
-        setMenuOpen(false);
-        router.push(`/quests/edit-quest/${quest.id}`, { scroll: false });
-    };
 
     const handleDelete = () => {
         setMenuOpen(false);
@@ -143,7 +139,13 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, onQue
     return (
         <div className={`${styles.questItem} ${isArchived ? styles.archivedItem : ''}`}>
             <div className={styles.header}>
-                <h3 className={styles.questTitle}>{quest.title}</h3>
+                {quest.questType === 'DAILY_TRACK' ? (
+                    <Link href={`/daily-track-details?questId=${quest.id}`} className={styles.questTitleLink}>
+                        <h3 className={styles.questTitle}>{quest.title}</h3>
+                    </Link>
+                ) : (
+                    <h3 className={styles.questTitle}>{quest.title}</h3>
+                )}
                 {!hideMenu && (
                 <div className={styles.menuContainer}>
                     <button
@@ -156,7 +158,6 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, onQue
 
                     {menuOpen && (
                         <div className={styles.menu}>
-                            <button onClick={handleEdit}>Edit</button>
                             <button onClick={handleReset}>Reset</button>
                             <button onClick={handleDelete}>Delete</button>
                             {isArchived

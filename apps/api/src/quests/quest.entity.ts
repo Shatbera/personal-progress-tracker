@@ -3,6 +3,7 @@ import { User } from "src/auth/user.entity";
 import { QuestCategory } from "src/quest-categories/quest-category.entity";
 import { QuestEvent } from "src/quest-events/quest-event.entity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { QuestType } from "./quest-type.enum";
 
 @Entity()
 export class Quest {
@@ -16,6 +17,8 @@ export class Quest {
     maxPoints: number;
     @Column()
     currentPoints: number;
+    @Column({ type: 'enum', enum: QuestType, default: QuestType.SIMPLE_GOAL })
+    questType: QuestType;
     @Column()
     createdAt: Date = new Date();
     @Column({ type: 'timestamp', nullable: true })
