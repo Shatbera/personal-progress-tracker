@@ -6,6 +6,7 @@ import { QuestEventsModule } from './quest-events/quest-events.module';
 import { QuestCategoriesModule } from './quest-categories/quest-categories.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { DailyTrackModule } from './daily-track/daily-track.module';
+import { DayPlansModule } from './day-plans/day-plans.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DailyTrackModule } from './daily-track/daily-track.module';
     QuestCategoriesModule,
     DashboardModule,
     DailyTrackModule,
+    DayPlansModule,
   ],
 })
 export class AppModule { }
