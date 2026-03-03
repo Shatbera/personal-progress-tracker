@@ -7,6 +7,7 @@ import styles from './sidebar.module.css';
 const links = [
     { href: '/dashboard', label: 'Dashboard', icon: '📊' },
     { href: '/quests', label: 'Quests', icon: '⚔️' },
+    { href: '/day-plans', label: 'Day Plans', icon: '🗓️' },
 ];
 
 export default function Sidebar() {

@@ -1,3 +1,4 @@
+import { DayPlan } from "src/day-plans/day-plan.entity";
 import { Quest } from "src/quests/quest.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -9,6 +10,10 @@ export class User {
     username: string;
     @Column()
     password: string;
+
     @OneToMany(_type => Quest, quest => quest.user, { eager: true })
     quests: Quest[];
+
+    @OneToMany(() => DayPlan, dayPlan => dayPlan.user)
+    dayPlans: DayPlan[];
 }

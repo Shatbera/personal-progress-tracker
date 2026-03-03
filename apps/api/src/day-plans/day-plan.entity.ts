@@ -1,4 +1,6 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Exclude } from "class-transformer";
+import { User } from "src/auth/user.entity";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { DayBlock } from "./day-block.entity";
 
 @Entity()
@@ -14,6 +16,10 @@ export class DayPlan {
 
 	@Column({ type: "int" })
 	endMinute: number;
+
+	@ManyToOne(_type => User, user => user.quests, { eager: false })
+    @Exclude({ toPlainOnly: true })
+    user: User;
 
 	@OneToMany(() => DayBlock, (dayBlock) => dayBlock.dayPlan)
 	blocks: DayBlock[];

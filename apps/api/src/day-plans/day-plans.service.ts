@@ -1,27 +1,44 @@
 import { Injectable } from '@nestjs/common';
+import { User } from 'src/auth/user.entity';
+import { DayBlock } from './day-block.entity';
 import { DayPlan } from './day-plan.entity';
 import { DayPlansRepository } from './day-plans.repository';
+import { CreateDayBlockDto } from './dto/create-day-block.dto';
 import { CreateDayPlanDto } from './dto/create-day-plan.dto';
 
 @Injectable()
 export class DayPlansService {
 	constructor(private readonly dayPlansRepository: DayPlansRepository) { }
 
-	public getAllPlans(): Promise<DayPlan[]> {
-		return this.dayPlansRepository.getAllPlans();
+	public getAllPlans(user: User): Promise<DayPlan[]> {
+		return this.dayPlansRepository.getAllPlans(user);
 	}
 
-	public getTodaysPlan(): Promise<DayPlan | null> {
-		return this.dayPlansRepository.getPlanByDate(new Date());
+	public getTodaysPlan(user: User): Promise<DayPlan | null> {
+		return this.dayPlansRepository.getPlanByDate(new Date(), user);
 	}
 
-	public createPlanForToday(createDayPlanDto: CreateDayPlanDto): Promise<DayPlan> {
-		return this.dayPlansRepository.createPlanByDate(new Date(), createDayPlanDto);
-	}
-
-	public createPlanForTomorrow(createDayPlanDto: CreateDayPlanDto): Promise<DayPlan> {
+	public getTomorrowsPlan(user: User): Promise<DayPlan | null> {
 		const tomorrow = new Date();
 		tomorrow.setDate(tomorrow.getDate() + 1);
-		return this.dayPlansRepository.createPlanByDate(tomorrow, createDayPlanDto);
+		return this.dayPlansRepository.getPlanByDate(tomorrow, user);
+	}
+
+	public createPlanForToday(createDayPlanDto: CreateDayPlanDto, user: User): Promise<DayPlan> {
+		return this.dayPlansRepository.createPlanByDate(new Date(), createDayPlanDto, user);
+	}
+
+	public createPlanForTomorrow(createDayPlanDto: CreateDayPlanDto, user: User): Promise<DayPlan> {
+		const tomorrow = new Date();
+		tomorrow.setDate(tomorrow.getDate() + 1);
+		return this.dayPlansRepository.createPlanByDate(tomorrow, createDayPlanDto, user);
+	}
+
+	public createBlock(dayPlanId: string, createDayBlockDto: CreateDayBlockDto, user: User): Promise<DayBlock> {
+		return this.dayPlansRepository.createBlock(dayPlanId, createDayBlockDto, user);
+	}
+
+	public updateBlock(dayPlanId: string, dayBlockId: string, createDayBlockDto: CreateDayBlockDto, user: User): Promise<DayBlock> {
+		return this.dayPlansRepository.updateBlock(dayPlanId, dayBlockId, createDayBlockDto, user);
 	}
 }
