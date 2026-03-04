@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { createDayBlock as createDayBlockApi, createPlanForToday, createPlanForTomorrow, updateDayBlock as updateDayBlockApi } from '@/lib/api/day-plans';
+import { createDayBlock as createDayBlockApi, createPlanForToday, createPlanForTomorrow, deleteDayBlock as deleteDayBlockApi, resequenceDayBlocks as resequenceDayBlocksApi, updateDayBlock as updateDayBlockApi, updateDayPlan as updateDayPlanApi } from '@/lib/api/day-plans';
 
 export async function createDayPlan(kind: 'today' | 'tomorrow', startMinutes: number, endMinutes: number) {
     if (!Number.isInteger(startMinutes) || !Number.isInteger(endMinutes)) {
@@ -32,6 +32,34 @@ export async function createDayPlan(kind: 'today' | 'tomorrow', startMinutes: nu
     }
 }
 
+export async function updateDayPlan(dayPlanId: string, startMinutes: number, endMinutes: number) {
+    if (!dayPlanId) {
+        return { error: 'Day plan id is required.' };
+    }
+
+    if (!Number.isInteger(startMinutes) || !Number.isInteger(endMinutes)) {
+        return { error: 'Start and end minutes must be integers.' };
+    }
+
+    if (startMinutes < 0 || endMinutes > 1440) {
+        return { error: 'Minutes must be between 0 and 1440.' };
+    }
+
+    if (endMinutes <= startMinutes) {
+        return { error: 'End minutes must be greater than start minutes.' };
+    }
+
+    try {
+        await updateDayPlanApi(dayPlanId, startMinutes, endMinutes);
+        revalidatePath('/day-plans');
+        return { success: true };
+    } catch (error) {
+        return {
+            error: error instanceof Error ? error.message : 'Failed to update day plan',
+        };
+    }
+}
+
 export async function createDayBlock(dayPlanId: string, startMinutes: number, endMinutes: number, label: string) {
     if (!dayPlanId) {
         return { error: 'Day plan id is required.' };
@@ -54,9 +82,9 @@ export async function createDayBlock(dayPlanId: string, startMinutes: number, en
     }
 
     try {
-        await createDayBlockApi(dayPlanId, startMinutes, endMinutes, label.trim());
+        const block = await createDayBlockApi(dayPlanId, startMinutes, endMinutes, label.trim());
         revalidatePath('/day-plans');
-        return { success: true };
+        return { success: true, block };
     } catch (error) {
         return {
             error: error instanceof Error ? error.message : 'Failed to create day block',
@@ -96,6 +124,74 @@ export async function updateDayBlock(dayPlanId: string, dayBlockId: string, star
     } catch (error) {
         return {
             error: error instanceof Error ? error.message : 'Failed to update day block',
+        };
+    }
+}
+
+export async function deleteDayBlock(dayPlanId: string, dayBlockId: string) {
+    if (!dayPlanId) {
+        return { error: 'Day plan id is required.' };
+    }
+
+    if (!dayBlockId) {
+        return { error: 'Day block id is required.' };
+    }
+
+    try {
+        await deleteDayBlockApi(dayPlanId, dayBlockId);
+        revalidatePath('/day-plans');
+        return { success: true };
+    } catch (error) {
+        return {
+            error: error instanceof Error ? error.message : 'Failed to delete day block',
+        };
+    }
+}
+
+export async function resequenceDayBlocks(
+    dayPlanId: string,
+    blocks: Array<{ id: string; startMinutes: number; endMinutes: number; label: string }>,
+) {
+    if (!dayPlanId) {
+        return { error: 'Day plan id is required.' };
+    }
+
+    if (!Array.isArray(blocks) || blocks.length === 0) {
+        return { error: 'At least one block is required.' };
+    }
+
+    for (const block of blocks) {
+        if (!block.id) {
+            return { error: 'Block id is required.' };
+        }
+
+        if (!Number.isInteger(block.startMinutes) || !Number.isInteger(block.endMinutes)) {
+            return { error: 'Start and end minutes must be integers.' };
+        }
+
+        if (block.startMinutes < 0 || block.endMinutes > 1440) {
+            return { error: 'Minutes must be between 0 and 1440.' };
+        }
+
+        if (block.endMinutes <= block.startMinutes) {
+            return { error: 'End minutes must be greater than start minutes.' };
+        }
+
+        if (!block.label.trim()) {
+            return { error: 'Title is required.' };
+        }
+    }
+
+    try {
+        await resequenceDayBlocksApi(dayPlanId, blocks.map((block) => ({
+            ...block,
+            label: block.label.trim(),
+        })));
+        revalidatePath('/day-plans');
+        return { success: true };
+    } catch (error) {
+        return {
+            error: error instanceof Error ? error.message : 'Failed to resequence day blocks',
         };
     }
 }

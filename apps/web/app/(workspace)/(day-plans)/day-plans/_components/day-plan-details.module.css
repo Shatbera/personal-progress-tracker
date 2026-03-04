@@ -1,4 +1,5 @@
 .card {
+    --timeline-row-height: 4.2rem;
     border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
     border-radius: 0.75rem;
     padding: 1.35rem;
@@ -13,6 +14,72 @@
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
+}
+
+.headerRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.headerMenuWrap {
+    position: relative;
+}
+
+.headerMenuButton {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.45rem;
+    border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.headerMenuDropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.35rem);
+    z-index: 20;
+    min-width: 10.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+    background: var(--background);
+    box-shadow: 0 10px 20px color-mix(in srgb, #000000 20%, transparent);
+    overflow: hidden;
+}
+
+.headerMenuItem {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.headerMenuItem:hover {
+    background: color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+
+.editPlanPanel {
+    border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+    border-radius: 0.65rem;
+    padding: 0.7rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.editPlanRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem;
 }
 
 .title {
@@ -45,7 +112,7 @@
 }
 
 .emptyCalendarRow {
-    min-height: 4.2rem;
+    min-height: var(--timeline-row-height);
     display: grid;
     grid-template-columns: 4.8rem 1fr;
     align-items: center;
@@ -67,6 +134,8 @@
 .emptyCalendarLine {
     height: 1px;
     align-self: center;
+    margin-left: -0.35rem;
+    width: calc(100% + 0.35rem);
     background: color-mix(in srgb, var(--foreground) 15%, transparent);
 }
 
@@ -106,6 +175,16 @@
     opacity: 0.55;
 }
 
+.managePlansLink {
+    width: fit-content;
+    border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+    border-radius: 0.5rem;
+    background: transparent;
+    color: inherit;
+    padding: 0.45rem 0.8rem;
+    text-decoration: none;
+}
+
 .modalOverlay {
     position: fixed;
     inset: 0;
@@ -125,6 +204,34 @@
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.55rem;
+}
+
+.modalDeleteButton {
+    border-radius: 0.5rem;
+    border: 1px solid color-mix(in srgb, #ef4444 42%, transparent);
+    background: transparent;
+    color: color-mix(in srgb, #ef4444 85%, var(--foreground));
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.48rem 0.75rem;
+    cursor: pointer;
+}
+
+.modalDeleteButton:hover {
+    background: transparent;
+    border-color: color-mix(in srgb, #ef4444 62%, transparent);
+}
+
+.modalDeleteButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.35;
 }
 
 .modalTitle {
@@ -167,6 +274,13 @@
     gap: 0.5rem;
 }
 
+.modalFooterRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
 .cancelButton,
 .submitButton {
     border-radius: 0.5rem;
@@ -207,10 +321,84 @@
     position: relative;
 }
 
+.currentTimeRail {
+    position: absolute;
+    top: calc((var(--timeline-row-height) / 2) - 0.35rem);
+    bottom: calc((var(--timeline-row-height) / 2) - 0.35rem);
+    left: 4.8rem;
+    width: 1px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.currentTimeRailLine {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--foreground) 28%, transparent);
+}
+
+.currentTimeMarker {
+    position: absolute;
+    left: 4.8rem;
+    right: 0;
+    transform: translateY(-50%);
+    height: 1px;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.currentTimeHorizontalLine {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: color-mix(in srgb, #ef4444 85%, transparent);
+}
+
+.currentTimeBubble {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0.72rem;
+    height: 0.72rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, #ef4444 95%, var(--background));
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--background) 92%, transparent);
+}
+
+.blockContextMenu {
+    position: fixed;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    min-width: 11.5rem;
+    border-radius: 0.55rem;
+    border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+    background: var(--background);
+    box-shadow: 0 10px 22px color-mix(in srgb, #000000 20%, transparent);
+    overflow: hidden;
+}
+
+.blockContextMenuButton {
+    border: none;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.blockContextMenuButton:hover {
+    background: color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+
 .blocksOverlay {
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: calc(var(--timeline-row-height) / 2);
+    bottom: calc(var(--timeline-row-height) / 2);
     left: 4.8rem;
     right: 0;
     pointer-events: auto;
@@ -228,6 +416,29 @@
     color: #ffffff;
     box-sizing: border-box;
     overflow: hidden;
+    cursor: pointer;
+}
+
+.addNextBlockButton {
+    position: absolute;
+    left: 0.45rem;
+    right: 0.45rem;
+    min-height: 2.15rem;
+    padding: 1rem 1.2rem;
+    border-radius: 0.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--background) 90%, var(--foreground) 10%);
+    border: 1px dashed color-mix(in srgb, var(--foreground) 30%, transparent);
+    color: color-mix(in srgb, var(--foreground) 72%, transparent);
+    box-sizing: border-box;
+    overflow: hidden;
+    text-align: center;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    cursor: pointer;
 }
 
 .segment {

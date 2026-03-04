@@ -69,6 +69,22 @@ export async function createPlanForTomorrow(startMinutes: number, endMinutes: nu
     return (await response.json()) as DayPlan;
 }
 
+export async function updateDayPlan(dayPlanId: string, startMinutes: number, endMinutes: number): Promise<DayPlan> {
+    const response = await apiFetch(`/day-plan/${dayPlanId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ startMinutes, endMinutes }),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error:', response.status, errorText);
+        throw new Error(`Failed to update day plan: ${response.status} ${errorText}`);
+    }
+
+    return (await response.json()) as DayPlan;
+}
+
 export async function createDayBlock(dayPlanId: string, startMinutes: number, endMinutes: number, label: string) {
     const response = await apiFetch(`/day-plan/${dayPlanId}/blocks`, {
         method: 'POST',
@@ -96,6 +112,37 @@ export async function updateDayBlock(dayPlanId: string, dayBlockId: string, star
         const errorText = await response.text();
         console.error('API Error:', response.status, errorText);
         throw new Error(`Failed to update day block: ${response.status} ${errorText}`);
+    }
+
+    return response.json();
+}
+
+export async function deleteDayBlock(dayPlanId: string, dayBlockId: string) {
+    const response = await apiFetch(`/day-plan/${dayPlanId}/blocks/${dayBlockId}`, {
+        method: 'DELETE',
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error:', response.status, errorText);
+        throw new Error(`Failed to delete day block: ${response.status} ${errorText}`);
+    }
+}
+
+export async function resequenceDayBlocks(
+    dayPlanId: string,
+    blocks: Array<{ id: string; startMinutes: number; endMinutes: number; label: string }>,
+) {
+    const response = await apiFetch(`/day-plan/${dayPlanId}/blocks/resequence`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ blocks }),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error:', response.status, errorText);
+        throw new Error(`Failed to resequence day blocks: ${response.status} ${errorText}`);
     }
 
     return response.json();

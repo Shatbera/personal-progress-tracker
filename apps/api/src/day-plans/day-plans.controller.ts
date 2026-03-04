@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
@@ -7,6 +7,7 @@ import { DayPlan } from './day-plan.entity';
 import { DayPlansService } from './day-plans.service';
 import { CreateDayBlockDto } from './dto/create-day-block.dto';
 import { CreateDayPlanDto } from './dto/create-day-plan.dto';
+import { ResequenceDayBlocksDto } from './dto/resequence-day-blocks.dto';
 
 @Controller('day-plan')
 @UseGuards(AuthGuard('jwt'))
@@ -44,6 +45,15 @@ export class DayPlansController {
 		return this.dayPlansService.createPlanForTomorrow(createDayPlanDto, user);
 	}
 
+	@Put(':id')
+	public updatePlan(
+		@Param('id') dayPlanId: string,
+		@Body() createDayPlanDto: CreateDayPlanDto,
+		@GetUser() user: User,
+	): Promise<DayPlan> {
+		return this.dayPlansService.updatePlan(dayPlanId, createDayPlanDto, user);
+	}
+
 	@Post(':id/blocks')
 	public createBlock(
 		@Param('id') dayPlanId: string,
@@ -51,6 +61,15 @@ export class DayPlansController {
 		@GetUser() user: User,
 	): Promise<DayBlock> {
 		return this.dayPlansService.createBlock(dayPlanId, createDayBlockDto, user);
+	}
+
+	@Put(':id/blocks/resequence')
+	public resequenceBlocks(
+		@Param('id') dayPlanId: string,
+		@Body() resequenceDayBlocksDto: ResequenceDayBlocksDto,
+		@GetUser() user: User,
+	): Promise<DayPlan> {
+		return this.dayPlansService.resequenceBlocks(dayPlanId, resequenceDayBlocksDto, user);
 	}
 
 	@Put(':id/blocks/:blockId')
@@ -61,5 +80,14 @@ export class DayPlansController {
 		@GetUser() user: User,
 	): Promise<DayBlock> {
 		return this.dayPlansService.updateBlock(dayPlanId, dayBlockId, createDayBlockDto, user);
+	}
+
+	@Delete(':id/blocks/:blockId')
+	public deleteBlock(
+		@Param('id') dayPlanId: string,
+		@Param('blockId') dayBlockId: string,
+		@GetUser() user: User,
+	): Promise<void> {
+		return this.dayPlansService.deleteBlock(dayPlanId, dayBlockId, user);
 	}
 }

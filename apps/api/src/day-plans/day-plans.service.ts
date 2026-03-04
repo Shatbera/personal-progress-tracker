@@ -5,6 +5,7 @@ import { DayPlan } from './day-plan.entity';
 import { DayPlansRepository } from './day-plans.repository';
 import { CreateDayBlockDto } from './dto/create-day-block.dto';
 import { CreateDayPlanDto } from './dto/create-day-plan.dto';
+import { ResequenceDayBlocksDto } from './dto/resequence-day-blocks.dto';
 
 @Injectable()
 export class DayPlansService {
@@ -34,11 +35,23 @@ export class DayPlansService {
 		return this.dayPlansRepository.createPlanByDate(tomorrow, createDayPlanDto, user);
 	}
 
+	public updatePlan(dayPlanId: string, createDayPlanDto: CreateDayPlanDto, user: User): Promise<DayPlan> {
+		return this.dayPlansRepository.updatePlan(dayPlanId, createDayPlanDto, user);
+	}
+
 	public createBlock(dayPlanId: string, createDayBlockDto: CreateDayBlockDto, user: User): Promise<DayBlock> {
 		return this.dayPlansRepository.createBlock(dayPlanId, createDayBlockDto, user);
 	}
 
 	public updateBlock(dayPlanId: string, dayBlockId: string, createDayBlockDto: CreateDayBlockDto, user: User): Promise<DayBlock> {
 		return this.dayPlansRepository.updateBlock(dayPlanId, dayBlockId, createDayBlockDto, user);
+	}
+
+	public deleteBlock(dayPlanId: string, dayBlockId: string, user: User): Promise<void> {
+		return this.dayPlansRepository.deleteBlock(dayPlanId, dayBlockId, user);
+	}
+
+	public resequenceBlocks(dayPlanId: string, resequenceDayBlocksDto: ResequenceDayBlocksDto, user: User): Promise<DayPlan> {
+		return this.dayPlansRepository.resequenceBlocks(dayPlanId, resequenceDayBlocksDto, user);
 	}
 }
