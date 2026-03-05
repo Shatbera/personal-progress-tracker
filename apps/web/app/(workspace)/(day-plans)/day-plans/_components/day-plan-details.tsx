@@ -1,7 +1,7 @@
 'use client';
 
 import { DayPlan } from "@/app/(workspace)/(day-plans)/types";
-import { createDayBlock, deleteDayBlock, resequenceDayBlocks, updateDayPlan } from '@/actions/day-plan-actions';
+import { createDayBlock, deleteDayBlock, deleteDayPlan, resequenceDayBlocks, updateDayPlan } from '@/actions/day-plan-actions';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -137,6 +137,7 @@ export default function DayPlanDetails({
 	const [planEndMinuteDraft, setPlanEndMinuteDraft] = useState(1140);
 	const [currentMinuteOfDay, setCurrentMinuteOfDay] = useState(() => getCurrentMinuteOfDay());
 	const [isPlanUpdatePending, setIsPlanUpdatePending] = useState(false);
+	const [isPlanDeletePending, setIsPlanDeletePending] = useState(false);
 	const [builderError, setBuilderError] = useState<string | null>(null);
 	const hasScheduledBlocks = Boolean(
 		plan?.blocks?.some((block) => block.endMinute > block.startMinute),
@@ -511,6 +512,31 @@ export default function DayPlanDetails({
 		router.refresh();
 	};
 
+	const handleDeletePlan = async () => {
+		if (!plan || readOnly || isPlanDeletePending) {
+			return;
+		}
+
+		setIsPlanMenuOpen(false);
+		const confirmed = window.confirm('Delete this plan and all its blocks?');
+		if (!confirmed) {
+			return;
+		}
+
+		setBuilderError(null);
+		setIsPlanDeletePending(true);
+		const result = await deleteDayPlan(plan.id);
+		setIsPlanDeletePending(false);
+
+		if ('error' in result && result.error) {
+			setBuilderError(result.error);
+			return;
+		}
+
+		setIsEditPlanPanelOpen(false);
+		router.refresh();
+	};
+
 	const getContextMenuOptionCount = (blockId: string): number => {
 		const blockIndex = sortedBlocks.findIndex((block) => block.id === blockId);
 		if (blockIndex < 0) {
@@ -557,6 +583,7 @@ export default function DayPlanDetails({
 	const canSavePlanTimes = Boolean(
 		plan
 		&& !isPlanUpdatePending
+		&& !isPlanDeletePending
 		&& draftTimelineDuration > 0
 		&& totalBlocksDuration <= draftTimelineDuration,
 	);
@@ -569,8 +596,8 @@ export default function DayPlanDetails({
 		&& currentMinuteOfDay >= timelineStartMinute
 		&& currentMinuteOfDay <= timelineEndMinute,
 	);
-	const currentTimeTopPercent = shouldShowCurrentTimeLine
-		? ((currentMinuteOfDay - timelineStartMinute) / Math.max(1, timelineEndMinute - timelineStartMinute)) * 100
+	const currentTimeTopRatio = shouldShowCurrentTimeLine
+		? ((currentMinuteOfDay - timelineStartMinute) / Math.max(1, timelineEndMinute - timelineStartMinute))
 		: 0;
 
 	return (
@@ -593,6 +620,16 @@ export default function DayPlanDetails({
 									<button type="button" className={styles.headerMenuItem} onClick={openEditPlanPanel}>
 										Edit plan times
 									</button>
+									<button
+										type="button"
+										className={`${styles.headerMenuItem} ${styles.headerMenuItemDanger}`}
+										onClick={() => {
+											void handleDeletePlan();
+										}}
+										disabled={isPlanDeletePending || isPlanUpdatePending}
+									>
+										Delete plan
+									</button>
 								</div>
 							)}
 						</div>
@@ -609,7 +646,7 @@ export default function DayPlanDetails({
 								className={styles.input}
 								value={planStartMinuteDraft}
 								onChange={(event) => setPlanStartMinuteDraft(Number(event.target.value))}
-								disabled={isPlanUpdatePending}
+								disabled={isPlanUpdatePending || isPlanDeletePending}
 							>
 								{planTimeOptions.map((minutes) => (
 									<option key={`start-${minutes}`} value={minutes}>{minuteToClock(minutes)}</option>
@@ -622,7 +659,7 @@ export default function DayPlanDetails({
 								className={styles.input}
 								value={planEndMinuteDraft}
 								onChange={(event) => setPlanEndMinuteDraft(Number(event.target.value))}
-								disabled={isPlanUpdatePending}
+								disabled={isPlanUpdatePending || isPlanDeletePending}
 							>
 								{planTimeOptions.map((minutes) => (
 									<option key={`end-${minutes}`} value={minutes}>{minuteToClock(minutes)}</option>
@@ -634,7 +671,7 @@ export default function DayPlanDetails({
 						<p className={styles.errorText}>Blocks do not fit in the selected timeline.</p>
 					)}
 					<div className={styles.actions}>
-						<button type="button" className={styles.cancelButton} onClick={closeEditPlanPanel} disabled={isPlanUpdatePending}>Cancel</button>
+						<button type="button" className={styles.cancelButton} onClick={closeEditPlanPanel} disabled={isPlanUpdatePending || isPlanDeletePending}>Cancel</button>
 						<button type="button" className={styles.submitButton} onClick={handleSavePlanTimes} disabled={!canSavePlanTimes}>Save plan</button>
 					</div>
 				</div>
@@ -661,7 +698,13 @@ export default function DayPlanDetails({
 							<div className={styles.currentTimeRail} aria-hidden="true">
 								<div className={styles.currentTimeRailLine} />
 							</div>
-							<div className={styles.currentTimeMarker} style={{ top: `${currentTimeTopPercent}%` }} aria-hidden="true">
+							<div
+								className={styles.currentTimeMarker}
+								style={{
+									top: `calc((var(--timeline-row-height) / 2) + ((100% - var(--timeline-row-height)) * ${currentTimeTopRatio}))`,
+								}}
+								aria-hidden="true"
+							>
 								<div className={styles.currentTimeHorizontalLine} />
 								<div className={styles.currentTimeBubble} />
 							</div>
@@ -698,7 +741,7 @@ export default function DayPlanDetails({
 							return (
 								<article
 									key={block.id}
-									className={styles.planBlock}
+									className={`${styles.planBlock} ${!readOnly ? styles.planBlockInteractive : ''}`}
 									onContextMenu={(event) => {
 										if (readOnly) {
 											return;

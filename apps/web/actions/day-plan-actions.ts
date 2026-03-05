@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { createDayBlock as createDayBlockApi, createPlanForToday, createPlanForTomorrow, deleteDayBlock as deleteDayBlockApi, resequenceDayBlocks as resequenceDayBlocksApi, updateDayBlock as updateDayBlockApi, updateDayPlan as updateDayPlanApi } from '@/lib/api/day-plans';
+import { createDayBlock as createDayBlockApi, createPlanForToday, createPlanForTomorrow, deleteDayBlock as deleteDayBlockApi, deleteDayPlan as deleteDayPlanApi, resequenceDayBlocks as resequenceDayBlocksApi, updateDayBlock as updateDayBlockApi, updateDayPlan as updateDayPlanApi } from '@/lib/api/day-plans';
 
 export async function createDayPlan(kind: 'today' | 'tomorrow', startMinutes: number, endMinutes: number) {
     if (!Number.isInteger(startMinutes) || !Number.isInteger(endMinutes)) {
@@ -56,6 +56,22 @@ export async function updateDayPlan(dayPlanId: string, startMinutes: number, end
     } catch (error) {
         return {
             error: error instanceof Error ? error.message : 'Failed to update day plan',
+        };
+    }
+}
+
+export async function deleteDayPlan(dayPlanId: string) {
+    if (!dayPlanId) {
+        return { error: 'Day plan id is required.' };
+    }
+
+    try {
+        await deleteDayPlanApi(dayPlanId);
+        revalidatePath('/day-plans');
+        return { success: true };
+    } catch (error) {
+        return {
+            error: error instanceof Error ? error.message : 'Failed to delete day plan',
         };
     }
 }

@@ -67,6 +67,10 @@
     background: color-mix(in srgb, var(--foreground) 8%, transparent);
 }
 
+.headerMenuItemDanger {
+    color: color-mix(in srgb, #ef4444 85%, var(--foreground));
+}
+
 .editPlanPanel {
     border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
     border-radius: 0.65rem;
@@ -416,6 +420,10 @@
     color: #ffffff;
     box-sizing: border-box;
     overflow: hidden;
+    cursor: default;
+}
+
+.planBlockInteractive {
     cursor: pointer;
 }
 

@@ -4,7 +4,7 @@ export type QuestCategory = {
     isBuiltIn: boolean;
 };
 
-export type QuestType = 'SIMPLE_GOAL' | 'DAILY_TRACK';
+export type QuestType = 'LONG_TERM_GOAL' | 'DAILY_TRACK';
 
 export type Quest = {
     id: string;

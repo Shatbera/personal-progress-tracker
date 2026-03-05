@@ -15,9 +15,9 @@ export class Quest {
     description: string;
     @Column()
     maxPoints: number;
-    @Column()
+
     currentPoints: number;
-    @Column({ type: 'enum', enum: QuestType, default: QuestType.SIMPLE_GOAL })
+    @Column({ type: 'enum', enum: QuestType, default: QuestType.LONG_TERM_GOAL })
     questType: QuestType;
     @Column()
     createdAt: Date = new Date();

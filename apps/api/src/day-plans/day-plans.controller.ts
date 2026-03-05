@@ -54,6 +54,14 @@ export class DayPlansController {
 		return this.dayPlansService.updatePlan(dayPlanId, createDayPlanDto, user);
 	}
 
+	@Delete(':id')
+	public deletePlan(
+		@Param('id') dayPlanId: string,
+		@GetUser() user: User,
+	): Promise<void> {
+		return this.dayPlansService.deletePlan(dayPlanId, user);
+	}
+
 	@Post(':id/blocks')
 	public createBlock(
 		@Param('id') dayPlanId: string,

@@ -53,6 +53,13 @@ export class DashboardService {
             order: { createdAt: 'DESC' },
         });
 
+        const questIds = activeQuests.map((quest) => quest.id);
+        const currentPointsByQuestId = await this.getCurrentPointsMapForQuests(questIds, user.id);
+
+        for (const quest of activeQuests) {
+            quest.currentPoints = currentPointsByQuestId.get(quest.id) ?? 0;
+        }
+
         return { activeQuests };
     }
 
@@ -84,4 +91,26 @@ export class DashboardService {
             completedQuests: completedCount,
             activeQuestsCount: activeCount,
         };
-    }}
+    }
+
+    private async getCurrentPointsMapForQuests(questIds: string[], userId: string): Promise<Map<string, number>> {
+        if (questIds.length === 0) {
+            return new Map<string, number>();
+        }
+
+        const rows = await this.questEventRepository.createQueryBuilder('questEvent')
+            .select('questEvent.questId', 'questId')
+            .addSelect('COALESCE(SUM(questEvent.pointsChanged), 0)', 'points')
+            .where('questEvent.userId = :userId', { userId })
+            .andWhere('questEvent.questId IN (:...questIds)', { questIds })
+            .groupBy('questEvent.questId')
+            .getRawMany<{ questId: string; points: string | number | null }>();
+
+        const pointsByQuestId = new Map<string, number>();
+        for (const row of rows) {
+            pointsByQuestId.set(row.questId, Number(row.points ?? 0));
+        }
+
+        return pointsByQuestId;
+    }
+}

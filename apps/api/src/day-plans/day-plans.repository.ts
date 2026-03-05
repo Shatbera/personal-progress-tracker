@@ -114,6 +114,19 @@ export class DayPlansRepository extends Repository<DayPlan> {
 		});
 	}
 
+	public async deletePlan(dayPlanId: string, user: User): Promise<void> {
+		const dayPlan = await this.createQueryBuilder('dayPlan')
+			.where('dayPlan.id = :dayPlanId', { dayPlanId })
+			.andWhere('dayPlan.userId = :userId', { userId: user.id })
+			.getOne();
+
+		if (!dayPlan) {
+			throw new NotFoundException('Day plan not found');
+		}
+
+		await this.remove(dayPlan);
+	}
+
 	public async createBlock(dayPlanId: string, createDayBlockDto: CreateDayBlockDto, user: User): Promise<DayBlock> {
 		const dayPlan = await this.createQueryBuilder('dayPlan')
 			.where('dayPlan.id = :dayPlanId', { dayPlanId })

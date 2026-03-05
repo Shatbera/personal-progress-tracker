@@ -39,6 +39,10 @@ export class DayPlansService {
 		return this.dayPlansRepository.updatePlan(dayPlanId, createDayPlanDto, user);
 	}
 
+	public deletePlan(dayPlanId: string, user: User): Promise<void> {
+		return this.dayPlansRepository.deletePlan(dayPlanId, user);
+	}
+
 	public createBlock(dayPlanId: string, createDayBlockDto: CreateDayBlockDto, user: User): Promise<DayBlock> {
 		return this.dayPlansRepository.createBlock(dayPlanId, createDayBlockDto, user);
 	}

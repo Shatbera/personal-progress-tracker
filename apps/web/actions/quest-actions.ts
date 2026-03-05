@@ -1,6 +1,6 @@
 'use server';
 
-import { createQuest as createQuestApi, updateQuest as updateQuestApi, updateQuestHeader as updateQuestHeaderApi, archiveQuest as archiveQuestApi, unarchiveQuest as unarchiveQuestApi, deleteQuest as deleteQuestApi } from '@/lib/api/quests';
+import { createQuest as createQuestApi, updateQuest as updateQuestApi, updateQuestHeader as updateQuestHeaderApi, archiveQuest as archiveQuestApi, unarchiveQuest as unarchiveQuestApi, deleteQuest as deleteQuestApi, getQuestById } from '@/lib/api/quests';
 import { revalidatePath } from 'next/cache';
 
 export async function createQuest(prevState: any, formData: FormData) {
@@ -8,7 +8,7 @@ export async function createQuest(prevState: any, formData: FormData) {
     const description = formData.get('description') as string;
     const maxPoints = parseInt(formData.get('maxPoints') as string);
     const categoryId = formData.get('categoryId') as string | null;
-    const questType = (formData.get('questType') as string) || 'SIMPLE_GOAL';
+    const questType = (formData.get('questType') as string) || 'LONG_TERM_GOAL';
     const startDate = formData.get('startDate') as string | null;
     const durationDays = formData.get('durationDays') ? parseInt(formData.get('durationDays') as string) : undefined;
 
@@ -41,7 +41,6 @@ export async function updateQuest(prevState: any, formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const maxPoints = parseInt(formData.get('maxPoints') as string);
-    const currentPoints = parseInt(formData.get('currentPoints') as string);
     const id = formData.get('id') as string;
     const categoryId = formData.get('categoryId') as string | null;
 
@@ -49,11 +48,12 @@ export async function updateQuest(prevState: any, formData: FormData) {
         return { error: 'All fields are required' };
     }
 
-    if (maxPoints < currentPoints) {
-        return { error: `Max points must be at least ${currentPoints}` };
-    }
-
     try {
+        const existingQuest = await getQuestById(id);
+        if (maxPoints < existingQuest.currentPoints) {
+            return { error: `Max points must be at least ${existingQuest.currentPoints}` };
+        }
+
         await updateQuestApi(id, title, description, maxPoints, categoryId ?? undefined);
         revalidatePath('/quests');
         return { success: true };

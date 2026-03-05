@@ -85,6 +85,18 @@ export async function updateDayPlan(dayPlanId: string, startMinutes: number, end
     return (await response.json()) as DayPlan;
 }
 
+export async function deleteDayPlan(dayPlanId: string): Promise<void> {
+    const response = await apiFetch(`/day-plan/${dayPlanId}`, {
+        method: 'DELETE',
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error:', response.status, errorText);
+        throw new Error(`Failed to delete day plan: ${response.status} ${errorText}`);
+    }
+}
+
 export async function createDayBlock(dayPlanId: string, startMinutes: number, endMinutes: number, label: string) {
     const response = await apiFetch(`/day-plan/${dayPlanId}/blocks`, {
         method: 'POST',

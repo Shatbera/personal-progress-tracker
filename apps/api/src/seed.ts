@@ -63,35 +63,30 @@ async function seed() {
                 title: 'Complete Daily Workout',
                 description: 'Finish your workout routine',
                 maxPoints: 1,
-                currentPoints: 0,
                 category: getCategory('Health & Fitness'),
             },
             {
                 title: 'Read a Book',
                 description: 'Read an entire book',
                 maxPoints: 1,
-                currentPoints: 0,
                 category: getCategory('Learning & Education'),
             },
             {
                 title: 'Drink Water',
                 description: 'Drink 8 glasses of water',
                 maxPoints: 8,
-                currentPoints: 5,
                 category: getCategory('Health & Fitness'),
             },
             {
                 title: 'Practice Coding',
                 description: 'Complete 10 coding challenges',
                 maxPoints: 10,
-                currentPoints: 3,
                 category: getCategory('Learning & Education'),
             },
             {
                 title: 'Meditate',
                 description: 'Complete 7 meditation sessions',
                 maxPoints: 7,
-                currentPoints: 7,
                 completedAt: new Date(),
                 category: getCategory('Personal Development'),
             },
@@ -99,7 +94,6 @@ async function seed() {
                 title: 'Write Journal Entry',
                 description: 'Write in your journal',
                 maxPoints: 1,
-                currentPoints: 1,
                 completedAt: new Date(),
                 category: getCategory('Personal Development'),
             },
@@ -107,28 +101,24 @@ async function seed() {
                 title: 'Learn New Skill',
                 description: 'Complete 5 tutorials on a new technology',
                 maxPoints: 5,
-                currentPoints: 0,
                 category: getCategory('Learning & Education'),
             },
             {
                 title: 'Exercise Streak',
                 description: 'Exercise 30 days in a row',
                 maxPoints: 30,
-                currentPoints: 12,
                 category: getCategory('Health & Fitness'),
             },
             {
                 title: 'Call a Friend',
                 description: 'Have a meaningful conversation',
                 maxPoints: 1,
-                currentPoints: 0,
                 category: getCategory('Hobbies'),
             },
             {
                 title: 'Complete Project Tasks',
                 description: 'Finish 15 project tasks',
                 maxPoints: 15,
-                currentPoints: 8,
                 category: getCategory('Work & Career'),
             },
             // Daily Track quests
@@ -136,7 +126,6 @@ async function seed() {
                 title: 'Morning Run',
                 description: 'Run every morning for 21 days to build a lasting habit',
                 maxPoints: 21,
-                currentPoints: 15,
                 questType: QuestType.DAILY_TRACK,
                 category: getCategory('Health & Fitness'),
             },
@@ -144,7 +133,6 @@ async function seed() {
                 title: 'Read Every Day',
                 description: 'Read for at least 20 minutes every day for 14 days',
                 maxPoints: 14,
-                currentPoints: 8,
                 questType: QuestType.DAILY_TRACK,
                 category: getCategory('Learning & Education'),
             },
@@ -152,7 +140,6 @@ async function seed() {
                 title: '30-Day Yoga Challenge',
                 description: 'Complete a yoga session every day for 30 days',
                 maxPoints: 30,
-                currentPoints: 30,
                 questType: QuestType.DAILY_TRACK,
                 completedAt: new Date(Date.now() - 5 * 86400000),
                 category: getCategory('Health & Fitness'),
@@ -168,7 +155,7 @@ async function seed() {
             });
             await questsRepository.save(quest);
             createdQuests.push(quest);
-            console.log(`✅ Quest created: ${quest.title} (${quest.currentPoints}/${quest.maxPoints} points)`);
+            console.log(`✅ Quest created: ${quest.title} (0/${quest.maxPoints} points)`);
         }
 
         // Create DailyTrack records for DAILY_TRACK quests

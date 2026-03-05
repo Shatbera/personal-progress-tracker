@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateQuestDto } from './dto/create-quest.dto';
 import { UpdateQuestHeaderDto } from './dto/update-quest-header.dto';
 import { GetQuestsFilterDto } from './dto/get-quests-filter.dto';
@@ -7,16 +7,20 @@ import { Quest } from './quest.entity';
 import { User } from 'src/auth/user.entity';
 import { QuestType } from './quest-type.enum';
 import { DailyTrackService } from 'src/daily-track/daily-track.service';
+import { QuestEventsRepository } from 'src/quest-events/quest-events.repository';
 
 @Injectable()
 export class QuestsService {
     constructor(
         private readonly questsRepository: QuestsRepository,
         private readonly dailyTrackService: DailyTrackService,
+        private readonly questEventsRepository: QuestEventsRepository,
     ) { }
 
-    public getQuests(filterDto: GetQuestsFilterDto, user: User): Promise<Quest[]> {
-        return this.questsRepository.getQuests(filterDto, user);
+    public async getQuests(filterDto: GetQuestsFilterDto, user: User): Promise<Quest[]> {
+        const quests = await this.questsRepository.getQuests(filterDto, user);
+        await this.attachCurrentPoints(quests, user.id);
+        return quests;
     }
 
     public async getQuestById(id: string, user: User): Promise<Quest> {
@@ -24,6 +28,8 @@ export class QuestsService {
         if (!found) {
             throw new NotFoundException(`Quest with ID "${id}" not found`);
         }
+
+        found.currentPoints = await this.questEventsRepository.getCurrentPointsForQuest(found.id, user.id);
         return found;
     }
 
@@ -34,17 +40,25 @@ export class QuestsService {
             await this.dailyTrackService.createForQuest(quest.id, createQuestDto.details);
         }
 
+        quest.currentPoints = 0;
+
         return quest;
     }
 
     public async updateQuestById(id: string, updateQuestDto: CreateQuestDto, user: User): Promise<Quest> {
         const { title, description, maxPoints, categoryId } = updateQuestDto;
         const quest = await this.getQuestById(id, user);
+
+        if (maxPoints < quest.currentPoints) {
+            throw new BadRequestException(`Max points must be at least ${quest.currentPoints}`);
+        }
+
         quest.title = title;
         quest.description = description;
         quest.maxPoints = maxPoints;
         quest.category = categoryId ? { id: categoryId } as any : null;
         await this.questsRepository.save(quest);
+
         return quest;
     }
 
@@ -56,6 +70,7 @@ export class QuestsService {
             quest.category = dto.categoryId ? { id: dto.categoryId } as any : null;
         }
         await this.questsRepository.save(quest);
+
         return quest;
     }
 
@@ -64,6 +79,7 @@ export class QuestsService {
         const quest = await this.getQuestById(id, user);
         quest.archivedAt = new Date();
         await this.questsRepository.save(quest);
+
         return quest;
     }
 
@@ -71,6 +87,7 @@ export class QuestsService {
         const quest = await this.getQuestById(id, user);
         quest.archivedAt = null;
         await this.questsRepository.save(quest);
+
         return quest;
     }
 
@@ -78,6 +95,15 @@ export class QuestsService {
         const result = await this.questsRepository.delete({ id, user });
         if (result.affected === 0) {
             throw new NotFoundException(`Quest with ID "${id}" not found`);
+        }
+    }
+
+    private async attachCurrentPoints(quests: Quest[], userId: string): Promise<void> {
+        const questIds = quests.map((quest) => quest.id);
+        const currentPointsByQuestId = await this.questEventsRepository.getCurrentPointsMapForQuests(questIds, userId);
+
+        for (const quest of quests) {
+            quest.currentPoints = currentPointsByQuestId.get(quest.id) ?? 0;
         }
     }
 }

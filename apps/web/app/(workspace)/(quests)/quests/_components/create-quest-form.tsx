@@ -8,7 +8,7 @@ import { QuestCategory } from '../../types';
 import CategorySelect from './category-select';
 
 const QUEST_TYPES = [
-    { value: 'SIMPLE_GOAL', label: 'Simple Goal' },
+    { value: 'LONG_TERM_GOAL', label: 'Simple Goal' },
     { value: 'DAILY_TRACK', label: 'Daily Track' },
 ] as const;
 
@@ -32,7 +32,7 @@ const today = new Date().toISOString().split('T')[0];
 
 export default function CreateQuestForm({ categories, onSuccess }: CreateQuestFormProps) {
     const [formState, formAction] = useActionState(createQuest, { error: '' });
-    const [questType, setQuestType] = useState<QuestTypeValue>('SIMPLE_GOAL');
+    const [questType, setQuestType] = useState<QuestTypeValue>('LONG_TERM_GOAL');
 
     useEffect(() => {
         if (formState && 'success' in formState && formState.success) {

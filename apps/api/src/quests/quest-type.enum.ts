@@ -1,4 +1,5 @@
 export enum QuestType {
     SIMPLE_GOAL = 'SIMPLE_GOAL',
+    LONG_TERM_GOAL = 'LONG_TERM_GOAL',
     DAILY_TRACK = 'DAILY_TRACK',
 }

@@ -32,7 +32,6 @@ export class QuestsRepository extends Repository<Quest> {
             title,
             description,
             maxPoints,
-            currentPoints: 0,
             questType,
             user,
             category: categoryId ? { id: categoryId } as any : undefined,

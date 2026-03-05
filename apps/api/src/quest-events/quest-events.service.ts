@@ -21,15 +21,15 @@ export class QuestEventsService {
             throw new NotFoundException(`Quest with ID "${questId}" not found`);
         }
 
-        if (quest.currentPoints >= quest.maxPoints) {
+        const currentPoints = await this.questEventsRepository.getCurrentPointsForQuest(questId, user.id);
+
+        if (currentPoints >= quest.maxPoints) {
             throw new BadRequestException('Quest is already completed');
         }
-
-        // Update quest points
-        quest.currentPoints += 1;
         
         // Mark as completed if max points reached
-        const justCompleted = quest.currentPoints >= quest.maxPoints;
+        const nextPoints = currentPoints + 1;
+        const justCompleted = nextPoints >= quest.maxPoints;
         if (justCompleted) {
             quest.completedAt = new Date();
         }
@@ -51,15 +51,15 @@ export class QuestEventsService {
             throw new NotFoundException(`Quest with ID "${questId}" not found`);
         }
 
-        if (quest.currentPoints <= 0) {
+        const currentPoints = await this.questEventsRepository.getCurrentPointsForQuest(questId, user.id);
+
+        if (currentPoints <= 0) {
             throw new BadRequestException('Cannot undo when current points is 0');
         }
-
-        // Update quest points
-        quest.currentPoints -= 1;
         
         // Unmark completion if points drop below max
-        if (quest.completedAt && quest.currentPoints < quest.maxPoints) {
+        const nextPoints = currentPoints - 1;
+        if (quest.completedAt && nextPoints < quest.maxPoints) {
             quest.completedAt = null;
         }
         
@@ -80,10 +80,12 @@ export class QuestEventsService {
             throw new NotFoundException(`Quest with ID "${questId}" not found`);
         }
 
-        const previousPoints = quest.currentPoints;
+        const previousPoints = await this.questEventsRepository.getCurrentPointsForQuest(questId, user.id);
 
-        // Reset quest points
-        quest.currentPoints = 0;
+        if (previousPoints <= 0) {
+            throw new BadRequestException('Cannot reset when current points is 0');
+        }
+
         quest.completedAt = null;
         
         await this.questsRepository.save(quest);
