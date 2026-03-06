@@ -121,6 +121,27 @@ async function seed() {
                 maxPoints: 15,
                 category: getCategory('Work & Career'),
             },
+            {
+                title: 'Plan the Week',
+                description: 'Define top priorities and complete all weekly planning steps',
+                maxPoints: 7,
+                questType: QuestType.WEEKLY_GOAL,
+                category: getCategory('Personal Development'),
+            },
+            {
+                title: 'Weekly Meal Prep',
+                description: 'Prepare healthy meals for the week',
+                maxPoints: 5,
+                questType: QuestType.WEEKLY_GOAL,
+                category: getCategory('Health & Fitness'),
+            },
+            {
+                title: 'Weekly Review',
+                description: 'Review wins, blockers, and priorities for next week',
+                maxPoints: 3,
+                questType: QuestType.WEEKLY_GOAL,
+                category: getCategory('Personal Development'),
+            },
             // Daily Track quests
             {
                 title: 'Morning Run',
@@ -170,10 +191,17 @@ async function seed() {
                 startDate: startDate.toISOString().split('T')[0],
                 durationDays: 21,
             });
-            // Mark first 15 entries as checked
             const entries = await entryRepo.find({ where: { dailyTrackId: dt.id }, order: { day: 'ASC' } });
             for (let i = 0; i < 15; i++) {
-                entries[i].checkedAt = new Date(startDate.getTime() + i * 86400000 + 7 * 3600000);
+                const event = questEventsRepository.create({
+                    eventType: QuestEventType.PROGRESS,
+                    pointsChanged: 1,
+                    quest: morningRunQuest,
+                    user,
+                    createdAt: new Date(startDate.getTime() + i * 86400000 + 7 * 3600000),
+                });
+                await questEventsRepository.save(event);
+                entries[i].progressQuestEventId = event.id;
             }
             await entryRepo.save(entries);
             dailyTrackCount++;
@@ -187,10 +215,17 @@ async function seed() {
                 startDate: startDate.toISOString().split('T')[0],
                 durationDays: 14,
             });
-            // Mark first 8 entries as checked
             const entries = await entryRepo.find({ where: { dailyTrackId: dt.id }, order: { day: 'ASC' } });
             for (let i = 0; i < 8; i++) {
-                entries[i].checkedAt = new Date(startDate.getTime() + i * 86400000 + 21 * 3600000);
+                const event = questEventsRepository.create({
+                    eventType: QuestEventType.PROGRESS,
+                    pointsChanged: 1,
+                    quest: readEveryDayQuest,
+                    user,
+                    createdAt: new Date(startDate.getTime() + i * 86400000 + 21 * 3600000),
+                });
+                await questEventsRepository.save(event);
+                entries[i].progressQuestEventId = event.id;
                 entries[i].note = i % 3 === 0 ? 'Great session today!' : '';
             }
             await entryRepo.save(entries);
@@ -205,10 +240,17 @@ async function seed() {
                 startDate: startDate.toISOString().split('T')[0],
                 durationDays: 30,
             });
-            // Mark all 30 entries as checked
             const entries = await entryRepo.find({ where: { dailyTrackId: dt.id }, order: { day: 'ASC' } });
             for (let i = 0; i < 30; i++) {
-                entries[i].checkedAt = new Date(startDate.getTime() + i * 86400000 + 8 * 3600000);
+                const event = questEventsRepository.create({
+                    eventType: QuestEventType.PROGRESS,
+                    pointsChanged: 1,
+                    quest: yogaQuest,
+                    user,
+                    createdAt: new Date(startDate.getTime() + i * 86400000 + 8 * 3600000),
+                });
+                await questEventsRepository.save(event);
+                entries[i].progressQuestEventId = event.id;
             }
             await entryRepo.save(entries);
             dailyTrackCount++;
@@ -326,13 +368,65 @@ async function seed() {
             }
         }
 
+        // Events for "Plan the Week" quest
+        // Include both this-week and last-week events to validate weekly-goal scoring.
+        const planTheWeekQuest = createdQuests.find(q => q.title === 'Plan the Week');
+        if (planTheWeekQuest) {
+            const now = new Date();
+            const startOfWeek = new Date(now);
+            startOfWeek.setHours(0, 0, 0, 0);
+            startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+
+            // Last-week events (should not count toward current points for WEEKLY_GOAL)
+            for (let i = 0; i < 2; i++) {
+                const event = questEventsRepository.create({
+                    eventType: QuestEventType.PROGRESS,
+                    pointsChanged: 1,
+                    quest: planTheWeekQuest,
+                    user,
+                    createdAt: new Date(startOfWeek.getTime() - (i + 2) * 86400000),
+                });
+                await questEventsRepository.save(event);
+                eventCount++;
+            }
+
+            // This-week events (should count)
+            for (let i = 0; i < 3; i++) {
+                const event = questEventsRepository.create({
+                    eventType: QuestEventType.PROGRESS,
+                    pointsChanged: 1,
+                    quest: planTheWeekQuest,
+                    user,
+                    createdAt: new Date(startOfWeek.getTime() + (i + 1) * 86400000 + 9 * 3600000),
+                });
+                await questEventsRepository.save(event);
+                eventCount++;
+            }
+        }
+
+        // Events for "Weekly Meal Prep" quest (this week)
+        const weeklyMealPrepQuest = createdQuests.find(q => q.title === 'Weekly Meal Prep');
+        if (weeklyMealPrepQuest) {
+            for (let i = 0; i < 2; i++) {
+                const event = questEventsRepository.create({
+                    eventType: QuestEventType.PROGRESS,
+                    pointsChanged: 1,
+                    quest: weeklyMealPrepQuest,
+                    user,
+                    createdAt: new Date(Date.now() - (i + 1) * 86400000),
+                });
+                await questEventsRepository.save(event);
+                eventCount++;
+            }
+        }
+
         console.log(`✅ Quest events created: ${eventCount}`);
 
         console.log('\n🎉 Database seeding completed successfully!');
         console.log(`\n📊 Summary:`);
         console.log(`   - Built-in categories created: ${BUILT_IN_CATEGORIES.length}`);
         console.log(`   - Users created: 1`);
-        console.log(`   - Quests created: ${questsData.length} (${questsData.filter(q => (q as any).questType === QuestType.DAILY_TRACK).length} daily track, ${questsData.filter(q => (q as any).questType !== QuestType.DAILY_TRACK).length} simple goal)`);
+        console.log(`   - Quests created: ${questsData.length} (${questsData.filter(q => (q as any).questType === QuestType.DAILY_TRACK).length} daily track, ${questsData.filter(q => (q as any).questType === QuestType.WEEKLY_GOAL).length} weekly goal, ${questsData.filter(q => (q as any).questType === undefined || (q as any).questType === QuestType.LONG_TERM_GOAL).length} long-term goal)`);
         console.log(`   - Daily track records created: ${dailyTrackCount}`);
         console.log(`   - Quest events created: ${eventCount}`);
         console.log(`\n👤 Demo user credentials:`);

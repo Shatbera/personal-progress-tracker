@@ -4,6 +4,7 @@ import { QuestEvent } from "./quest-event.entity";
 import { User } from "src/auth/user.entity";
 import { Quest } from "src/quests/quest.entity";
 import { LogEventDto } from "./dto/log-event.dto";
+import { QuestType } from "src/quests/quest-type.enum";
 
 @Injectable()
 export class QuestEventsRepository extends Repository<QuestEvent> {
@@ -24,10 +25,19 @@ export class QuestEventsRepository extends Repository<QuestEvent> {
     }
 
     public async getCurrentPointsForQuest(questId: string, userId: string): Promise<number> {
+        const startOfWeek = new Date();
+        startOfWeek.setHours(0, 0, 0, 0);
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+
         const raw = await this.createQueryBuilder('questEvent')
             .select('COALESCE(SUM(questEvent.pointsChanged), 0)', 'points')
+            .innerJoin('questEvent.quest', 'quest')
             .where('questEvent.questId = :questId', { questId })
             .andWhere('questEvent.userId = :userId', { userId })
+            .andWhere(
+                '(quest.questType != :weeklyGoal OR questEvent.createdAt >= :startOfWeek)',
+                { weeklyGoal: QuestType.WEEKLY_GOAL, startOfWeek },
+            )
             .getRawOne<{ points: string | number | null }>();
 
         return Number(raw?.points ?? 0);
@@ -38,11 +48,20 @@ export class QuestEventsRepository extends Repository<QuestEvent> {
             return new Map<string, number>();
         }
 
+        const startOfWeek = new Date();
+        startOfWeek.setHours(0, 0, 0, 0);
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+
         const rows = await this.createQueryBuilder('questEvent')
             .select('questEvent.questId', 'questId')
             .addSelect('COALESCE(SUM(questEvent.pointsChanged), 0)', 'points')
+            .innerJoin('questEvent.quest', 'quest')
             .where('questEvent.userId = :userId', { userId })
             .andWhere('questEvent.questId IN (:...questIds)', { questIds })
+            .andWhere(
+                '(quest.questType != :weeklyGoal OR questEvent.createdAt >= :startOfWeek)',
+                { weeklyGoal: QuestType.WEEKLY_GOAL, startOfWeek },
+            )
             .groupBy('questEvent.questId')
             .getRawMany<{ questId: string; points: string | number | null }>();
 

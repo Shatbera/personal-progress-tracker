@@ -5,7 +5,13 @@ import { Quest } from "../../types";
 import QuestItem from "./quest-item";
 import styles from "./quests-sections.module.css";
 
-export default function QuestsSections({ quests: initialQuests }: { quests: Quest[] }) {
+const QUEST_TYPE_GROUPS: Array<{ key: Quest['questType']; label: string }> = [
+    { key: 'DAILY_TRACK', label: 'Daily Tracks' },
+    { key: 'WEEKLY_GOAL', label: 'Weekly Goals' },
+    { key: 'LONG_TERM_GOAL', label: 'Long Term Goals' },
+];
+
+export default function QuestsSections({ quests: initialQuests, hasTodaysPlan = false, hasTomorrowsPlan = false }: { quests: Quest[]; hasTodaysPlan?: boolean; hasTomorrowsPlan?: boolean }) {
     const [quests, setQuests] = useState(initialQuests);
     const [completedOpen, setCompletedOpen] = useState(false);
     const [archivedVisible, setArchivedVisible] = useState(false);
@@ -26,6 +32,32 @@ export default function QuestsSections({ quests: initialQuests }: { quests: Ques
     const completed = quests.filter(q => q.completedAt && !q.archivedAt);
     const archived = quests.filter(q => q.archivedAt);
 
+    const renderTypeGroups = (sectionQuests: Quest[]) => {
+        const grouped = QUEST_TYPE_GROUPS
+            .map(({ key, label }) => ({
+                key,
+                label,
+                quests: sectionQuests.filter((quest) => quest.questType === key),
+            }))
+            .filter((group) => group.quests.length > 0);
+
+        return grouped.map((group) => (
+            <div key={group.key} className={styles.typeGroup}>
+                <div className={styles.typeHeader}>
+                    <h3 className={styles.typeTitle}>{group.label}</h3>
+                    <span className={styles.typeCount}>{group.quests.length}</span>
+                </div>
+                <ul className={styles.grid}>
+                    {group.quests.map((quest) => (
+                        <li key={quest.id}>
+                            <QuestItem quest={quest} hasTodaysPlan={hasTodaysPlan} hasTomorrowsPlan={hasTomorrowsPlan} onQuestChange={handleQuestChange} onQuestDelete={handleQuestDelete} />
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        ));
+    };
+
     return (
         <div>
             {/* Active */}
@@ -37,13 +69,7 @@ export default function QuestsSections({ quests: initialQuests }: { quests: Ques
                 {active.length === 0 ? (
                     <p className={styles.emptyState}>No active quests. Create one to get started!</p>
                 ) : (
-                    <ul className={styles.grid}>
-                        {active.map(quest => (
-                            <li key={quest.id}>
-                                <QuestItem quest={quest} onQuestChange={handleQuestChange} onQuestDelete={handleQuestDelete} />
-                            </li>
-                        ))}
-                    </ul>
+                    <div className={styles.typeGroupsContainer}>{renderTypeGroups(active)}</div>
                 )}
             </section>
 
@@ -62,13 +88,9 @@ export default function QuestsSections({ quests: initialQuests }: { quests: Ques
                     </button>
 
                     {completedOpen && (
-                        <ul className={styles.grid} style={{ marginTop: '1.25rem' }}>
-                            {completed.map(quest => (
-                                <li key={quest.id}>
-                                    <QuestItem quest={quest} onQuestChange={handleQuestChange} onQuestDelete={handleQuestDelete} />
-                                </li>
-                            ))}
-                        </ul>
+                        <div className={styles.typeGroupsContainer} style={{ marginTop: '1.25rem' }}>
+                            {renderTypeGroups(completed)}
+                        </div>
                     )}
                 </section>
             )}
@@ -95,13 +117,9 @@ export default function QuestsSections({ quests: initialQuests }: { quests: Ques
                                 <span className={styles.sectionCount}>{archived.length}</span>
                                 <span className={`${styles.chevron} ${styles.chevronOpen}`}>▼</span>
                             </button>
-                            <ul className={styles.grid} style={{ marginTop: '1.25rem' }}>
-                                {archived.map(quest => (
-                                    <li key={quest.id}>
-                                        <QuestItem quest={quest} onQuestChange={handleQuestChange} onQuestDelete={handleQuestDelete} />
-                                    </li>
-                                ))}
-                            </ul>
+                            <div className={styles.typeGroupsContainer} style={{ marginTop: '1.25rem' }}>
+                                {renderTypeGroups(archived)}
+                            </div>
                         </>
                     )}
                 </section>

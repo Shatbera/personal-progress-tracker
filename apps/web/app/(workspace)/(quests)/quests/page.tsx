@@ -3,11 +3,16 @@ import Link from "next/link";
 import QuestsSections from "./_components/quests-sections";
 import { Quest } from "../types";
 import { getQuests } from "@/lib/api/quests";
+import { getTodaysPlan, getTomorrowsPlan } from "@/lib/api/day-plans";
 import styles from "./page.module.css";
 
 async function QuestsContent() {
-    const quests: Quest[] = await getQuests();
-    return <QuestsSections quests={quests} />;
+    const [quests, todaysPlan, tomorrowsPlan] = await Promise.all([
+        getQuests(),
+        getTodaysPlan(),
+        getTomorrowsPlan(),
+    ]);
+    return <QuestsSections quests={quests as Quest[]} hasTodaysPlan={!!todaysPlan} hasTomorrowsPlan={!!tomorrowsPlan} />;
 }
 
 export default async function QuestsPage() {

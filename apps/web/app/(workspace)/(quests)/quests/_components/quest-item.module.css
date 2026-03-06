@@ -182,7 +182,7 @@
 }
 
 .logProgressButton {
-    width: 100%;
+    flex: 1;
     padding: 0.75rem;
     background-color: #1a1a1a;
     color: white;
@@ -200,6 +200,29 @@
 
 .logProgressButton:active {
     background-color: #000;
+}
+
+.progressActions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.addToPlanButton {
+    padding: 0.75rem 0.9rem;
+    background-color: transparent;
+    color: #1a1a1a;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.addToPlanButton:hover {
+    background-color: #f3f4f6;
+    border-color: #9ca3af;
 }
 
 .completedBadge {

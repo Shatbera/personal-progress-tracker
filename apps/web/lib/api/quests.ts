@@ -22,7 +22,7 @@ export async function createQuest(
     title: string,
     description: string,
     maxPoints: number,
-    questType: string,
+    questType: Quest['questType'],
     categoryId?: string,
     details?: { startDate: string; durationDays: number },
 ): Promise<Quest> {

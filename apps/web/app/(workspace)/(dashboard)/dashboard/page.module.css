@@ -33,6 +33,18 @@
     font-size: 0.9375rem;
 }
 
+.planAndQuests {
+    display: grid;
+    grid-template-columns: minmax(480px, 0.95fr) minmax(480px, 1.05fr);
+    column-gap: 0.75rem;
+    row-gap: 1rem;
+    align-items: start;
+}
+
+.planAndQuests > * {
+    min-width: 0;
+}
+
 .aside {
     width: 340px;
     flex-shrink: 0;
@@ -42,4 +54,10 @@
     top: 2rem;
     max-height: calc(100vh - 8rem);
     overflow: hidden;
+}
+
+@media (max-width: 1600px) {
+    .planAndQuests {
+        grid-template-columns: 1fr;
+    }
 }

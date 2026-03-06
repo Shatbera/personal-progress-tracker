@@ -15,6 +15,8 @@ type DayPlanDetailsProps = {
 	readOnly?: boolean;
 	showManagePlansLink?: boolean;
 	managePlansHref?: string;
+	fullWidth?: boolean;
+	showPlanActions?: boolean;
 };
 
 type InsertPosition = 'above' | 'below';
@@ -119,6 +121,8 @@ export default function DayPlanDetails({
 	readOnly = false,
 	showManagePlansLink = false,
 	managePlansHref = '/day-plans',
+	fullWidth = false,
+	showPlanActions = true,
 }: DayPlanDetailsProps) {
 	const router = useRouter();
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -601,11 +605,11 @@ export default function DayPlanDetails({
 		: 0;
 
 	return (
-		<section className={styles.card}>
+		<section className={`${styles.card} ${fullWidth ? styles.fullWidth : ''}`.trim()}>
 			<header className={styles.header}>
 				<div className={styles.headerRow}>
 					<h2 className={styles.title}>{getCardTitle(kind)}</h2>
-					{plan && !readOnly && (
+					{plan && !readOnly && showPlanActions && (
 						<div className={styles.headerMenuWrap} onClick={(event) => event.stopPropagation()}>
 							<button
 								type="button"

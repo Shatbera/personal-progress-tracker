@@ -211,3 +211,61 @@ export async function resequenceDayBlocks(
         };
     }
 }
+
+export async function addQuestToTodaysPlan(label: string) {
+    const { getTodaysPlan, createDayBlock: createDayBlockApi } = await import('@/lib/api/day-plans');
+
+    const plan = await getTodaysPlan();
+
+    if (!plan) {
+        return { error: "No plan for today. Create one first." };
+    }
+
+    const lastEndMinute = plan.blocks.length > 0
+        ? Math.max(...plan.blocks.map((b) => b.endMinute))
+        : plan.startMinute;
+
+    if (lastEndMinute + 60 > plan.endMinute) {
+        return { error: "Not enough space in today's plan for a 1-hour block." };
+    }
+
+    try {
+        await createDayBlockApi(plan.id, lastEndMinute, lastEndMinute + 60, label);
+        revalidatePath('/day-plans');
+        revalidatePath('/dashboard');
+        return { success: true };
+    } catch (error) {
+        return {
+            error: error instanceof Error ? error.message : "Failed to add block to today's plan",
+        };
+    }
+}
+
+export async function addQuestToTomorrowsPlan(label: string) {
+    const { getTomorrowsPlan, createDayBlock: createDayBlockApi } = await import('@/lib/api/day-plans');
+
+    const plan = await getTomorrowsPlan();
+
+    if (!plan) {
+        return { error: "No plan for tomorrow. Create one first." };
+    }
+
+    const lastEndMinute = plan.blocks.length > 0
+        ? Math.max(...plan.blocks.map((b) => b.endMinute))
+        : plan.startMinute;
+
+    if (lastEndMinute + 60 > plan.endMinute) {
+        return { error: "Not enough space in tomorrow's plan for a 1-hour block." };
+    }
+
+    try {
+        await createDayBlockApi(plan.id, lastEndMinute, lastEndMinute + 60, label);
+        revalidatePath('/day-plans');
+        revalidatePath('/dashboard');
+        return { success: true };
+    } catch (error) {
+        return {
+            error: error instanceof Error ? error.message : "Failed to add block to tomorrow's plan",
+        };
+    }
+}

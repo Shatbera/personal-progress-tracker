@@ -7,9 +7,11 @@ import { getTodaysPlan } from '@/lib/api/day-plans';
 import DayPlanDetails from '../../(day-plans)/day-plans/_components/day-plan-details';
 
 export default async function DashboardPage() {
-    const [dashboard, todaysPlan] = await Promise.all([
+    const { getTomorrowsPlan } = await import('@/lib/api/day-plans');
+    const [dashboard, todaysPlan, tomorrowsPlan] = await Promise.all([
         getDashboard(),
         getTodaysPlan(),
+        getTomorrowsPlan(),
     ]);
 
     return (
@@ -20,8 +22,10 @@ export default async function DashboardPage() {
                     <p className={styles.subtitle}>Welcome back! Here's an overview of your progress.</p>
                 </div>
                 <DashboardStatsBar stats={dashboard.stats} />
-                <DayPlanDetails kind="today" plan={todaysPlan} readOnly showManagePlansLink />
-                <ActiveQuests quests={dashboard.activeQuests.activeQuests} />
+                <div className={styles.planAndQuests}>
+                    <DayPlanDetails kind="today" plan={todaysPlan} fullWidth showPlanActions={false} />
+                    <ActiveQuests quests={dashboard.activeQuests.activeQuests} hasTodaysPlan={!!todaysPlan} hasTomorrowsPlan={!!tomorrowsPlan} />
+                </div>
             </div>
             <aside className={styles.aside}>
                 <RecentActivities items={dashboard.recentActivity.recentActivities} />

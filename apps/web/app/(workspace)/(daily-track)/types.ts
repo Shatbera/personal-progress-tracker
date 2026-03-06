@@ -3,7 +3,7 @@ export type DailyTrackEntry = {
     dailyTrackId: string;
     day: number;
     date: string;
-    checkedAt: string | null;
+    progressQuestEventId: string | null;
     note: string;
 };
 

@@ -7,12 +7,12 @@ import styles from './entry-checkbox.module.css';
 interface EntryCheckboxProps {
     entryId: string;
     questId: string;
-    checkedAt: string | null;
+    progressQuestEventId: string | null;
     date: string;
 }
 
-export default function EntryCheckbox({ entryId, questId, checkedAt, date }: EntryCheckboxProps) {
-    const [optimisticChecked, setOptimisticChecked] = useOptimistic(checkedAt !== null);
+export default function EntryCheckbox({ entryId, questId, progressQuestEventId, date }: EntryCheckboxProps) {
+    const [optimisticChecked, setOptimisticChecked] = useOptimistic(progressQuestEventId !== null);
     const [, startTransition] = useTransition();
 
     const isFuture = new Date(date) > new Date(new Date().toDateString());

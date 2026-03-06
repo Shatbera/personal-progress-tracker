@@ -5,6 +5,7 @@ import { QuestEvent } from 'src/quest-events/quest-event.entity';
 import { User } from 'src/auth/user.entity';
 import { Quest } from 'src/quests/quest.entity';
 import { QuestEventType } from 'src/quest-events/quest-event-type.enum';
+import { QuestType } from 'src/quests/quest-type.enum';
 import { DashboardDto } from './dto/dashboard.dto';
 import { DashboardRecentActivityDto, DashboardRecentActivityItemDto } from './dto/dashboard-recent-activity.dto';
 import { DashboardStatsDto } from './dto/dashboard-stats.dto';
@@ -98,11 +99,20 @@ export class DashboardService {
             return new Map<string, number>();
         }
 
+        const startOfWeek = new Date();
+        startOfWeek.setHours(0, 0, 0, 0);
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+
         const rows = await this.questEventRepository.createQueryBuilder('questEvent')
             .select('questEvent.questId', 'questId')
             .addSelect('COALESCE(SUM(questEvent.pointsChanged), 0)', 'points')
+            .innerJoin('questEvent.quest', 'quest')
             .where('questEvent.userId = :userId', { userId })
             .andWhere('questEvent.questId IN (:...questIds)', { questIds })
+            .andWhere(
+                '(quest.questType != :weeklyGoal OR questEvent.createdAt >= :startOfWeek)',
+                { weeklyGoal: QuestType.WEEKLY_GOAL, startOfWeek },
+            )
             .groupBy('questEvent.questId')
             .getRawMany<{ questId: string; points: string | number | null }>();
 

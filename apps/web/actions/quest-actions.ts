@@ -2,13 +2,19 @@
 
 import { createQuest as createQuestApi, updateQuest as updateQuestApi, updateQuestHeader as updateQuestHeaderApi, archiveQuest as archiveQuestApi, unarchiveQuest as unarchiveQuestApi, deleteQuest as deleteQuestApi, getQuestById } from '@/lib/api/quests';
 import { revalidatePath } from 'next/cache';
+import { QuestType } from '@/app/(workspace)/(quests)/types';
+
+const QUEST_TYPES: QuestType[] = ['LONG_TERM_GOAL', 'WEEKLY_GOAL', 'DAILY_TRACK'];
 
 export async function createQuest(prevState: any, formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const maxPoints = parseInt(formData.get('maxPoints') as string);
     const categoryId = formData.get('categoryId') as string | null;
-    const questType = (formData.get('questType') as string) || 'LONG_TERM_GOAL';
+    const questTypeRaw = (formData.get('questType') as string) || 'LONG_TERM_GOAL';
+    const questType = QUEST_TYPES.includes(questTypeRaw as QuestType)
+        ? (questTypeRaw as QuestType)
+        : null;
     const startDate = formData.get('startDate') as string | null;
     const durationDays = formData.get('durationDays') ? parseInt(formData.get('durationDays') as string) : undefined;
 
@@ -18,6 +24,10 @@ export async function createQuest(prevState: any, formData: FormData) {
 
     if (maxPoints < 1) {
         return { error: 'Max points must be at least 1' };
+    }
+
+    if (!questType) {
+        return { error: 'Invalid quest type' };
     }
 
     if (questType === 'DAILY_TRACK' && (!startDate || !durationDays)) {

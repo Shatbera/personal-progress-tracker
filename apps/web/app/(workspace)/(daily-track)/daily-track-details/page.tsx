@@ -50,7 +50,7 @@ export default async function DailyTrackDetailsPage({ searchParams }: DailyTrack
                     <span>Duration: {dailyTrack.durationDays} days</span>
                     <span>
                         Progress:{" "}
-                        {sortedEntries.filter((e) => e.checkedAt !== null).length} /{" "}
+                        {sortedEntries.filter((e) => e.progressQuestEventId !== null).length} /{" "}
                         {dailyTrack.durationDays}
                     </span>
                 </div>
@@ -80,7 +80,7 @@ export default async function DailyTrackDetailsPage({ searchParams }: DailyTrack
                                     <EntryCheckbox
                                         entryId={entry.id}
                                         questId={questId}
-                                        checkedAt={entry.checkedAt}
+                                        progressQuestEventId={entry.progressQuestEventId}
                                         date={entry.date}
                                     />
                                 </td>

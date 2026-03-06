@@ -17,7 +17,7 @@ export class DayPlan {
 	@Column({ type: "int" })
 	endMinute: number;
 
-	@ManyToOne(_type => User, user => user.quests, { eager: false })
+	@ManyToOne(_type => User, user => user.dayPlans, { eager: false })
     @Exclude({ toPlainOnly: true })
     user: User;
 

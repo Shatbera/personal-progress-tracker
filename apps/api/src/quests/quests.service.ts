@@ -24,7 +24,7 @@ export class QuestsService {
     }
 
     public async getQuestById(id: string, user: User): Promise<Quest> {
-        const found = await this.questsRepository.findOne({ where: { id, user } });
+        const found = await this.questsRepository.findOne({ where: { id, user: { id: user.id } } });
         if (!found) {
             throw new NotFoundException(`Quest with ID "${id}" not found`);
         }
@@ -92,7 +92,7 @@ export class QuestsService {
     }
 
     public async deleteQuestById(id: string, user: User): Promise<void> {
-        const result = await this.questsRepository.delete({ id, user });
+        const result = await this.questsRepository.delete({ id, user: { id: user.id } });
         if (result.affected === 0) {
             throw new NotFoundException(`Quest with ID "${id}" not found`);
         }

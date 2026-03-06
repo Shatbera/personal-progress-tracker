@@ -8,7 +8,8 @@ import { QuestCategory } from '../../types';
 import CategorySelect from './category-select';
 
 const QUEST_TYPES = [
-    { value: 'LONG_TERM_GOAL', label: 'Simple Goal' },
+    { value: 'LONG_TERM_GOAL', label: 'Long Term Goal' },
+    { value: 'WEEKLY_GOAL', label: 'Weekly Goal' },
     { value: 'DAILY_TRACK', label: 'Daily Track' },
 ] as const;
 

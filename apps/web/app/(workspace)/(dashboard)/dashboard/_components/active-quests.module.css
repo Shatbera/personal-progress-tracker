@@ -1,7 +1,7 @@
 .container {
     background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 0.75rem;
     padding: 1.5rem;
 }
 
@@ -25,8 +25,42 @@
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 0.875rem;
+}
+
+.groupsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.groupSection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.groupHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.groupTitle {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.groupCount {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+    background: #f3f4f6;
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
 }
 
 .card {
