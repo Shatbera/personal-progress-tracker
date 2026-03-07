@@ -6,6 +6,7 @@ import { DayPlan } from "./day-plan.entity";
 import { CreateDayBlockDto } from "./dto/create-day-block.dto";
 import { CreateDayPlanDto } from "./dto/create-day-plan.dto";
 import { ResequenceDayBlocksDto } from "./dto/resequence-day-blocks.dto";
+import { QuestCategory } from "src/quest-categories/quest-category.entity";
 
 @Injectable()
 export class DayPlansRepository extends Repository<DayPlan> {
@@ -16,7 +17,7 @@ export class DayPlansRepository extends Repository<DayPlan> {
 	public getAllPlans(user: User): Promise<DayPlan[]> {
 		return this.find({
 			where: { user },
-			relations: ["blocks"],
+			relations: ["blocks", "blocks.category"],
 			order: {
 				date: "ASC",
 			},
@@ -28,6 +29,7 @@ export class DayPlansRepository extends Repository<DayPlan> {
 
 		return this.createQueryBuilder("dayPlan")
 			.leftJoinAndSelect("dayPlan.blocks", "block")
+			.leftJoinAndSelect("block.category", "blockCategory")
 			.where("dayPlan.date = :date", { date: dateOnly })
 			.andWhere("dayPlan.userId = :userId", { userId: user.id })
 			.orderBy("block.startMinute", "ASC")
@@ -66,6 +68,7 @@ export class DayPlansRepository extends Repository<DayPlan> {
 
 			const dayPlan = await dayPlanRepository.createQueryBuilder('dayPlan')
 				.leftJoinAndSelect('dayPlan.blocks', 'block')
+				.leftJoinAndSelect('block.category', 'blockCategory')
 				.where('dayPlan.id = :dayPlanId', { dayPlanId })
 				.andWhere('dayPlan.userId = :userId', { userId: user.id })
 				.orderBy('block.startMinute', 'ASC')
@@ -101,6 +104,7 @@ export class DayPlansRepository extends Repository<DayPlan> {
 
 			const updatedPlan = await dayPlanRepository.createQueryBuilder('dayPlan')
 				.leftJoinAndSelect('dayPlan.blocks', 'block')
+				.leftJoinAndSelect('block.category', 'blockCategory')
 				.where('dayPlan.id = :dayPlanId', { dayPlanId })
 				.andWhere('dayPlan.userId = :userId', { userId: user.id })
 				.orderBy('block.startMinute', 'ASC')
@@ -164,9 +168,11 @@ export class DayPlansRepository extends Repository<DayPlan> {
 			label,
 			dayPlan,
 			dayPlanId: dayPlan.id,
+			categoryId: createDayBlockDto.categoryId ?? null,
 		});
 
-		return dayBlockRepository.save(dayBlock);
+		const saved = await dayBlockRepository.save(dayBlock);
+		return dayBlockRepository.findOne({ where: { id: saved.id }, relations: ['category'] }) as Promise<DayBlock>;
 	}
 
 	public async updateBlock(dayPlanId: string, dayBlockId: string, createDayBlockDto: CreateDayBlockDto, user: User): Promise<DayBlock> {
@@ -220,8 +226,15 @@ export class DayPlansRepository extends Repository<DayPlan> {
 		dayBlock.startMinute = startMinutes;
 		dayBlock.endMinute = endMinutes;
 		dayBlock.label = trimmedLabel;
+		if (createDayBlockDto.categoryId !== undefined) {
+			dayBlock.categoryId = createDayBlockDto.categoryId ?? null;
+			dayBlock.category = createDayBlockDto.categoryId
+				? ({ id: createDayBlockDto.categoryId } as QuestCategory)
+				: null;
+		}
 
-		return dayBlockRepository.save(dayBlock);
+		const saved = await dayBlockRepository.save(dayBlock);
+		return dayBlockRepository.findOne({ where: { id: saved.id }, relations: ['category'] }) as Promise<DayBlock>;
 	}
 
 	public async deleteBlock(dayPlanId: string, dayBlockId: string, user: User): Promise<void> {
@@ -261,6 +274,7 @@ export class DayPlansRepository extends Repository<DayPlan> {
 	public async resequenceBlocks(dayPlanId: string, resequenceDayBlocksDto: ResequenceDayBlocksDto, user: User): Promise<DayPlan> {
 		const dayPlan = await this.createQueryBuilder('dayPlan')
 			.leftJoinAndSelect('dayPlan.blocks', 'block')
+			.leftJoinAndSelect('block.category', 'blockCategory')
 			.where('dayPlan.id = :dayPlanId', { dayPlanId })
 			.andWhere('dayPlan.userId = :userId', { userId: user.id })
 			.orderBy('block.startMinute', 'ASC')
@@ -318,6 +332,12 @@ export class DayPlansRepository extends Repository<DayPlan> {
 			existingBlock.startMinute = incomingBlock.startMinutes;
 			existingBlock.endMinute = incomingBlock.endMinutes;
 			existingBlock.label = incomingBlock.label.trim();
+			if (incomingBlock.categoryId !== undefined) {
+				existingBlock.categoryId = incomingBlock.categoryId ?? null;
+				existingBlock.category = incomingBlock.categoryId
+					? ({ id: incomingBlock.categoryId } as QuestCategory)
+					: null;
+			}
 			return existingBlock;
 		});
 
@@ -325,6 +345,7 @@ export class DayPlansRepository extends Repository<DayPlan> {
 
 		const updatedPlan = await this.createQueryBuilder('dayPlan')
 			.leftJoinAndSelect('dayPlan.blocks', 'block')
+			.leftJoinAndSelect('block.category', 'blockCategory')
 			.where('dayPlan.id = :dayPlanId', { dayPlanId })
 			.andWhere('dayPlan.userId = :userId', { userId: user.id })
 			.orderBy('block.startMinute', 'ASC')

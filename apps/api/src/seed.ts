@@ -38,9 +38,9 @@ async function seed() {
 
         // Seed built-in categories
         console.log('Creating built-in categories...');
-        for (const name of BUILT_IN_CATEGORIES) {
+        for (const { name, color } of BUILT_IN_CATEGORIES) {
             await questCategoriesRepository.save(
-                questCategoriesRepository.create({ name, isBuiltIn: true, user: null }),
+                questCategoriesRepository.create({ name, color, isBuiltIn: true, user: null }),
             );
         }
         const categories = await questCategoriesRepository.find({ where: { isBuiltIn: true } });

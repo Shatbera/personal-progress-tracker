@@ -1,4 +1,4 @@
-import { IsInt, IsString, Max, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, IsUUID, Max, Min } from 'class-validator';
 
 export class CreateDayBlockDto {
 	@IsInt()
@@ -13,4 +13,8 @@ export class CreateDayBlockDto {
 
 	@IsString()
 	label: string;
+
+	@IsOptional()
+	@IsUUID()
+	categoryId?: string | null;
 }

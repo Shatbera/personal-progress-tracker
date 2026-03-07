@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsInt, IsString, Max, Min, ValidateNested } from 'class-validator';
+import { IsArray, IsInt, IsOptional, IsString, IsUUID, Max, Min, ValidateNested } from 'class-validator';
 
 class ResequenceDayBlockItemDto {
 	@IsString()
@@ -17,6 +17,10 @@ class ResequenceDayBlockItemDto {
 
 	@IsString()
 	label: string;
+
+	@IsOptional()
+	@IsUUID()
+	categoryId?: string | null;
 }
 
 export class ResequenceDayBlocksDto {

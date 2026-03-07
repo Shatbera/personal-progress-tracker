@@ -1,6 +1,7 @@
 export type QuestCategory = {
     id: string;
     name: string;
+    color: string;
     isBuiltIn: boolean;
 };
 

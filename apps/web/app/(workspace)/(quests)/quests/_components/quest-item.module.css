@@ -127,11 +127,14 @@
 
 .categoryBadge {
     display: inline-block;
+    width: fit-content;
     padding: 0.2rem 0.65rem;
     margin-bottom: 1rem;
     background-color: #f0f4ff;
     color: #3b5bdb;
+    border: 1px solid transparent;
     border-radius: 99px;
+    white-space: nowrap;
     font-size: 0.75rem;
     font-weight: 500;
 }

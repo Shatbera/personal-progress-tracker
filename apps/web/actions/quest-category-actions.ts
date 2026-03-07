@@ -5,13 +5,14 @@ import { revalidatePath } from 'next/cache';
 
 export async function createCategory(prevState: any, formData: FormData) {
     const name = formData.get('name') as string;
+    const color = formData.get('color') as string;
 
     if (!name?.trim()) {
         return { error: 'Category name is required' };
     }
 
     try {
-        const category = await createCategoryApi(name.trim());
+        const category = await createCategoryApi(name.trim(), color || '#6c757d');
         revalidatePath('/quests');
         return { success: true, category };
     } catch (error) {
@@ -24,13 +25,14 @@ export async function createCategory(prevState: any, formData: FormData) {
 export async function updateCategory(prevState: any, formData: FormData) {
     const id = formData.get('id') as string;
     const name = formData.get('name') as string;
+    const color = formData.get('color') as string;
 
     if (!name?.trim()) {
         return { error: 'Category name is required' };
     }
 
     try {
-        const category = await updateCategoryApi(id, name.trim());
+        const category = await updateCategoryApi(id, name.trim(), color || '#6c757d');
         revalidatePath('/quests');
         return { success: true, category };
     } catch (error) {

@@ -97,11 +97,11 @@ export async function deleteDayPlan(dayPlanId: string): Promise<void> {
     }
 }
 
-export async function createDayBlock(dayPlanId: string, startMinutes: number, endMinutes: number, label: string) {
+export async function createDayBlock(dayPlanId: string, startMinutes: number, endMinutes: number, label: string, categoryId?: string | null) {
     const response = await apiFetch(`/day-plan/${dayPlanId}/blocks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ startMinutes, endMinutes, label }),
+        body: JSON.stringify({ startMinutes, endMinutes, label, categoryId: categoryId ?? null }),
     });
 
     if (!response.ok) {
@@ -113,11 +113,11 @@ export async function createDayBlock(dayPlanId: string, startMinutes: number, en
     return response.json();
 }
 
-export async function updateDayBlock(dayPlanId: string, dayBlockId: string, startMinutes: number, endMinutes: number, label: string) {
+export async function updateDayBlock(dayPlanId: string, dayBlockId: string, startMinutes: number, endMinutes: number, label: string, categoryId?: string | null) {
     const response = await apiFetch(`/day-plan/${dayPlanId}/blocks/${dayBlockId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ startMinutes, endMinutes, label }),
+        body: JSON.stringify({ startMinutes, endMinutes, label, categoryId: categoryId ?? null }),
     });
 
     if (!response.ok) {
@@ -143,7 +143,7 @@ export async function deleteDayBlock(dayPlanId: string, dayBlockId: string) {
 
 export async function resequenceDayBlocks(
     dayPlanId: string,
-    blocks: Array<{ id: string; startMinutes: number; endMinutes: number; label: string }>,
+    blocks: Array<{ id: string; startMinutes: number; endMinutes: number; label: string; categoryId?: string | null }>,
 ) {
     const response = await apiFetch(`/day-plan/${dayPlanId}/blocks/resequence`, {
         method: 'PUT',

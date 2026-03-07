@@ -12,12 +12,15 @@ export class QuestCategoriesSeed implements OnModuleInit {
     ) {}
 
     async onModuleInit(): Promise<void> {
-        for (const name of BUILT_IN_CATEGORIES) {
-            const exists = await this.categoryRepository.findOne({
+        for (const { name, color } of BUILT_IN_CATEGORIES) {
+            const existing = await this.categoryRepository.findOne({
                 where: { name, isBuiltIn: true },
             });
-            if (!exists) {
-                await this.categoryRepository.save({ name, isBuiltIn: true, user: null });
+            if (!existing) {
+                await this.categoryRepository.save({ name, color, isBuiltIn: true, user: null });
+            } else if (existing.color !== color) {
+                existing.color = color;
+                await this.categoryRepository.save(existing);
             }
         }
     }

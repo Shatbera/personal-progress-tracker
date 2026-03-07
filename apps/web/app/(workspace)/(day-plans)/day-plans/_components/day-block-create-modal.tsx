@@ -1,5 +1,7 @@
 'use client';
 
+import { QuestCategory } from '@/app/(workspace)/(quests)/types';
+import CategorySelect from '@/app/(workspace)/(quests)/quests/_components/category-select';
 import { useEffect, useMemo, useState, useTransition } from 'react';
 import styles from './day-plan-details.module.css';
 
@@ -13,7 +15,9 @@ type DayBlockCreateModalProps = {
     maxDurationMinutes: number;
     initialLabel?: string;
     initialDurationMinutes?: number;
-    onSubmitBlock: (payload: { label: string; durationMinutes: number }) => Promise<string | null>;
+    initialCategoryId?: string | null;
+    categories: QuestCategory[];
+    onSubmitBlock: (payload: { label: string; durationMinutes: number; categoryId: string | null }) => Promise<string | null>;
     onDeleteBlock?: () => Promise<string | null>;
 };
 
@@ -71,6 +75,8 @@ export default function DayBlockCreateModal({
     maxDurationMinutes,
     initialLabel,
     initialDurationMinutes,
+    initialCategoryId,
+    categories,
     onSubmitBlock,
     onDeleteBlock,
 }: DayBlockCreateModalProps) {
@@ -106,6 +112,14 @@ export default function DayBlockCreateModal({
         return null;
     }
 
+    const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        if (event.target !== event.currentTarget) {
+            return;
+        }
+
+        closeModal();
+    };
+
     const closeModal = () => {
         if (isPending) {
             return;
@@ -136,13 +150,20 @@ export default function DayBlockCreateModal({
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        if (event.target !== event.currentTarget) {
+            return;
+        }
+
         event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const selectedCategoryId = (formData.get('categoryId') as string) || null;
         setError(null);
 
         startTransition(async () => {
             const submitError = await onSubmitBlock({
                 label: title,
                 durationMinutes,
+                categoryId: selectedCategoryId,
             });
 
             if (submitError) {
@@ -155,7 +176,7 @@ export default function DayBlockCreateModal({
     };
 
     return (
-        <div className={styles.modalOverlay} onClick={closeModal}>
+        <div className={styles.modalOverlay} onClick={handleOverlayClick}>
             <div className={styles.modalBox} onClick={(event) => event.stopPropagation()}>
                 <div className={styles.modalHeader}>
                     <h3 className={styles.modalTitle}>{mode === 'edit' ? 'Edit block' : 'Create block'}</h3>
@@ -192,6 +213,13 @@ export default function DayBlockCreateModal({
                                 </option>
                             ))}
                         </select>
+                    </label>
+                    <label className={styles.label}>
+                        Category
+                        <CategorySelect
+                            categories={categories}
+                            defaultValue={initialCategoryId ?? ''}
+                        />
                     </label>
                     <div className={styles.modalFooterRow}>
                         <div>

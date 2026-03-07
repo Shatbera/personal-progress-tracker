@@ -5,6 +5,8 @@ import { useEffect, useRef, useState, useTransition, useActionState } from 'reac
 import { QuestCategory } from '../../types';
 import { createCategory, deleteCategory, updateCategory } from '@/actions/quest-category-actions';
 import styles from './category-select.module.css';
+import { PREDEFINED_COLORS } from '@/lib/category-colors';
+
 
 type CategorySelectProps = {
     categories: QuestCategory[];
@@ -28,6 +30,7 @@ function CategoryFormModal({ modal, onClose }: {
 }) {
     const isEditing = modal?.mode === 'edit';
     const category = modal?.mode === 'edit' ? modal.category : undefined;
+    const [selectedColor, setSelectedColor] = useState(category?.color ?? PREDEFINED_COLORS[0]);
 
     const [formState, formAction] = useActionState(
         isEditing ? updateCategory : createCategory,
@@ -52,6 +55,7 @@ function CategoryFormModal({ modal, onClose }: {
                 {formState.error && <div className={styles.modalError}>{formState.error}</div>}
                 <form action={formAction} className={styles.modalForm}>
                     {isEditing && <input type="hidden" name="id" value={category!.id} />}
+                    <input type="hidden" name="color" value={selectedColor} />
                     <input
                         type="text"
                         name="name"
@@ -61,6 +65,19 @@ function CategoryFormModal({ modal, onClose }: {
                         autoFocus
                         required
                     />
+                    <div className={styles.colorPickerLabel}>Color</div>
+                    <div className={styles.colorPicker}>
+                        {PREDEFINED_COLORS.map(color => (
+                            <button
+                                key={color}
+                                type="button"
+                                className={`${styles.colorSwatch} ${selectedColor === color ? styles.colorSwatchSelected : ''}`}
+                                style={{ backgroundColor: color }}
+                                onClick={() => setSelectedColor(color)}
+                                aria-label={color}
+                            />
+                        ))}
+                    </div>
                     <div className={styles.modalActions}>
                         <button type="button" className={styles.modalCancelBtn} onClick={() => onClose()}>Cancel</button>
                         <SubmitButton label={isEditing ? 'Save' : 'Add'} />
@@ -151,7 +168,12 @@ export default function CategorySelect({ categories: initialCategories, defaultV
                 className={`${styles.trigger} ${open ? styles.triggerOpen : ''}`}
                 onClick={() => open ? setOpen(false) : openDropdown()}
             >
-                <span>{displayLabel}</span>
+                <span className={styles.triggerContent}>
+                    {selectedCategory && (
+                        <span className={styles.colorDot} style={{ backgroundColor: selectedCategory.color }} />
+                    )}
+                    <span>{displayLabel}</span>
+                </span>
                 <span className={styles.chevron}>▾</span>
             </button>
 
@@ -171,6 +193,7 @@ export default function CategorySelect({ categories: initialCategories, defaultV
                             <>
                                 {builtIn.map(cat => (
                                     <div key={cat.id} className={`${styles.option} ${selectedId === cat.id ? styles.optionSelected : ''}`}>
+                                        <span className={`${styles.colorDot} ${styles.optionColorDot}`} style={{ backgroundColor: cat.color }} />
                                         <span className={styles.optionName} onClick={() => { setSelectedId(cat.id); setOpen(false); }}>{cat.name}</span>
                                     </div>
                                 ))}
@@ -179,6 +202,7 @@ export default function CategorySelect({ categories: initialCategories, defaultV
                                 )}
                                 {custom.map(cat => (
                         <div key={cat.id} className={`${styles.option} ${selectedId === cat.id ? styles.optionSelected : ''}`}>
+                            <span className={`${styles.colorDot} ${styles.optionColorDot}`} style={{ backgroundColor: cat.color }} />
                             <span className={styles.optionName} onClick={() => { setSelectedId(cat.id); setOpen(false); }}>{cat.name}</span>
                             {!cat.isBuiltIn && (
                                 <div className={styles.menuWrapper}>

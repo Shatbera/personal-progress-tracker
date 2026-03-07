@@ -76,7 +76,7 @@ export async function deleteDayPlan(dayPlanId: string) {
     }
 }
 
-export async function createDayBlock(dayPlanId: string, startMinutes: number, endMinutes: number, label: string) {
+export async function createDayBlock(dayPlanId: string, startMinutes: number, endMinutes: number, label: string, categoryId?: string | null) {
     if (!dayPlanId) {
         return { error: 'Day plan id is required.' };
     }
@@ -98,7 +98,7 @@ export async function createDayBlock(dayPlanId: string, startMinutes: number, en
     }
 
     try {
-        const block = await createDayBlockApi(dayPlanId, startMinutes, endMinutes, label.trim());
+        const block = await createDayBlockApi(dayPlanId, startMinutes, endMinutes, label.trim(), categoryId);
         revalidatePath('/day-plans');
         return { success: true, block };
     } catch (error) {
@@ -108,7 +108,7 @@ export async function createDayBlock(dayPlanId: string, startMinutes: number, en
     }
 }
 
-export async function updateDayBlock(dayPlanId: string, dayBlockId: string, startMinutes: number, endMinutes: number, label: string) {
+export async function updateDayBlock(dayPlanId: string, dayBlockId: string, startMinutes: number, endMinutes: number, label: string, categoryId?: string | null) {
     if (!dayPlanId) {
         return { error: 'Day plan id is required.' };
     }
@@ -134,7 +134,7 @@ export async function updateDayBlock(dayPlanId: string, dayBlockId: string, star
     }
 
     try {
-        await updateDayBlockApi(dayPlanId, dayBlockId, startMinutes, endMinutes, label.trim());
+        await updateDayBlockApi(dayPlanId, dayBlockId, startMinutes, endMinutes, label.trim(), categoryId);
         revalidatePath('/day-plans');
         return { success: true };
     } catch (error) {
@@ -166,7 +166,7 @@ export async function deleteDayBlock(dayPlanId: string, dayBlockId: string) {
 
 export async function resequenceDayBlocks(
     dayPlanId: string,
-    blocks: Array<{ id: string; startMinutes: number; endMinutes: number; label: string }>,
+    blocks: Array<{ id: string; startMinutes: number; endMinutes: number; label: string; categoryId?: string | null }>,
 ) {
     if (!dayPlanId) {
         return { error: 'Day plan id is required.' };
@@ -212,7 +212,7 @@ export async function resequenceDayBlocks(
     }
 }
 
-export async function addQuestToTodaysPlan(label: string) {
+export async function addQuestToTodaysPlan(label: string, categoryId?: string | null) {
     const { getTodaysPlan, createDayBlock: createDayBlockApi } = await import('@/lib/api/day-plans');
 
     const plan = await getTodaysPlan();
@@ -230,7 +230,7 @@ export async function addQuestToTodaysPlan(label: string) {
     }
 
     try {
-        await createDayBlockApi(plan.id, lastEndMinute, lastEndMinute + 60, label);
+        await createDayBlockApi(plan.id, lastEndMinute, lastEndMinute + 60, label, categoryId);
         revalidatePath('/day-plans');
         revalidatePath('/dashboard');
         return { success: true };
@@ -241,7 +241,7 @@ export async function addQuestToTodaysPlan(label: string) {
     }
 }
 
-export async function addQuestToTomorrowsPlan(label: string) {
+export async function addQuestToTomorrowsPlan(label: string, categoryId?: string | null) {
     const { getTomorrowsPlan, createDayBlock: createDayBlockApi } = await import('@/lib/api/day-plans');
 
     const plan = await getTomorrowsPlan();
@@ -259,7 +259,7 @@ export async function addQuestToTomorrowsPlan(label: string) {
     }
 
     try {
-        await createDayBlockApi(plan.id, lastEndMinute, lastEndMinute + 60, label);
+        await createDayBlockApi(plan.id, lastEndMinute, lastEndMinute + 60, label, categoryId);
         revalidatePath('/day-plans');
         revalidatePath('/dashboard');
         return { success: true };

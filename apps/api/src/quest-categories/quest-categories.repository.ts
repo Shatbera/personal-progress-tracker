@@ -22,7 +22,7 @@ export class QuestCategoriesRepository extends Repository<QuestCategory> {
     }
 
     async createCategory(dto: CreateCategoryDto, user: User): Promise<QuestCategory> {
-        const category = this.create({ name: dto.name, isBuiltIn: false, user });
+        const category = this.create({ name: dto.name, color: dto.color ?? '#6b7280', isBuiltIn: false, user });
         await this.save(category);
         return category;
     }
@@ -33,6 +33,7 @@ export class QuestCategoriesRepository extends Repository<QuestCategory> {
             throw new ForbiddenException(`You do not own this category`);
         }
         category.name = dto.name;
+        if (dto.color) category.color = dto.color;
         await this.save(category);
         return category;
     }

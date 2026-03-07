@@ -481,18 +481,81 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
 }
 
+.categoryIndicatorLine {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.45rem;
+    width: 1rem;
+    height: 0.2rem;
+    border-radius: 999px;
+    pointer-events: none;
+}
+
+/* stacked: time shown below label */
 .segmentHeader {
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* compact: time shown inline next to label */
+.segmentHeaderInline {
+    display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    gap: 0.4rem;
+    gap: 0;
+    min-width: 0;
+    overflow: hidden;
+    flex: 1;
+}
+
+.segmentRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    width: 100%;
+}
+
+.segmentSeparator {
+    flex-shrink: 0;
+    display: inline-block;
+    width: 1px;
+    height: 0.75em;
+    background: currentColor;
+    opacity: 0.3;
+    margin: 0 0.4rem;
+    vertical-align: middle;
 }
 
 .segmentTime {
     margin: 0;
-    font-size: 0.85rem;
-    opacity: 0.8;
+    font-size: 0.8rem;
+    opacity: 0.75;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.segmentCategory {
+    display: none;
+}
+
+.segmentCategoryBadge {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1;
+    padding: 0.2em 0.45em;
+    border-radius: 0.25rem;
+    background: rgba(255, 255, 255, 0.22);
+    color: inherit;
     white-space: nowrap;
 }

@@ -30,6 +30,6 @@ export class Quest {
     user: User;
     @OneToMany(() => QuestEvent, (event) => event.quest)
     events: QuestEvent[];
-    @ManyToOne(() => QuestCategory, category => category.quests, { nullable: true, eager: true })
+    @ManyToOne(() => QuestCategory, category => category.quests, { nullable: true, eager: true, onDelete: 'SET NULL' })
     category: QuestCategory;
 }

@@ -1,3 +1,4 @@
+import { QuestCategory } from "src/quest-categories/quest-category.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { DayPlan } from "./day-plan.entity";
 
@@ -21,4 +22,11 @@ export class DayBlock {
 
 	@Column()
 	label: string;
+
+	@Column({ nullable: true })
+	categoryId: string | null;
+
+	@ManyToOne(() => QuestCategory, { nullable: true, eager: false, onDelete: 'SET NULL' })
+	@JoinColumn({ name: "categoryId" })
+	category: QuestCategory | null;
 }

@@ -1,11 +1,13 @@
 'use client';
 
 import { DayPlan } from "@/app/(workspace)/(day-plans)/types";
+import { QuestCategory } from '@/app/(workspace)/(quests)/types';
 import { createDayBlock, deleteDayBlock, deleteDayPlan, resequenceDayBlocks, updateDayPlan } from '@/actions/day-plan-actions';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import DayBlockCreateModal from './day-block-create-modal';
+import PlanBlockItem from './plan-block-item';
 import DayPlanCreateModal, { DayPlanKind } from '@/app/(workspace)/(day-plans)/day-plans/_components/day-plan-create-modal';
 import styles from "./day-plan-details.module.css";
 
@@ -17,6 +19,7 @@ type DayPlanDetailsProps = {
 	managePlansHref?: string;
 	fullWidth?: boolean;
 	showPlanActions?: boolean;
+	categories?: QuestCategory[];
 };
 
 type InsertPosition = 'above' | 'below';
@@ -123,6 +126,7 @@ export default function DayPlanDetails({
 	managePlansHref = '/day-plans',
 	fullWidth = false,
 	showPlanActions = true,
+	categories = [],
 }: DayPlanDetailsProps) {
 	const router = useRouter();
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -131,6 +135,7 @@ export default function DayPlanDetails({
 	const [blockModalStartMinute, setBlockModalStartMinute] = useState(0);
 	const [blockModalInitialDurationMinutes, setBlockModalInitialDurationMinutes] = useState(30);
 	const [blockModalInitialLabel, setBlockModalInitialLabel] = useState('');
+	const [blockModalInitialCategoryId, setBlockModalInitialCategoryId] = useState<string | null>(null);
 	const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
 	const [insertAnchor, setInsertAnchor] = useState<{ blockId: string; position: InsertPosition } | null>(null);
 	const [contextMenu, setContextMenu] = useState<BlockContextMenuState | null>(null);
@@ -219,14 +224,14 @@ export default function DayPlanDetails({
 
 	const applySequentialUpdates = async (
 		orderedBlocks: DayPlan['blocks'],
-		overrides?: Map<string, { durationMinutes?: number; label?: string }>,
+		overrides?: Map<string, { durationMinutes?: number; label?: string; categoryId?: string | null }>,
 	): Promise<string | null> => {
 		if (!plan) {
 			return 'Day plan not found.';
 		}
 
 		let cursor = plan.startMinute;
-		const updates: Array<{ id: string; startMinutes: number; endMinutes: number; label: string }> = [];
+		const updates: Array<{ id: string; startMinutes: number; endMinutes: number; label: string; categoryId?: string | null }> = [];
 
 		for (const block of orderedBlocks) {
 			const override = overrides?.get(block.id);
@@ -246,7 +251,8 @@ export default function DayPlanDetails({
 				return 'Not enough remaining time in this plan.';
 			}
 
-			updates.push({ id: block.id, startMinutes: cursor, endMinutes: nextEnd, label });
+			const categoryId = override?.categoryId !== undefined ? override.categoryId : block.categoryId;
+			updates.push({ id: block.id, startMinutes: cursor, endMinutes: nextEnd, label, categoryId });
 			cursor = nextEnd;
 		}
 
@@ -279,6 +285,7 @@ export default function DayPlanDetails({
 		setBlockModalStartMinute(startMinute);
 		setBlockModalInitialDurationMinutes(maxDurationMinutes >= 60 ? 60 : 30);
 		setBlockModalInitialLabel('');
+		setBlockModalInitialCategoryId(null);
 		setIsBlockModalOpen(true);
 	};
 
@@ -299,6 +306,7 @@ export default function DayPlanDetails({
 		setBlockModalStartMinute(block.startMinute);
 		setBlockModalInitialDurationMinutes(getBlockDuration(block));
 		setBlockModalInitialLabel(block.label);
+		setBlockModalInitialCategoryId(block.categoryId);
 		setIsBlockModalOpen(true);
 	};
 
@@ -329,6 +337,7 @@ export default function DayPlanDetails({
 		setBlockModalStartMinute(startMinute);
 		setBlockModalInitialDurationMinutes(remainingAtEnd >= 60 ? 60 : 30);
 		setBlockModalInitialLabel('');
+		setBlockModalInitialCategoryId(null);
 		setIsBlockModalOpen(true);
 	};
 
@@ -367,9 +376,11 @@ export default function DayPlanDetails({
 	const handleBlockModalSubmit = async ({
 		label,
 		durationMinutes,
+		categoryId,
 	}: {
 		label: string;
 		durationMinutes: number;
+		categoryId: string | null;
 	}): Promise<string | null> => {
 		if (!plan || readOnly) {
 			return 'Day plan not found.';
@@ -388,7 +399,7 @@ export default function DayPlanDetails({
 					return 'Not enough remaining time in this plan.';
 				}
 
-				const createResult = await createDayBlock(plan.id, appendStartMinute, appendEndMinute, label);
+				const createResult = await createDayBlock(plan.id, appendStartMinute, appendEndMinute, label, categoryId);
 				if ('error' in createResult && createResult.error) {
 					return createResult.error;
 				}
@@ -423,7 +434,7 @@ export default function DayPlanDetails({
 				return 'Not enough remaining time in this plan.';
 			}
 
-			const result = await createDayBlock(plan.id, blockModalStartMinute, endMinute, label);
+			const result = await createDayBlock(plan.id, blockModalStartMinute, endMinute, label, categoryId);
 			if ('error' in result && result.error) {
 				return result.error;
 			}
@@ -436,8 +447,8 @@ export default function DayPlanDetails({
 			return 'Block not found.';
 		}
 
-		const overrideMap = new Map<string, { durationMinutes?: number; label?: string }>();
-		overrideMap.set(selectedBlockId, { durationMinutes, label });
+		const overrideMap = new Map<string, { durationMinutes?: number; label?: string; categoryId?: string | null }>();
+		overrideMap.set(selectedBlockId, { durationMinutes, label, categoryId });
 
 		const error = await applySequentialUpdates(sortedBlocks, overrideMap);
 		if (error) {
@@ -743,42 +754,17 @@ export default function DayPlanDetails({
 							const heightPercent = ((block.endMinute - block.startMinute) / totalMinutes) * 100;
 
 							return (
-								<article
+								<PlanBlockItem
 									key={block.id}
-									className={`${styles.planBlock} ${!readOnly ? styles.planBlockInteractive : ''}`}
-									onContextMenu={(event) => {
-										if (readOnly) {
-											return;
-										}
-										if (isContextMenuBusy) {
-											return;
-										}
-										if (getContextMenuOptionCount(block.id) === 0) {
-											return;
-										}
-										event.preventDefault();
-										event.stopPropagation();
-										setContextMenu({ blockId: block.id, x: event.clientX, y: event.clientY });
-									}}
-									onClick={(event) => {
-										if (!readOnly) {
-											event.stopPropagation();
-											setContextMenu(null);
-											openEditBlockModal(block.id);
-										}
-									}}
-									style={{
-										top: `${topPercent}%`,
-										height: `${heightPercent}%`,
-									}}
-								>
-									<div className={styles.segmentHeader}>
-										<p className={styles.segmentLabel}>{block.label}</p>
-										<p className={styles.segmentTime}>
-											{minuteToClock(block.startMinute)} - {minuteToClock(block.endMinute)}
-										</p>
-									</div>
-								</article>
+									block={block}
+									topPercent={topPercent}
+									heightPercent={heightPercent}
+									readOnly={readOnly}
+									isContextMenuBusy={isContextMenuBusy}
+									hasContextMenuOptions={getContextMenuOptionCount(block.id) > 0}
+									onContextMenu={(blockId, x, y) => setContextMenu({ blockId, x, y })}
+									onClick={(blockId) => { setContextMenu(null); openEditBlockModal(blockId); }}
+								/>
 							);
 						})}
 					</div>
@@ -852,8 +838,8 @@ export default function DayPlanDetails({
 					startMinute={blockModalStartMinute}
 					maxDurationMinutes={Math.max(30, plan.endMinute - blockModalStartMinute)}
 					initialLabel={blockModalInitialLabel}
-					initialDurationMinutes={blockModalInitialDurationMinutes}
-					onSubmitBlock={handleBlockModalSubmit}
+					initialDurationMinutes={blockModalInitialDurationMinutes}				initialCategoryId={blockModalInitialCategoryId}
+				categories={categories}					onSubmitBlock={handleBlockModalSubmit}
 					onDeleteBlock={blockModalMode === 'edit' ? handleDeleteBlock : undefined}
 				/>
 			)}

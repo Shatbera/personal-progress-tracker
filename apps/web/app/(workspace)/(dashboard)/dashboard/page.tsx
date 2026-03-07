@@ -4,14 +4,16 @@ import DashboardStatsBar from './_components/stats';
 import styles from './page.module.css';
 import { getDashboard } from '@/lib/api/dashboard';
 import { getTodaysPlan } from '@/lib/api/day-plans';
+import { getCategories } from '@/lib/api/quest-categories';
 import DayPlanDetails from '../../(day-plans)/day-plans/_components/day-plan-details';
 
 export default async function DashboardPage() {
     const { getTomorrowsPlan } = await import('@/lib/api/day-plans');
-    const [dashboard, todaysPlan, tomorrowsPlan] = await Promise.all([
+    const [dashboard, todaysPlan, tomorrowsPlan, categories] = await Promise.all([
         getDashboard(),
         getTodaysPlan(),
         getTomorrowsPlan(),
+        getCategories(),
     ]);
 
     return (
@@ -23,7 +25,7 @@ export default async function DashboardPage() {
                 </div>
                 <DashboardStatsBar stats={dashboard.stats} />
                 <div className={styles.planAndQuests}>
-                    <DayPlanDetails kind="today" plan={todaysPlan} fullWidth showPlanActions={false} />
+                    <DayPlanDetails kind="today" plan={todaysPlan} fullWidth showPlanActions={false} categories={categories} />
                     <ActiveQuests quests={dashboard.activeQuests.activeQuests} hasTodaysPlan={!!todaysPlan} hasTomorrowsPlan={!!tomorrowsPlan} />
                 </div>
             </div>

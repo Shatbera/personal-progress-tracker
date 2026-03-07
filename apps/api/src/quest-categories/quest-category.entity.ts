@@ -10,6 +10,9 @@ export class QuestCategory {
     @Column()
     name: string;
 
+    @Column({ default: '#6c757d' })
+    color: string;
+
     @Column({ default: false })
     isBuiltIn: boolean;
 

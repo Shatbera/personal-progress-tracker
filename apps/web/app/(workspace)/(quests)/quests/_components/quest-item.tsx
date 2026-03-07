@@ -23,6 +23,13 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
 
     const isCompleted = quest.completedAt !== null;
     const isArchived = quest.archivedAt !== null;
+    const categoryBadgeStyle = quest.category
+        ? {
+            backgroundColor: `${quest.category.color}22`,
+            color: quest.category.color,
+            border: `1px solid ${quest.category.color}55`,
+        }
+        : undefined;
 
     const handleDelete = () => {
         setMenuOpen(false);
@@ -167,10 +174,10 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
             <p className={styles.description}>{quest.description}</p>
 
             {quest.category ? (
-                <span className={styles.categoryBadge}>{quest.category.name}</span>
-            ) : (
-                <span className={styles.categoryBadge}>Uncategorized</span>
-            )}
+                <span className={styles.categoryBadge} style={categoryBadgeStyle}>
+                    {quest.category.name}
+                </span>
+            ) : null}
 
             <div className={styles.progressContainer}>
                 {isArchived ? (
@@ -215,7 +222,7 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
                                 <button
                                     className={styles.addToPlanButton}
                                     onClick={async () => {
-                                        const result = await addQuestToTodaysPlan(quest.title);
+                                        const result = await addQuestToTodaysPlan(quest.title, quest.category?.id);
                                         if (result.error) alert(result.error);
                                     }}
                                     title="Add a 1-hour block for this quest to today's plan"
@@ -227,7 +234,7 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
                                 <button
                                     className={styles.addToPlanButton}
                                     onClick={async () => {
-                                        const result = await addQuestToTomorrowsPlan(quest.title);
+                                        const result = await addQuestToTomorrowsPlan(quest.title, quest.category?.id);
                                         if (result.error) alert(result.error);
                                     }}
                                     title="Add a 1-hour block for this quest to tomorrow's plan"

@@ -1,11 +1,11 @@
 import { QuestCategory } from '@/app/(workspace)/(quests)/types';
 import { apiFetch } from './client';
 
-export async function createCategory(name: string): Promise<QuestCategory> {
+export async function createCategory(name: string, color: string): Promise<QuestCategory> {
     const response = await apiFetch('/quest-categories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ name, color }),
     });
 
     if (!response.ok) {
@@ -15,11 +15,11 @@ export async function createCategory(name: string): Promise<QuestCategory> {
     return await response.json();
 }
 
-export async function updateCategory(id: string, name: string): Promise<QuestCategory> {
+export async function updateCategory(id: string, name: string, color: string): Promise<QuestCategory> {
     const response = await apiFetch(`/quest-categories/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ name, color }),
     });
 
     if (!response.ok) {
