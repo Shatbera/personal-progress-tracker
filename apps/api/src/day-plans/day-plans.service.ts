@@ -55,6 +55,14 @@ export class DayPlansService {
 		return this.dayPlansRepository.deleteBlock(dayPlanId, dayBlockId, user);
 	}
 
+	public toggleBlockCompletion(dayPlanId: string, dayBlockId: string, isCompleted: boolean, user: User): Promise<DayBlock> {
+		return this.dayPlansRepository.toggleBlockCompletion(dayPlanId, dayBlockId, isCompleted, user);
+	}
+
+	public updateReflection(dayPlanId: string, reflection: string, user: User): Promise<DayPlan> {
+		return this.dayPlansRepository.updateReflection(dayPlanId, reflection, user);
+	}
+
 	public resequenceBlocks(dayPlanId: string, resequenceDayBlocksDto: ResequenceDayBlocksDto, user: User): Promise<DayPlan> {
 		return this.dayPlansRepository.resequenceBlocks(dayPlanId, resequenceDayBlocksDto, user);
 	}

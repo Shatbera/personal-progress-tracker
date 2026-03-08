@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
@@ -43,6 +43,25 @@ export class DayPlansController {
 		@GetUser() user: User,
 	): Promise<DayPlan> {
 		return this.dayPlansService.createPlanForTomorrow(createDayPlanDto, user);
+	}
+
+	@Patch(':id/blocks/:blockId/completion')
+	public toggleBlockCompletion(
+		@Param('id') dayPlanId: string,
+		@Param('blockId') dayBlockId: string,
+		@Body('isCompleted') isCompleted: boolean,
+		@GetUser() user: User,
+	): Promise<DayBlock> {
+		return this.dayPlansService.toggleBlockCompletion(dayPlanId, dayBlockId, isCompleted, user);
+	}
+
+	@Patch(':id/reflection')
+	public updateReflection(
+		@Param('id') dayPlanId: string,
+		@Body('reflection') reflection: string,
+		@GetUser() user: User,
+	): Promise<DayPlan> {
+		return this.dayPlansService.updateReflection(dayPlanId, reflection ?? '', user);
 	}
 
 	@Put(':id')

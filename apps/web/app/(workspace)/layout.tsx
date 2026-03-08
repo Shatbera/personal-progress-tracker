@@ -4,7 +4,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
     return (
         <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
             <Sidebar />
-            <main style={{ flex: 1, minWidth: 0, overflowY: 'auto' }}>
+            <main style={{ flex: 1, minWidth: 0, overflowY: 'auto', scrollbarGutter: 'stable' }}>
                 {children}
             </main>
         </div>

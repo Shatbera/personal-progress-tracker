@@ -7,6 +7,9 @@ import { CreateDayBlockDto } from "./dto/create-day-block.dto";
 import { CreateDayPlanDto } from "./dto/create-day-plan.dto";
 import { ResequenceDayBlocksDto } from "./dto/resequence-day-blocks.dto";
 import { QuestCategory } from "src/quest-categories/quest-category.entity";
+import { QuestEvent } from "src/quest-events/quest-event.entity";
+import { QuestEventType } from "src/quest-events/quest-event-type.enum";
+import { Quest } from "src/quests/quest.entity";
 
 @Injectable()
 export class DayPlansRepository extends Repository<DayPlan> {
@@ -169,6 +172,7 @@ export class DayPlansRepository extends Repository<DayPlan> {
 			dayPlan,
 			dayPlanId: dayPlan.id,
 			categoryId: createDayBlockDto.categoryId ?? null,
+			questId: createDayBlockDto.questId ?? null,
 		});
 
 		const saved = await dayBlockRepository.save(dayBlock);
@@ -233,6 +237,26 @@ export class DayPlansRepository extends Repository<DayPlan> {
 				: null;
 		}
 
+		if (createDayBlockDto.questId !== undefined) {
+			const oldQuestId = dayBlock.questId;
+			const newQuestId = createDayBlockDto.questId ?? null;
+
+			if (oldQuestId !== newQuestId && dayBlock.isCompleted) {
+				// Unlink old quest log
+				if (oldQuestId && dayBlock.questLogId) {
+					await this.deleteQuestLogForBlock(dayBlock.questLogId, oldQuestId, user);
+					dayBlock.questLogId = null;
+				}
+				// Link new quest log
+				if (newQuestId) {
+					const questEvent = await this.createQuestLogForBlock(newQuestId, user);
+					dayBlock.questLogId = questEvent.id;
+				}
+			}
+
+			dayBlock.questId = newQuestId;
+		}
+
 		const saved = await dayBlockRepository.save(dayBlock);
 		return dayBlockRepository.findOne({ where: { id: saved.id }, relations: ['category'] }) as Promise<DayBlock>;
 	}
@@ -252,6 +276,15 @@ export class DayPlansRepository extends Repository<DayPlan> {
 				throw new NotFoundException('Day block not found');
 			}
 
+			// Clean up quest log if block was linked and completed
+			if (dayBlock.questId && dayBlock.questLogId) {
+				const questEventRepository = transactionalEntityManager.getRepository(QuestEvent);
+				const questEvent = await questEventRepository.findOne({ where: { id: dayBlock.questLogId } });
+				if (questEvent) {
+					await questEventRepository.remove(questEvent);
+				}
+			}
+
 			const removedDurationMinutes = dayBlock.endMinute - dayBlock.startMinute;
 			const removedEndMinute = dayBlock.endMinute;
 
@@ -269,6 +302,111 @@ export class DayPlansRepository extends Repository<DayPlan> {
 					.execute();
 			}
 		});
+	}
+
+	public async toggleBlockCompletion(dayPlanId: string, dayBlockId: string, isCompleted: boolean, user: User): Promise<DayBlock> {
+		const dayBlockRepository = this.dataSource.getRepository(DayBlock);
+
+		const dayBlock = await dayBlockRepository.createQueryBuilder('block')
+			.innerJoin('block.dayPlan', 'dayPlan')
+			.where('block.id = :dayBlockId', { dayBlockId })
+			.andWhere('block.dayPlanId = :dayPlanId', { dayPlanId })
+			.andWhere('dayPlan.userId = :userId', { userId: user.id })
+			.getOne();
+
+		if (!dayBlock) {
+			throw new NotFoundException('Day block not found');
+		}
+
+		dayBlock.isCompleted = isCompleted;
+
+		if (dayBlock.questId) {
+			if (isCompleted && !dayBlock.questLogId) {
+				const questEvent = await this.createQuestLogForBlock(dayBlock.questId, user);
+				dayBlock.questLogId = questEvent.id;
+			} else if (!isCompleted && dayBlock.questLogId) {
+				await this.deleteQuestLogForBlock(dayBlock.questLogId, dayBlock.questId, user);
+				dayBlock.questLogId = null;
+			}
+		}
+
+		await dayBlockRepository.save(dayBlock);
+		return dayBlockRepository.findOne({ where: { id: dayBlock.id }, relations: ['category'] }) as Promise<DayBlock>;
+	}
+
+	private async createQuestLogForBlock(questId: string, user: User): Promise<QuestEvent> {
+		const questEventRepository = this.dataSource.getRepository(QuestEvent);
+		const questRepository = this.dataSource.getRepository(Quest);
+
+		const quest = await questRepository.findOne({ where: { id: questId, user: { id: user.id } } });
+		if (!quest) {
+			throw new NotFoundException('Linked quest not found');
+		}
+
+		const currentPoints = await this.getCurrentPointsForQuest(questId, user.id);
+		const nextPoints = currentPoints + 1;
+		const justCompleted = nextPoints >= quest.maxPoints;
+
+		if (justCompleted) {
+			quest.completedAt = new Date();
+			await questRepository.save(quest);
+		}
+
+		const questEvent = questEventRepository.create({
+			eventType: justCompleted ? QuestEventType.COMPLETE : QuestEventType.PROGRESS,
+			pointsChanged: 1,
+			quest: { id: questId } as Quest,
+			user,
+		});
+		return questEventRepository.save(questEvent);
+	}
+
+	private async deleteQuestLogForBlock(questLogId: string, questId: string, user: User): Promise<void> {
+		const questEventRepository = this.dataSource.getRepository(QuestEvent);
+		const questRepository = this.dataSource.getRepository(Quest);
+
+		const questEvent = await questEventRepository.findOne({ where: { id: questLogId } });
+		if (questEvent) {
+			await questEventRepository.remove(questEvent);
+		}
+
+		const quest = await questRepository.findOne({ where: { id: questId, user: { id: user.id } } });
+		if (quest && quest.completedAt) {
+			const currentPoints = await this.getCurrentPointsForQuest(questId, user.id);
+			if (currentPoints < quest.maxPoints) {
+				quest.completedAt = null;
+				await questRepository.save(quest);
+			}
+		}
+	}
+
+	private async getCurrentPointsForQuest(questId: string, userId: string): Promise<number> {
+		const questEventRepository = this.dataSource.getRepository(QuestEvent);
+
+		const raw = await questEventRepository.createQueryBuilder('questEvent')
+			.select('COALESCE(SUM(questEvent.pointsChanged), 0)', 'points')
+			.where('questEvent.questId = :questId', { questId })
+			.andWhere('questEvent.userId = :userId', { userId })
+			.getRawOne<{ points: string | number | null }>();
+
+		return Number(raw?.points ?? 0);
+	}
+
+	public async updateReflection(dayPlanId: string, reflection: string, user: User): Promise<DayPlan> {
+		const dayPlan = await this.createQueryBuilder('dayPlan')
+			.leftJoinAndSelect('dayPlan.blocks', 'block')
+			.leftJoinAndSelect('block.category', 'blockCategory')
+			.where('dayPlan.id = :dayPlanId', { dayPlanId })
+			.andWhere('dayPlan.userId = :userId', { userId: user.id })
+			.orderBy('block.startMinute', 'ASC')
+			.getOne();
+
+		if (!dayPlan) {
+			throw new NotFoundException('Day plan not found');
+		}
+
+		dayPlan.reflection = reflection;
+		return this.save(dayPlan);
 	}
 
 	public async resequenceBlocks(dayPlanId: string, resequenceDayBlocksDto: ResequenceDayBlocksDto, user: User): Promise<DayPlan> {
@@ -327,7 +465,9 @@ export class DayPlansRepository extends Repository<DayPlan> {
 		}
 
 		const dayBlockRepository = this.dataSource.getRepository(DayBlock);
-		const updatedBlocks = incomingBlocks.map((incomingBlock) => {
+		const updatedBlocks: DayBlock[] = [];
+
+		for (const incomingBlock of incomingBlocks) {
 			const existingBlock = existingById.get(incomingBlock.id)!;
 			existingBlock.startMinute = incomingBlock.startMinutes;
 			existingBlock.endMinute = incomingBlock.endMinutes;
@@ -338,8 +478,25 @@ export class DayPlansRepository extends Repository<DayPlan> {
 					? ({ id: incomingBlock.categoryId } as QuestCategory)
 					: null;
 			}
-			return existingBlock;
-		});
+			if (incomingBlock.questId !== undefined) {
+				const oldQuestId = existingBlock.questId;
+				const newQuestId = incomingBlock.questId ?? null;
+
+				if (oldQuestId !== newQuestId && existingBlock.isCompleted) {
+					if (oldQuestId && existingBlock.questLogId) {
+						await this.deleteQuestLogForBlock(existingBlock.questLogId, oldQuestId, user);
+						existingBlock.questLogId = null;
+					}
+					if (newQuestId) {
+						const questEvent = await this.createQuestLogForBlock(newQuestId, user);
+						existingBlock.questLogId = questEvent.id;
+					}
+				}
+
+				existingBlock.questId = newQuestId;
+			}
+			updatedBlocks.push(existingBlock);
+		}
 
 		await dayBlockRepository.save(updatedBlocks);
 

@@ -417,7 +417,7 @@
     left: 0.45rem;
     right: 0.45rem;
     min-height: 2.15rem;
-    padding: 0.45rem 0.55rem;
+    padding: 0.45rem 0.55rem 0.45rem 2rem;
     border-radius: 0.2rem;
     background: #67a95f;
     border: 1px solid color-mix(in srgb, #ffffff 55%, transparent);
@@ -558,4 +558,41 @@
     background: rgba(255, 255, 255, 0.22);
     color: inherit;
     white-space: nowrap;
+}
+
+.planBlockCompleted {
+    opacity: 0.55;
+}
+
+.blockCheckboxRow {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.blockCheckbox {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.2rem;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #ffffff;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.blockCheckboxChecked {
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.9);
 }

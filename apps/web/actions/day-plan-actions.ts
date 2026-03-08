@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { createDayBlock as createDayBlockApi, createPlanForToday, createPlanForTomorrow, deleteDayBlock as deleteDayBlockApi, deleteDayPlan as deleteDayPlanApi, resequenceDayBlocks as resequenceDayBlocksApi, updateDayBlock as updateDayBlockApi, updateDayPlan as updateDayPlanApi } from '@/lib/api/day-plans';
+import { createDayBlock as createDayBlockApi, createPlanForToday, createPlanForTomorrow, deleteDayBlock as deleteDayBlockApi, deleteDayPlan as deleteDayPlanApi, resequenceDayBlocks as resequenceDayBlocksApi, toggleBlockCompletion as toggleBlockCompletionApi, updateDayBlock as updateDayBlockApi, updateDayPlan as updateDayPlanApi, updateReflection as updateReflectionApi } from '@/lib/api/day-plans';
 
 export async function createDayPlan(kind: 'today' | 'tomorrow', startMinutes: number, endMinutes: number) {
     if (!Number.isInteger(startMinutes) || !Number.isInteger(endMinutes)) {
@@ -76,7 +76,40 @@ export async function deleteDayPlan(dayPlanId: string) {
     }
 }
 
-export async function createDayBlock(dayPlanId: string, startMinutes: number, endMinutes: number, label: string, categoryId?: string | null) {
+export async function toggleBlockCompletion(dayPlanId: string, dayBlockId: string, isCompleted: boolean) {
+    if (!dayPlanId || !dayBlockId) {
+        return { error: 'Day plan id and block id are required.' };
+    }
+
+    try {
+        await toggleBlockCompletionApi(dayPlanId, dayBlockId, isCompleted);
+        revalidatePath('/day-plans');
+        revalidatePath('/quests');
+        return { success: true };
+    } catch (error) {
+        return {
+            error: error instanceof Error ? error.message : 'Failed to toggle block completion',
+        };
+    }
+}
+
+export async function updateReflection(dayPlanId: string, reflection: string) {
+    if (!dayPlanId) {
+        return { error: 'Day plan id is required.' };
+    }
+
+    try {
+        await updateReflectionApi(dayPlanId, reflection);
+        revalidatePath('/day-plans');
+        return { success: true };
+    } catch (error) {
+        return {
+            error: error instanceof Error ? error.message : 'Failed to update reflection',
+        };
+    }
+}
+
+export async function createDayBlock(dayPlanId: string, startMinutes: number, endMinutes: number, label: string, categoryId?: string | null, questId?: string | null) {
     if (!dayPlanId) {
         return { error: 'Day plan id is required.' };
     }
@@ -98,7 +131,7 @@ export async function createDayBlock(dayPlanId: string, startMinutes: number, en
     }
 
     try {
-        const block = await createDayBlockApi(dayPlanId, startMinutes, endMinutes, label.trim(), categoryId);
+        const block = await createDayBlockApi(dayPlanId, startMinutes, endMinutes, label.trim(), categoryId, questId);
         revalidatePath('/day-plans');
         return { success: true, block };
     } catch (error) {
@@ -166,7 +199,7 @@ export async function deleteDayBlock(dayPlanId: string, dayBlockId: string) {
 
 export async function resequenceDayBlocks(
     dayPlanId: string,
-    blocks: Array<{ id: string; startMinutes: number; endMinutes: number; label: string; categoryId?: string | null }>,
+    blocks: Array<{ id: string; startMinutes: number; endMinutes: number; label: string; categoryId?: string | null; questId?: string | null }>,
 ) {
     if (!dayPlanId) {
         return { error: 'Day plan id is required.' };
@@ -212,7 +245,7 @@ export async function resequenceDayBlocks(
     }
 }
 
-export async function addQuestToTodaysPlan(label: string, categoryId?: string | null) {
+export async function addQuestToTodaysPlan(label: string, categoryId?: string | null, questId?: string | null) {
     const { getTodaysPlan, createDayBlock: createDayBlockApi } = await import('@/lib/api/day-plans');
 
     const plan = await getTodaysPlan();
@@ -230,7 +263,7 @@ export async function addQuestToTodaysPlan(label: string, categoryId?: string | 
     }
 
     try {
-        await createDayBlockApi(plan.id, lastEndMinute, lastEndMinute + 60, label, categoryId);
+        await createDayBlockApi(plan.id, lastEndMinute, lastEndMinute + 60, label, categoryId, questId);
         revalidatePath('/day-plans');
         revalidatePath('/dashboard');
         return { success: true };
@@ -241,7 +274,7 @@ export async function addQuestToTodaysPlan(label: string, categoryId?: string | 
     }
 }
 
-export async function addQuestToTomorrowsPlan(label: string, categoryId?: string | null) {
+export async function addQuestToTomorrowsPlan(label: string, categoryId?: string | null, questId?: string | null) {
     const { getTomorrowsPlan, createDayBlock: createDayBlockApi } = await import('@/lib/api/day-plans');
 
     const plan = await getTomorrowsPlan();
@@ -259,7 +292,7 @@ export async function addQuestToTomorrowsPlan(label: string, categoryId?: string
     }
 
     try {
-        await createDayBlockApi(plan.id, lastEndMinute, lastEndMinute + 60, label, categoryId);
+        await createDayBlockApi(plan.id, lastEndMinute, lastEndMinute + 60, label, categoryId, questId);
         revalidatePath('/day-plans');
         revalidatePath('/dashboard');
         return { success: true };

@@ -17,4 +17,8 @@ export class CreateDayBlockDto {
 	@IsOptional()
 	@IsUUID()
 	categoryId?: string | null;
+
+	@IsOptional()
+	@IsUUID()
+	questId?: string | null;
 }

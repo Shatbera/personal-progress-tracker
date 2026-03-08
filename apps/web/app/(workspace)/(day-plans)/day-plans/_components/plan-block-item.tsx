@@ -1,6 +1,8 @@
 'use client';
 
 import { DayBlock } from '@/app/(workspace)/(day-plans)/types';
+import { toggleBlockCompletion } from '@/actions/day-plan-actions';
+import { useEffect, useState } from 'react';
 import styles from './day-plan-details.module.css';
 
 function minuteToClock(minute: number): string {
@@ -21,6 +23,7 @@ function minuteToClock(minute: number): string {
 
 type PlanBlockItemProps = {
     block: DayBlock;
+    dayPlanId: string;
     topPercent: number;
     heightPercent: number;
     readOnly: boolean;
@@ -34,6 +37,7 @@ const STACKED_THRESHOLD_PERCENT = 7;
 
 export default function PlanBlockItem({
     block,
+    dayPlanId,
     topPercent,
     heightPercent,
     readOnly,
@@ -43,10 +47,26 @@ export default function PlanBlockItem({
     onClick,
 }: PlanBlockItemProps) {
     const isStacked = heightPercent >= STACKED_THRESHOLD_PERCENT;
+    const [optimisticCompleted, setOptimisticCompleted] = useState(block.isCompleted);
+
+    useEffect(() => {
+        setOptimisticCompleted(block.isCompleted);
+    }, [block.isCompleted]);
+
+    const handleCheckboxChange = (event: React.MouseEvent) => {
+        event.stopPropagation();
+        const next = !optimisticCompleted;
+        setOptimisticCompleted(next);
+        toggleBlockCompletion(dayPlanId, block.id, next).then((result) => {
+            if (result.error) {
+                setOptimisticCompleted(!next);
+            }
+        });
+    };
 
     return (
         <article
-            className={`${styles.planBlock} ${!readOnly ? styles.planBlockInteractive : ''}`}
+            className={`${styles.planBlock} ${!readOnly ? styles.planBlockInteractive : ''} ${optimisticCompleted ? styles.planBlockCompleted : ''}`}
             onContextMenu={(event) => {
                 if (readOnly || isContextMenuBusy || !hasContextMenuOptions) {
                     return;
@@ -73,6 +93,11 @@ export default function PlanBlockItem({
                     aria-hidden="true"
                 />
             )}
+            <div className={styles.blockCheckboxRow} onClick={handleCheckboxChange}>
+                <span className={`${styles.blockCheckbox} ${optimisticCompleted ? styles.blockCheckboxChecked : ''}`} aria-hidden="true">
+                    {optimisticCompleted && '✓'}
+                </span>
+            </div>
             {isStacked ? (
                 <div className={styles.segmentRow}>
                     <div className={styles.segmentHeader}>

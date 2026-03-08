@@ -4,12 +4,15 @@ import { QuestsRepository } from 'src/quests/quests.repository';
 import { QuestEventType } from './quest-event-type.enum';
 import { User } from 'src/auth/user.entity';
 import { QuestEvent } from './quest-event.entity';
+import { DataSource } from 'typeorm';
+import { DailyTrackEntry } from 'src/daily-track/daily-track-entry.entity';
 
 @Injectable()
 export class QuestEventsService {
     constructor(
         private readonly questEventsRepository: QuestEventsRepository,
-        private readonly questsRepository: QuestsRepository
+        private readonly questsRepository: QuestsRepository,
+        private readonly dataSource: DataSource,
     ) { }
 
     public async logProgress(questId: string, user: User): Promise<QuestEvent> {
@@ -90,10 +93,27 @@ export class QuestEventsService {
         
         await this.questsRepository.save(quest);
 
-        return await this.questEventsRepository.createQuestEvent(questId, {
+        const resetEvent = await this.questEventsRepository.createQuestEvent(questId, {
             eventType: QuestEventType.RESET,
             pointsChanged: -previousPoints,
         }, user);
+
+        const dailyTrackEntryRepo = this.dataSource.getRepository(DailyTrackEntry);
+        const checkedEntries = await dailyTrackEntryRepo
+            .createQueryBuilder('entry')
+            .innerJoin('entry.dailyTrack', 'dailyTrack')
+            .where('dailyTrack.questId = :questId', { questId })
+            .andWhere('entry.progressQuestEventId IS NOT NULL')
+            .getMany();
+
+        if (checkedEntries.length > 0) {
+            for (const entry of checkedEntries) {
+                entry.progressQuestEventId = null;
+            }
+            await dailyTrackEntryRepo.save(checkedEntries);
+        }
+
+        return resetEvent;
     }
 
     public async getQuestEvents(questId: string, user: User): Promise<QuestEvent[]> {
@@ -104,5 +124,62 @@ export class QuestEventsService {
             },
             order: { createdAt: 'DESC' },
         });
+    }
+
+    public async getWeeklyHistory(questId: string, user: User): Promise<{ weekNumber: number; weekStart: string; weekEnd: string; points: number; maxPoints: number }[]> {
+        const quest = await this.questsRepository.findOne({
+            where: { id: questId, user: { id: user.id } }
+        });
+
+        if (!quest) {
+            throw new NotFoundException(`Quest with ID "${questId}" not found`);
+        }
+
+        const events = await this.questEventsRepository.find({
+            where: {
+                quest: { id: questId },
+                user: { id: user.id }
+            },
+            order: { createdAt: 'ASC' },
+        });
+
+        if (events.length === 0) {
+            return [];
+        }
+
+        // Group events by week
+        const weekMap = new Map<number, { points: number; weekStart: Date; weekEnd: Date }>();
+        
+        for (const event of events) {
+            const eventDate = new Date(event.createdAt);
+            const weekStart = new Date(eventDate);
+            weekStart.setHours(0, 0, 0, 0);
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Start of week (Sunday)
+            
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6); // End of week (Saturday)
+            
+            const weekKey = weekStart.getTime();
+            
+            if (!weekMap.has(weekKey)) {
+                weekMap.set(weekKey, { points: 0, weekStart, weekEnd });
+            }
+            
+            const weekData = weekMap.get(weekKey)!;
+            weekData.points += event.pointsChanged;
+        }
+
+        // Convert to array and sort by week
+        const sortedWeeks = Array.from(weekMap.entries())
+            .sort(([a], [b]) => a - b)
+            .map(([_, data], index) => ({
+                weekNumber: index + 1,
+                weekStart: data.weekStart.toISOString().split('T')[0],
+                weekEnd: data.weekEnd.toISOString().split('T')[0],
+                points: Math.max(0, data.points), // Ensure non-negative
+                maxPoints: quest.maxPoints,
+            }));
+
+        return sortedWeeks;
     }
 }

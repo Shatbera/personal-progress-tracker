@@ -21,6 +21,10 @@ class ResequenceDayBlockItemDto {
 	@IsOptional()
 	@IsUUID()
 	categoryId?: string | null;
+
+	@IsOptional()
+	@IsUUID()
+	questId?: string | null;
 }
 
 export class ResequenceDayBlocksDto {

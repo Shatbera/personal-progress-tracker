@@ -8,6 +8,9 @@ export type DayBlock = {
     label: string;
     categoryId: string | null;
     category: QuestCategory | null;
+    isCompleted: boolean;
+    questId: string | null;
+    questLogId: string | null;
 };
 
 export type DayPlan = {
@@ -15,5 +18,6 @@ export type DayPlan = {
     date: string;
     startMinute: number;
     endMinute: number;
+    reflection: string;
     blocks: DayBlock[];
 };

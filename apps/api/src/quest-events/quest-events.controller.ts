@@ -41,4 +41,12 @@ export class QuestEventsController {
     ): Promise<QuestEvent[]> {
         return this.questEventsService.getQuestEvents(questId, user,);
     }
+
+    @Get("weekly-history")
+    public getWeeklyHistory(
+        @Param("questId") questId: string,
+        @GetUser() user: User
+    ): Promise<{ weekNumber: number; weekStart: string; weekEnd: string; points: number; maxPoints: number }[]> {
+        return this.questEventsService.getWeeklyHistory(questId, user);
+    }
 }

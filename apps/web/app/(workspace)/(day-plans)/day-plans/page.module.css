@@ -1,13 +1,39 @@
 .main {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
+    display: block;
     padding: 1.5rem;
-    align-items: start;
 }
 
-@media (max-width: 1200px) {
-    .main {
-        grid-template-columns: 1fr;
-    }
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.tabRow {
+    display: inline-flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.25rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #f9fafb;
+}
+
+.tabButton {
+    border: 1px solid transparent;
+    background: transparent;
+    color: #4b5563;
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tabButton:hover {
+    background: #eef2f7;
+}
+
+.tabButtonActive {
+    background: #ffffff;
+    color: #111827;
+    border-color: #d1d5db;
 }

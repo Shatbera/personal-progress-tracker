@@ -56,3 +56,22 @@ export async function getQuestEvents(questId: string): Promise<QuestEvent[]> {
     
     return await response.json();
 }
+
+export interface WeekSummary {
+    weekNumber: number;
+    weekStart: string;
+    weekEnd: string;
+    points: number;
+    maxPoints: number;
+}
+
+export async function getWeeklyHistory(questId: string): Promise<WeekSummary[]> {
+    const response = await apiFetch(`/quests/${questId}/events/weekly-history`);
+    
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to fetch weekly history: ${response.status} ${errorText}`);
+    }
+    
+    return await response.json();
+}

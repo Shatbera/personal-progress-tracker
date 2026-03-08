@@ -1,6 +1,6 @@
 'use client';
 
-import { QuestCategory } from '@/app/(workspace)/(quests)/types';
+import { Quest, QuestCategory } from '@/app/(workspace)/(quests)/types';
 import CategorySelect from '@/app/(workspace)/(quests)/quests/_components/category-select';
 import { useEffect, useMemo, useState, useTransition } from 'react';
 import styles from './day-plan-details.module.css';
@@ -16,8 +16,10 @@ type DayBlockCreateModalProps = {
     initialLabel?: string;
     initialDurationMinutes?: number;
     initialCategoryId?: string | null;
+    initialQuestId?: string | null;
     categories: QuestCategory[];
-    onSubmitBlock: (payload: { label: string; durationMinutes: number; categoryId: string | null }) => Promise<string | null>;
+    quests?: Quest[];
+    onSubmitBlock: (payload: { label: string; durationMinutes: number; categoryId: string | null; questId: string | null }) => Promise<string | null>;
     onDeleteBlock?: () => Promise<string | null>;
 };
 
@@ -76,7 +78,9 @@ export default function DayBlockCreateModal({
     initialLabel,
     initialDurationMinutes,
     initialCategoryId,
+    initialQuestId,
     categories,
+    quests = [],
     onSubmitBlock,
     onDeleteBlock,
 }: DayBlockCreateModalProps) {
@@ -86,8 +90,12 @@ export default function DayBlockCreateModal({
     );
     const [durationMinutes, setDurationMinutes] = useState(initialDurationMinutes ?? HALF_HOUR_MINUTES);
     const [title, setTitle] = useState(initialLabel ?? '');
+    const [selectedQuestId, setSelectedQuestId] = useState<string | null>(initialQuestId ?? null);
     const [error, setError] = useState<string | null>(null);
     const [isPending, startTransition] = useTransition();
+
+    const selectedQuest = quests.find((q) => q.id === selectedQuestId) ?? null;
+    const effectiveCategoryId = selectedQuest ? (selectedQuest.category?.id ?? null) : null;
 
     useEffect(() => {
         if (!open) {
@@ -105,8 +113,9 @@ export default function DayBlockCreateModal({
 
         setDurationMinutes(clampedDuration);
         setTitle(initialLabel ?? '');
+        setSelectedQuestId(initialQuestId ?? null);
         setError(null);
-    }, [open, durationOptions, initialDurationMinutes, initialLabel]);
+    }, [open, durationOptions, initialDurationMinutes, initialLabel, initialQuestId]);
 
     if (!open) {
         return null;
@@ -156,7 +165,9 @@ export default function DayBlockCreateModal({
 
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        const selectedCategoryId = (formData.get('categoryId') as string) || null;
+        const selectedCategoryId = selectedQuest
+            ? effectiveCategoryId
+            : (formData.get('categoryId') as string) || null;
         setError(null);
 
         startTransition(async () => {
@@ -164,6 +175,7 @@ export default function DayBlockCreateModal({
                 label: title,
                 durationMinutes,
                 categoryId: selectedCategoryId,
+                questId: selectedQuestId,
             });
 
             if (submitError) {
@@ -214,12 +226,35 @@ export default function DayBlockCreateModal({
                             ))}
                         </select>
                     </label>
+                    {quests.length > 0 && (
+                        <label className={styles.label}>
+                            Quest
+                            <select
+                                className={styles.input}
+                                value={selectedQuestId ?? ''}
+                                onChange={(event) => setSelectedQuestId(event.target.value || null)}
+                            >
+                                <option value="">No quest</option>
+                                {quests.map((quest) => (
+                                    <option key={quest.id} value={quest.id}>
+                                        {quest.title}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                    )}
                     <label className={styles.label}>
                         Category
-                        <CategorySelect
-                            categories={categories}
-                            defaultValue={initialCategoryId ?? ''}
-                        />
+                        {selectedQuest ? (
+                            <div className={styles.input} style={{ opacity: 0.6 }}>
+                                {selectedQuest.category ? selectedQuest.category.name : 'No category'}
+                            </div>
+                        ) : (
+                            <CategorySelect
+                                categories={categories}
+                                defaultValue={initialCategoryId ?? ''}
+                            />
+                        )}
                     </label>
                     <div className={styles.modalFooterRow}>
                         <div>

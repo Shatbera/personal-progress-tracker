@@ -97,11 +97,11 @@ export async function deleteDayPlan(dayPlanId: string): Promise<void> {
     }
 }
 
-export async function createDayBlock(dayPlanId: string, startMinutes: number, endMinutes: number, label: string, categoryId?: string | null) {
+export async function createDayBlock(dayPlanId: string, startMinutes: number, endMinutes: number, label: string, categoryId?: string | null, questId?: string | null) {
     const response = await apiFetch(`/day-plan/${dayPlanId}/blocks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ startMinutes, endMinutes, label, categoryId: categoryId ?? null }),
+        body: JSON.stringify({ startMinutes, endMinutes, label, categoryId: categoryId ?? null, questId: questId ?? null }),
     });
 
     if (!response.ok) {
@@ -141,9 +141,37 @@ export async function deleteDayBlock(dayPlanId: string, dayBlockId: string) {
     }
 }
 
+export async function toggleBlockCompletion(dayPlanId: string, dayBlockId: string, isCompleted: boolean): Promise<void> {
+    const response = await apiFetch(`/day-plan/${dayPlanId}/blocks/${dayBlockId}/completion`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isCompleted }),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error:', response.status, errorText);
+        throw new Error(`Failed to toggle block completion: ${response.status} ${errorText}`);
+    }
+}
+
+export async function updateReflection(dayPlanId: string, reflection: string): Promise<void> {
+    const response = await apiFetch(`/day-plan/${dayPlanId}/reflection`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reflection }),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error:', response.status, errorText);
+        throw new Error(`Failed to update reflection: ${response.status} ${errorText}`);
+    }
+}
+
 export async function resequenceDayBlocks(
     dayPlanId: string,
-    blocks: Array<{ id: string; startMinutes: number; endMinutes: number; label: string; categoryId?: string | null }>,
+    blocks: Array<{ id: string; startMinutes: number; endMinutes: number; label: string; categoryId?: string | null; questId?: string | null }>,
 ) {
     const response = await apiFetch(`/day-plan/${dayPlanId}/blocks/resequence`, {
         method: 'PUT',

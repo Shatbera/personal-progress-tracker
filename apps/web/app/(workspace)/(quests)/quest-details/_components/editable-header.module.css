@@ -1,0 +1,43 @@
+.editable {
+    cursor: text;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+
+.editable:hover {
+    background: #f3f4f6;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: #1a1a1a;
+}
+
+.titleInput {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 0.5rem 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-family: inherit;
+    padding: 0;
+}
+
+.description {
+    font-size: 1rem;
+    color: #555;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.5;
+    min-height: 1.5rem;
+    outline: none;
+}
+
+.placeholder {
+    color: #9ca3af;
+    font-style: italic;
+}

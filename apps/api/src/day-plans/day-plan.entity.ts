@@ -21,6 +21,9 @@ export class DayPlan {
     @Exclude({ toPlainOnly: true })
     user: User;
 
+	@Column({ type: 'text', default: '' })
+	reflection: string;
+
 	@OneToMany(() => DayBlock, (dayBlock) => dayBlock.dayPlan)
 	blocks: DayBlock[];
 }

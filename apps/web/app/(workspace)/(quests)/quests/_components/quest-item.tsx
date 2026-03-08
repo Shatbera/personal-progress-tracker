@@ -143,8 +143,19 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
         }
     };
 
+    const detailsUrl = quest.questType === 'DAILY_TRACK'
+        ? `/daily-track-details?questId=${quest.id}`
+        : `/quest-details?questId=${quest.id}`;
+
+    const handleCardClick = (e: React.MouseEvent) => {
+        // Don't navigate if clicking on interactive elements
+        const target = e.target as HTMLElement;
+        if (target.closest('button') || target.closest('a')) return;
+        router.push(detailsUrl);
+    };
+
     return (
-        <div className={`${styles.questItem} ${isArchived ? styles.archivedItem : ''}`}>
+        <div className={`${styles.questItem} ${isArchived ? styles.archivedItem : ''}`} onClick={handleCardClick}>
             <div className={styles.header}>
                 <h3 className={styles.questTitle}>{quest.title}</h3>
                 {!hideMenu && (
@@ -222,7 +233,7 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
                                 <button
                                     className={styles.addToPlanButton}
                                     onClick={async () => {
-                                        const result = await addQuestToTodaysPlan(quest.title, quest.category?.id);
+                                        const result = await addQuestToTodaysPlan(quest.title, quest.category?.id, quest.id);
                                         if (result.error) alert(result.error);
                                     }}
                                     title="Add a 1-hour block for this quest to today's plan"
@@ -234,7 +245,7 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
                                 <button
                                     className={styles.addToPlanButton}
                                     onClick={async () => {
-                                        const result = await addQuestToTomorrowsPlan(quest.title, quest.category?.id);
+                                        const result = await addQuestToTomorrowsPlan(quest.title, quest.category?.id, quest.id);
                                         if (result.error) alert(result.error);
                                     }}
                                     title="Add a 1-hour block for this quest to tomorrow's plan"

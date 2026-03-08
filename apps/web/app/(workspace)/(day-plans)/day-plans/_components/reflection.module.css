@@ -1,0 +1,38 @@
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: color-mix(in srgb, var(--foreground) 80%, transparent);
+}
+
+.textarea {
+    width: 100%;
+    min-height: 5rem;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    resize: vertical;
+    background: transparent;
+    color: inherit;
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--foreground) 40%, transparent);
+}
+
+.readOnlyText {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--foreground) 70%, transparent);
+    white-space: pre-wrap;
+}
