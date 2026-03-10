@@ -1,5 +1,6 @@
 import styles from './active-quests.module.css';
 import { Quest } from '../../types';
+import { DayPlan } from '@/app/(workspace)/(day-plans)/types';
 import QuestItem from '../../../(quests)/quests/_components/quest-item';
 
 const QUEST_TYPE_GROUPS: Array<{ key: Quest['questType']; label: string }> = [
@@ -8,7 +9,20 @@ const QUEST_TYPE_GROUPS: Array<{ key: Quest['questType']; label: string }> = [
     { key: 'LONG_TERM_GOAL', label: 'Long Term Goals' },
 ];
 
-export default function ActiveQuests({ quests, hasTodaysPlan = false, hasTomorrowsPlan = false }: { quests: Quest[]; hasTodaysPlan?: boolean; hasTomorrowsPlan?: boolean }) {
+export default function ActiveQuests({ quests, todaysPlan = null, hasTomorrowsPlan = false, completedTodayQuestIds = [] }: { quests: Quest[]; todaysPlan?: DayPlan | null; hasTomorrowsPlan?: boolean; completedTodayQuestIds?: string[] }) {
+    const hasTodaysPlan = !!todaysPlan;
+
+    const todayQuestStatus = new Map<string, 'scheduled' | 'completed'>();
+    if (todaysPlan) {
+        for (const block of todaysPlan.blocks) {
+            if (block.questId) {
+                todayQuestStatus.set(block.questId, block.isCompleted ? 'completed' : 'scheduled');
+            }
+        }
+    }
+
+    const completedTodaySet = new Set(completedTodayQuestIds);
+
     const groupedQuests = QUEST_TYPE_GROUPS
         .map(({ key, label }) => ({
             key,
@@ -28,11 +42,10 @@ export default function ActiveQuests({ quests, hasTodaysPlan = false, hasTomorro
                         <section key={group.key} className={styles.groupSection}>
                             <div className={styles.groupHeader}>
                                 <h3 className={styles.groupTitle}>{group.label}</h3>
-                                <span className={styles.groupCount}>{group.quests.length}</span>
                             </div>
                             <ul className={styles.list}>
                                 {group.quests.map((quest) => (
-                                    <QuestItem key={quest.id} quest={quest} hideMenu hasTodaysPlan={hasTodaysPlan} hasTomorrowsPlan={hasTomorrowsPlan} />
+                                    <QuestItem key={quest.id} quest={quest} hideMenu hasTodaysPlan={hasTodaysPlan} hasTomorrowsPlan={hasTomorrowsPlan} todayStatus={todayQuestStatus.get(quest.id) ?? null} dailyTrackCompletedToday={completedTodaySet.has(quest.id)} />
                                 ))}
                             </ul>
                         </section>

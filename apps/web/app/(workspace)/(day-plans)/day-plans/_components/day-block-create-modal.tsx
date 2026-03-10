@@ -212,19 +212,47 @@ export default function DayBlockCreateModal({
                     </label>
                     <label className={styles.label}>
                         Duration
-                        <select
-                            className={styles.input}
-                            name="durationMinutes"
-                            value={durationMinutes}
-                            onChange={(event) => setDurationMinutes(Number(event.target.value))}
-                            required
-                        >
-                            {durationOptions.map((minutes) => (
-                                <option key={minutes} value={minutes}>
-                                    {toDurationLabel(minutes)}
-                                </option>
-                            ))}
-                        </select>
+                        <div className={styles.selectStepper}>
+                            <select
+                                className={styles.input}
+                                name="durationMinutes"
+                                value={durationMinutes}
+                                onChange={(event) => setDurationMinutes(Number(event.target.value))}
+                                required
+                            >
+                                {durationOptions.map((minutes) => (
+                                    <option key={minutes} value={minutes}>
+                                        {toDurationLabel(minutes)}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className={styles.stepperButtons}>
+                                <button
+                                    type="button"
+                                    className={styles.stepperButton}
+                                    aria-label="Increase duration"
+                                    onClick={() => {
+                                        const idx = durationOptions.indexOf(durationMinutes);
+                                        if (idx < durationOptions.length - 1) setDurationMinutes(durationOptions[idx + 1]);
+                                    }}
+                                    disabled={durationOptions.indexOf(durationMinutes) >= durationOptions.length - 1}
+                                >
+                                    <svg width="10" height="6" viewBox="0 0 10 6"><path d="M1 5 L5 1 L9 5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                </button>
+                                <button
+                                    type="button"
+                                    className={styles.stepperButton}
+                                    aria-label="Decrease duration"
+                                    onClick={() => {
+                                        const idx = durationOptions.indexOf(durationMinutes);
+                                        if (idx > 0) setDurationMinutes(durationOptions[idx - 1]);
+                                    }}
+                                    disabled={durationOptions.indexOf(durationMinutes) <= 0}
+                                >
+                                    <svg width="10" height="6" viewBox="0 0 10 6"><path d="M1 1 L5 5 L9 1" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                </button>
+                            </div>
+                        </div>
                     </label>
                     {quests.length > 0 && (
                         <label className={styles.label}>

@@ -16,7 +16,7 @@ export async function createQuest(prevState: any, formData: FormData) {
         ? (questTypeRaw as QuestType)
         : null;
     const startDate = formData.get('startDate') as string | null;
-    const durationDays = formData.get('durationDays') ? parseInt(formData.get('durationDays') as string) : undefined;
+    const durationDays = questTypeRaw === 'DAILY_TRACK' ? maxPoints : undefined;
 
     if (!title || !description || !maxPoints) {
         return { error: 'All fields are required' };
@@ -30,8 +30,8 @@ export async function createQuest(prevState: any, formData: FormData) {
         return { error: 'Invalid quest type' };
     }
 
-    if (questType === 'DAILY_TRACK' && (!startDate || !durationDays)) {
-        return { error: 'Start date and duration are required for Daily Track quests' };
+    if (questType === 'DAILY_TRACK' && !startDate) {
+        return { error: 'Start date is required for Daily Track quests' };
     }
 
     const details = questType === 'DAILY_TRACK' ? { startDate: startDate!, durationDays: durationDays! } : undefined;

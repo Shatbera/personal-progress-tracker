@@ -198,8 +198,9 @@
     inset: 0;
     z-index: 50;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    padding-top: 12vh;
     background: transparent;
 }
 
@@ -274,6 +275,50 @@
     background: transparent;
     color: inherit;
     padding: 0.55rem 0.65rem;
+}
+
+.selectStepper {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+}
+
+.selectStepper .input {
+    flex: 1;
+    min-width: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.stepperButtons {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+    border-left: none;
+    border-radius: 0 0.5rem 0.5rem 0;
+    overflow: hidden;
+}
+
+.stepperButton {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.45rem;
+    background: transparent;
+    color: inherit;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.stepperButton:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+
+.stepperButton:disabled {
+    opacity: 0.3;
+    cursor: default;
 }
 
 .actions {
@@ -417,7 +462,7 @@
     left: 0.45rem;
     right: 0.45rem;
     min-height: 2.15rem;
-    padding: 0.45rem 0.55rem 0.45rem 2rem;
+    padding: 0.45rem 0.55rem 0.45rem 2.6rem;
     border-radius: 0.2rem;
     background: #67a95f;
     border: 1px solid color-mix(in srgb, #ffffff 55%, transparent);
@@ -561,7 +606,7 @@
 }
 
 .planBlockCompleted {
-    opacity: 0.55;
+    opacity: 1;
 }
 
 .blockCheckboxRow {
@@ -569,30 +614,9 @@
     top: 0;
     bottom: 0;
     left: 0;
-    width: 2rem;
+    width: 2.4rem;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 2;
-    cursor: pointer;
-}
-
-.blockCheckbox {
-    width: 1rem;
-    height: 1rem;
-    border-radius: 0.2rem;
-    border: 1.5px solid rgba(255, 255, 255, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: #ffffff;
-    flex-shrink: 0;
-    line-height: 1;
-}
-
-.blockCheckboxChecked {
-    background: rgba(255, 255, 255, 0.35);
-    border-color: rgba(255, 255, 255, 0.9);
 }

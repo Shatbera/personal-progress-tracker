@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Quest } from "../../types";
+import { DayPlan } from "@/app/(workspace)/(day-plans)/types";
 import QuestItem from "./quest-item";
 import styles from "./quests-sections.module.css";
 
@@ -11,10 +12,23 @@ const QUEST_TYPE_GROUPS: Array<{ key: Quest['questType']; label: string }> = [
     { key: 'LONG_TERM_GOAL', label: 'Long Term Goals' },
 ];
 
-export default function QuestsSections({ quests: initialQuests, hasTodaysPlan = false, hasTomorrowsPlan = false }: { quests: Quest[]; hasTodaysPlan?: boolean; hasTomorrowsPlan?: boolean }) {
+export default function QuestsSections({ quests: initialQuests, todaysPlan = null, hasTomorrowsPlan = false, completedTodayQuestIds = [] }: { quests: Quest[]; todaysPlan?: DayPlan | null; hasTomorrowsPlan?: boolean; completedTodayQuestIds?: string[] }) {
     const [quests, setQuests] = useState(initialQuests);
     const [completedOpen, setCompletedOpen] = useState(false);
     const [archivedVisible, setArchivedVisible] = useState(false);
+
+    const hasTodaysPlan = !!todaysPlan;
+
+    const todayQuestStatus = new Map<string, 'scheduled' | 'completed'>();
+    if (todaysPlan) {
+        for (const block of todaysPlan.blocks) {
+            if (block.questId) {
+                todayQuestStatus.set(block.questId, block.isCompleted ? 'completed' : 'scheduled');
+            }
+        }
+    }
+
+    const completedTodaySet = new Set(completedTodayQuestIds);
 
     useEffect(() => {
         setQuests(initialQuests);
@@ -50,7 +64,7 @@ export default function QuestsSections({ quests: initialQuests, hasTodaysPlan = 
                 <ul className={styles.grid}>
                     {group.quests.map((quest) => (
                         <li key={quest.id}>
-                            <QuestItem quest={quest} hasTodaysPlan={hasTodaysPlan} hasTomorrowsPlan={hasTomorrowsPlan} onQuestChange={handleQuestChange} onQuestDelete={handleQuestDelete} />
+                            <QuestItem quest={quest} hasTodaysPlan={hasTodaysPlan} hasTomorrowsPlan={hasTomorrowsPlan} todayStatus={todayQuestStatus.get(quest.id) ?? null} dailyTrackCompletedToday={completedTodaySet.has(quest.id)} onQuestChange={handleQuestChange} onQuestDelete={handleQuestDelete} />
                         </li>
                     ))}
                 </ul>

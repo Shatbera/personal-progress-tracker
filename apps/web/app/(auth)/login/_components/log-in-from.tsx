@@ -6,7 +6,7 @@ import { useActionState } from 'react';
 import Link from 'next/link';
 
 export default function LogInForm({ callbackUrl }: { callbackUrl?: string }) {
-    const logInWithCallback = logIn.bind(null, callbackUrl || '/quests');
+    const logInWithCallback = logIn.bind(null, callbackUrl || '/dashboard');
     const [formState, formAction] = useActionState(logInWithCallback, { error: '' });
 
     return <form className={styles.form} action={formAction}>

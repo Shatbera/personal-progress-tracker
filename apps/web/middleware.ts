@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const protectedRoutes = ['/quests'];
+const protectedRoutes = ['/quests', '/dashboard', '/day-plans'];
 const authRoutes = ['/login', '/signup'];
 
 export function middleware(request: NextRequest) {
@@ -18,12 +18,12 @@ export function middleware(request: NextRequest) {
   // Redirect to quests if already logged in and trying to access auth pages
   const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
   if (isAuthRoute && token) {
-    return NextResponse.redirect(new URL('/quests', request.url));
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/quests/:path*', '/login', '/signup'],
+  matcher: ['/quests/:path*', '/dashboard/:path*', '/day-plans/:path*', '/login', '/signup'],
 };

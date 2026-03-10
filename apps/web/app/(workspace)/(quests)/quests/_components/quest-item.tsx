@@ -6,9 +6,9 @@ import { Quest } from "../../types";
 import styles from "./quest-item.module.css";
 import { logProgress, resetProgress } from "@/actions/quest-event-actions";
 import { archiveQuest, unarchiveQuest, deleteQuest as deleteQuestAction } from "@/actions/quest-actions";
-import { addQuestToTodaysPlan, addQuestToTomorrowsPlan } from "@/actions/day-plan-actions";
+import { addQuestToTodaysPlan } from "@/actions/day-plan-actions";
 
-export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTodaysPlan = false, hasTomorrowsPlan = false, onQuestChange, onQuestDelete }: { quest: Quest; hideMenu?: boolean; hasTodaysPlan?: boolean; hasTomorrowsPlan?: boolean; onQuestChange?: (quest: Quest) => void; onQuestDelete?: (id: string) => void }) {
+export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTodaysPlan = false, hasTomorrowsPlan = false, todayStatus = null, dailyTrackCompletedToday = false, onQuestChange, onQuestDelete }: { quest: Quest; hideMenu?: boolean; hasTodaysPlan?: boolean; hasTomorrowsPlan?: boolean; todayStatus?: 'scheduled' | 'completed' | null; dailyTrackCompletedToday?: boolean; onQuestChange?: (quest: Quest) => void; onQuestDelete?: (id: string) => void }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [quest, setQuest] = useState(initialQuest);
     const router = useRouter();
@@ -30,6 +30,10 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
             border: `1px solid ${quest.category.color}55`,
         }
         : undefined;
+
+    const questTypeIcon = quest.questType === 'DAILY_TRACK' ? '🔥'
+        : quest.questType === 'WEEKLY_GOAL' ? '📅'
+        : '🎯';
 
     const handleDelete = () => {
         setMenuOpen(false);
@@ -157,7 +161,10 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
     return (
         <div className={`${styles.questItem} ${isArchived ? styles.archivedItem : ''}`} onClick={handleCardClick}>
             <div className={styles.header}>
-                <h3 className={styles.questTitle}>{quest.title}</h3>
+                <h3 className={styles.questTitle}>
+                    <span className={styles.questTypeIcon}>{questTypeIcon}</span>
+                    {quest.title}
+                </h3>
                 {!hideMenu && (
                 <div className={styles.menuContainer}>
                     <button
@@ -201,56 +208,43 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
                     </div>
                 ) : (
                     <div className={styles.progressWrapper}>
-                        <div className={styles.progressHeader}>
-                            <span className={styles.progressLabel}>Progress</span>
-                            <span className={styles.progressNumbers}>
-                                {quest.currentPoints} / {quest.maxPoints}
-                            </span>
-                        </div>
                         <div className={styles.progressBar}>
                             <div
                                 className={styles.progressFill}
                                 style={{ width: `${progressPercentage}%` }}
                             />
                         </div>
+                        <div className={styles.progressHeader}>
+                            <span className={styles.progressNumbers}>
+                                {quest.questType === 'DAILY_TRACK'
+                                    ? `Day ${quest.currentPoints} of ${quest.maxPoints}`
+                                    : `${quest.currentPoints} of ${quest.maxPoints} completed`}
+                            </span>
+                        </div>
+                        {quest.questType === 'DAILY_TRACK' && (
+                            <span className={`${styles.todayStatus} ${dailyTrackCompletedToday ? styles.todayCompleted : todayStatus === 'scheduled' ? styles.todayScheduled : ''}`}>
+                                {dailyTrackCompletedToday ? '✓ Completed today' : todayStatus === 'scheduled' ? 'Scheduled today' : 'Not scheduled today'}
+                            </span>
+                        )}
                         <div className={styles.progressActions}>
-                            {quest.questType === 'DAILY_TRACK' ? (
-                                <button
-                                    className={styles.logProgressButton}
-                                    onClick={() => router.push(`/daily-track-details?questId=${quest.id}`)}
-                                >
-                                    View Daily Track
-                                </button>
-                            ) : (
-                                <button
-                                    className={styles.logProgressButton}
-                                    onClick={handleLogProgress}
-                                >
-                                    + Log Progress
-                                </button>
-                            )}
                             {hasTodaysPlan && (
                                 <button
-                                    className={styles.addToPlanButton}
+                                    className={styles.logProgressButton}
                                     onClick={async () => {
                                         const result = await addQuestToTodaysPlan(quest.title, quest.category?.id, quest.id);
                                         if (result.error) alert(result.error);
                                     }}
                                     title="Add a 1-hour block for this quest to today's plan"
                                 >
-                                    + Today
+                                    Add Today
                                 </button>
                             )}
-                            {hasTomorrowsPlan && (
+                            {quest.questType !== 'DAILY_TRACK' && (
                                 <button
                                     className={styles.addToPlanButton}
-                                    onClick={async () => {
-                                        const result = await addQuestToTomorrowsPlan(quest.title, quest.category?.id, quest.id);
-                                        if (result.error) alert(result.error);
-                                    }}
-                                    title="Add a 1-hour block for this quest to tomorrow's plan"
+                                    onClick={handleLogProgress}
                                 >
-                                    + Tomorrow
+                                    Log Now
                                 </button>
                             )}
                         </div>

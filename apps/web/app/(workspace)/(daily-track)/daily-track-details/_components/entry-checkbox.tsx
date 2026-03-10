@@ -2,7 +2,7 @@
 
 import { useOptimistic, useTransition } from 'react';
 import { toggleDailyTrackEntry } from '@/actions/daily-track-actions';
-import styles from './entry-checkbox.module.css';
+import CheckMark from '@/app/(workspace)/_components/check-mark';
 
 interface EntryCheckboxProps {
     entryId: string;
@@ -15,7 +15,8 @@ export default function EntryCheckbox({ entryId, questId, progressQuestEventId, 
     const [optimisticChecked, setOptimisticChecked] = useOptimistic(progressQuestEventId !== null);
     const [, startTransition] = useTransition();
 
-    const isFuture = new Date(date) > new Date(new Date().toDateString());
+    const todayStr = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
+    const isFuture = date.slice(0, 10) > todayStr;
 
     const handleChange = () => {
         if (isFuture) return;
@@ -29,13 +30,10 @@ export default function EntryCheckbox({ entryId, questId, progressQuestEventId, 
     };
 
     return (
-        <input
-            type="checkbox"
-            className={styles.checkbox}
+        <CheckMark
             checked={optimisticChecked}
-            onChange={handleChange}
             disabled={isFuture}
-            title={isFuture ? 'Cannot mark future days' : undefined}
+            onClick={handleChange}
         />
     );
 }

@@ -18,7 +18,7 @@ export default function EntryNote({ entryId, questId, note: initialNote, date }:
     const [isPending, startTransition] = useTransition();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    const isFuture = new Date(date) > new Date(new Date().toDateString());
+    const isFuture = date.slice(0, 10) > new Date().toLocaleDateString('en-CA');
 
     const handleEdit = () => {
         if (isFuture) return;

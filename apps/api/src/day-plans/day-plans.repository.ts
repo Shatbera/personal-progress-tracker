@@ -10,6 +10,8 @@ import { QuestCategory } from "src/quest-categories/quest-category.entity";
 import { QuestEvent } from "src/quest-events/quest-event.entity";
 import { QuestEventType } from "src/quest-events/quest-event-type.enum";
 import { Quest } from "src/quests/quest.entity";
+import { DailyTrackEntry } from "src/daily-track/daily-track-entry.entity";
+import { DailyTrack } from "src/daily-track/daily-track.entity";
 
 @Injectable()
 export class DayPlansRepository extends Repository<DayPlan> {
@@ -250,7 +252,9 @@ export class DayPlansRepository extends Repository<DayPlan> {
 				// Link new quest log
 				if (newQuestId) {
 					const questEvent = await this.createQuestLogForBlock(newQuestId, user);
-					dayBlock.questLogId = questEvent.id;
+					if (questEvent) {
+						dayBlock.questLogId = questEvent.id;
+					}
 				}
 			}
 
@@ -308,7 +312,7 @@ export class DayPlansRepository extends Repository<DayPlan> {
 		const dayBlockRepository = this.dataSource.getRepository(DayBlock);
 
 		const dayBlock = await dayBlockRepository.createQueryBuilder('block')
-			.innerJoin('block.dayPlan', 'dayPlan')
+			.innerJoinAndSelect('block.dayPlan', 'dayPlan')
 			.where('block.id = :dayBlockId', { dayBlockId })
 			.andWhere('block.dayPlanId = :dayPlanId', { dayPlanId })
 			.andWhere('dayPlan.userId = :userId', { userId: user.id })
@@ -322,8 +326,10 @@ export class DayPlansRepository extends Repository<DayPlan> {
 
 		if (dayBlock.questId) {
 			if (isCompleted && !dayBlock.questLogId) {
-				const questEvent = await this.createQuestLogForBlock(dayBlock.questId, user);
-				dayBlock.questLogId = questEvent.id;
+				const questEvent = await this.createQuestLogForBlock(dayBlock.questId, user, dayBlock.dayPlan.date);
+				if (questEvent) {
+					dayBlock.questLogId = questEvent.id;
+				}
 			} else if (!isCompleted && dayBlock.questLogId) {
 				await this.deleteQuestLogForBlock(dayBlock.questLogId, dayBlock.questId, user);
 				dayBlock.questLogId = null;
@@ -334,7 +340,7 @@ export class DayPlansRepository extends Repository<DayPlan> {
 		return dayBlockRepository.findOne({ where: { id: dayBlock.id }, relations: ['category'] }) as Promise<DayBlock>;
 	}
 
-	private async createQuestLogForBlock(questId: string, user: User): Promise<QuestEvent> {
+	private async createQuestLogForBlock(questId: string, user: User, dayPlanDate?: Date): Promise<QuestEvent | null> {
 		const questEventRepository = this.dataSource.getRepository(QuestEvent);
 		const questRepository = this.dataSource.getRepository(Quest);
 
@@ -343,7 +349,20 @@ export class DayPlansRepository extends Repository<DayPlan> {
 			throw new NotFoundException('Linked quest not found');
 		}
 
+		// If the daily track entry for this date is already checked, reuse its event
+		if (dayPlanDate) {
+			const existingEvent = await this.findExistingDailyTrackEvent(questId, dayPlanDate);
+			if (existingEvent) {
+				return existingEvent;
+			}
+		}
+
 		const currentPoints = await this.getCurrentPointsForQuest(questId, user.id);
+
+		if (currentPoints >= quest.maxPoints) {
+			return null;
+		}
+
 		const nextPoints = currentPoints + 1;
 		const justCompleted = nextPoints >= quest.maxPoints;
 
@@ -358,12 +377,23 @@ export class DayPlansRepository extends Repository<DayPlan> {
 			quest: { id: questId } as Quest,
 			user,
 		});
-		return questEventRepository.save(questEvent);
+		const savedEvent = await questEventRepository.save(questEvent);
+
+		// Sync corresponding daily track entry if one exists for this date
+		if (dayPlanDate) {
+			await this.markDailyTrackEntry(questId, user.id, dayPlanDate, savedEvent.id);
+		}
+
+		return savedEvent;
 	}
 
 	private async deleteQuestLogForBlock(questLogId: string, questId: string, user: User): Promise<void> {
 		const questEventRepository = this.dataSource.getRepository(QuestEvent);
 		const questRepository = this.dataSource.getRepository(Quest);
+
+		// Unlink daily track entry referencing this quest event before deleting it
+		const entryRepo = this.dataSource.getRepository(DailyTrackEntry);
+		await entryRepo.update({ progressQuestEventId: questLogId }, { progressQuestEventId: null });
 
 		const questEvent = await questEventRepository.findOne({ where: { id: questLogId } });
 		if (questEvent) {
@@ -377,6 +407,52 @@ export class DayPlansRepository extends Repository<DayPlan> {
 				quest.completedAt = null;
 				await questRepository.save(quest);
 			}
+		}
+	}
+
+	private async findExistingDailyTrackEvent(questId: string, dayPlanDate: Date): Promise<QuestEvent | null> {
+		const entryRepo = this.dataSource.getRepository(DailyTrackEntry);
+		const dailyTrackRepo = this.dataSource.getRepository(DailyTrack);
+
+		const dailyTrack = await dailyTrackRepo.findOne({ where: { questId } });
+		if (!dailyTrack) return null;
+
+		const dateStr = typeof dayPlanDate === 'string'
+			? (dayPlanDate as string).slice(0, 10)
+			: dayPlanDate.toISOString().slice(0, 10);
+
+		const entry = await entryRepo.createQueryBuilder('entry')
+			.leftJoinAndSelect('entry.progressQuestEvent', 'progressQuestEvent')
+			.where('entry.dailyTrackId = :dailyTrackId', { dailyTrackId: dailyTrack.id })
+			.andWhere('entry.date = :date', { date: dateStr })
+			.getOne();
+
+		if (entry?.progressQuestEventId && entry.progressQuestEvent) {
+			return entry.progressQuestEvent;
+		}
+
+		return null;
+	}
+
+	private async markDailyTrackEntry(questId: string, userId: string, dayPlanDate: Date, questEventId: string): Promise<void> {
+		const entryRepo = this.dataSource.getRepository(DailyTrackEntry);
+		const dailyTrackRepo = this.dataSource.getRepository(DailyTrack);
+
+		const dailyTrack = await dailyTrackRepo.findOne({ where: { questId } });
+		if (!dailyTrack) return;
+
+		const dateStr = typeof dayPlanDate === 'string'
+			? (dayPlanDate as string).slice(0, 10)
+			: dayPlanDate.toISOString().slice(0, 10);
+
+		const entry = await entryRepo.createQueryBuilder('entry')
+			.where('entry.dailyTrackId = :dailyTrackId', { dailyTrackId: dailyTrack.id })
+			.andWhere('entry.date = :date', { date: dateStr })
+			.getOne();
+
+		if (entry && !entry.progressQuestEventId) {
+			entry.progressQuestEventId = questEventId;
+			await entryRepo.save(entry);
 		}
 	}
 
@@ -489,7 +565,9 @@ export class DayPlansRepository extends Repository<DayPlan> {
 					}
 					if (newQuestId) {
 						const questEvent = await this.createQuestLogForBlock(newQuestId, user);
-						existingBlock.questLogId = questEvent.id;
+						if (questEvent) {
+							existingBlock.questLogId = questEvent.id;
+						}
 					}
 				}
 

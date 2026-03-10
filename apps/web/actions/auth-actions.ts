@@ -50,7 +50,7 @@ export async function signUp(prevState: any, formData: FormData) {
         };
     }
 
-    redirect('/quests');
+    redirect('/day-plans');
 }
 
 export async function signOut() {

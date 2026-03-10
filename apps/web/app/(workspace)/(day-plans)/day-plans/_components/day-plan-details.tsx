@@ -771,6 +771,7 @@ export default function DayPlanDetails({
 									topPercent={topPercent}
 									heightPercent={heightPercent}
 									readOnly={readOnly}
+									isFuture={plan.date.slice(0, 10) > new Date().toLocaleDateString('en-CA')}
 									isContextMenuBusy={isContextMenuBusy}
 									hasContextMenuOptions={getContextMenuOptionCount(block.id) > 0}
 									onContextMenu={(blockId, x, y) => setContextMenu({ blockId, x, y })}

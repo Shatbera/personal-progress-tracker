@@ -3,6 +3,7 @@
 import { DayBlock } from '@/app/(workspace)/(day-plans)/types';
 import { toggleBlockCompletion } from '@/actions/day-plan-actions';
 import { useEffect, useState } from 'react';
+import CheckMark from '@/app/(workspace)/_components/check-mark';
 import styles from './day-plan-details.module.css';
 
 function minuteToClock(minute: number): string {
@@ -27,6 +28,7 @@ type PlanBlockItemProps = {
     topPercent: number;
     heightPercent: number;
     readOnly: boolean;
+    isFuture: boolean;
     isContextMenuBusy: boolean;
     hasContextMenuOptions: boolean;
     onContextMenu: (blockId: string, x: number, y: number) => void;
@@ -41,6 +43,7 @@ export default function PlanBlockItem({
     topPercent,
     heightPercent,
     readOnly,
+    isFuture,
     isContextMenuBusy,
     hasContextMenuOptions,
     onContextMenu,
@@ -53,8 +56,7 @@ export default function PlanBlockItem({
         setOptimisticCompleted(block.isCompleted);
     }, [block.isCompleted]);
 
-    const handleCheckboxChange = (event: React.MouseEvent) => {
-        event.stopPropagation();
+    const handleCheckboxChange = () => {
         const next = !optimisticCompleted;
         setOptimisticCompleted(next);
         toggleBlockCompletion(dayPlanId, block.id, next).then((result) => {
@@ -93,11 +95,11 @@ export default function PlanBlockItem({
                     aria-hidden="true"
                 />
             )}
-            <div className={styles.blockCheckboxRow} onClick={handleCheckboxChange}>
-                <span className={`${styles.blockCheckbox} ${optimisticCompleted ? styles.blockCheckboxChecked : ''}`} aria-hidden="true">
-                    {optimisticCompleted && '✓'}
-                </span>
-            </div>
+            {!isFuture && (
+                <div className={styles.blockCheckboxRow}>
+                    <CheckMark checked={optimisticCompleted} variant="light" onClick={handleCheckboxChange} />
+                </div>
+            )}
             {isStacked ? (
                 <div className={styles.segmentRow}>
                     <div className={styles.segmentHeader}>

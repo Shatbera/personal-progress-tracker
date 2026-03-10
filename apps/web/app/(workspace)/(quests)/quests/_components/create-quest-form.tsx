@@ -73,10 +73,12 @@ export default function CreateQuestForm({ categories, onSuccess }: CreateQuestFo
                 <textarea id="description" name="description" required rows={3} />
             </div>
 
-            <div className={styles.field}>
-                <label htmlFor="maxPoints">Max Points</label>
-                <input id="maxPoints" type="number" name="maxPoints" required min="1" defaultValue="1" />
-            </div>
+            {questType !== 'DAILY_TRACK' && (
+                <div className={styles.field}>
+                    <label htmlFor="maxPoints">Max Points</label>
+                    <input id="maxPoints" type="number" name="maxPoints" required min="1" defaultValue="1" />
+                </div>
+            )}
 
             <div className={styles.field}>
                 <label htmlFor="categoryId">Category</label>
@@ -90,8 +92,8 @@ export default function CreateQuestForm({ categories, onSuccess }: CreateQuestFo
                         <input id="startDate" type="date" name="startDate" required defaultValue={today} />
                     </div>
                     <div className={styles.field}>
-                        <label htmlFor="durationDays">Duration (days)</label>
-                        <input id="durationDays" type="number" name="durationDays" required min="1" defaultValue="30" />
+                        <label htmlFor="maxPoints">Number of Days</label>
+                        <input id="maxPoints" type="number" name="maxPoints" required min="1" defaultValue="30" />
                     </div>
                 </>
             )}

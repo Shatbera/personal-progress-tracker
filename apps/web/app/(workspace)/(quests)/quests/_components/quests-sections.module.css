@@ -67,6 +67,10 @@
     gap: 1.5rem;
 }
 
+.grid > li {
+    display: flex;
+}
+
 .typeGroupsContainer {
     display: flex;
     flex-direction: column;
