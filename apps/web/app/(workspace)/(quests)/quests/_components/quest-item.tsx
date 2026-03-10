@@ -236,7 +236,7 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
                                     }}
                                     title="Add a 1-hour block for this quest to today's plan"
                                 >
-                                    Add Today
+                                    Schedule Today
                                 </button>
                             )}
                             {quest.questType !== 'DAILY_TRACK' && (
