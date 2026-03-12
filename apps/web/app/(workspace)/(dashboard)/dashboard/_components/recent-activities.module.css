@@ -1,28 +1,30 @@
 .container {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid var(--color-gold);
+    border-radius: 6px;
     padding: 1.5rem;
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(89, 59, 32, 0.06);
 }
 
 .title {
-    font-size: 1.125rem;
+    font-size: 1.3rem;
     font-weight: 600;
-    color: #111827;
+    color: var(--color-navy);
     margin: 0 0 1.25rem 0;
     padding-bottom: 0.75rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px dashed var(--color-gold);
     flex-shrink: 0;
+    font-family: var(--font-handwriting);
 }
 
 .placeholder {
     font-size: 0.9375rem;
-    color: #9ca3af;
+    color: var(--color-tan);
     margin: 0;
 }
 
@@ -53,10 +55,10 @@
     padding: 0 0 0.5rem 0;
     font-size: 0.75rem;
     font-weight: 700;
-    color: #374151;
+    color: var(--color-brown);
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--color-gold);
 }
 
 .sectionList {
@@ -73,19 +75,19 @@
     flex-direction: column;
     gap: 0.25rem;
     padding: 0.625rem 0.75rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    background: #f9fafb;
+    border: none;
+    border-radius: 4px;
+    background: rgba(242, 241, 223, 0.5);
 }
 
 .item:last-child {
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--color-gold);
 }
 
 .questTitle {
     font-size: 0.875rem;
     font-weight: 500;
-    color: #111827;
+    color: var(--color-navy);
 }
 
 .meta {
@@ -96,20 +98,20 @@
 
 .eventType {
     font-size: 0.75rem;
-    color: #6b7280;
+    color: var(--color-tan);
 }
 
 .eventTypeProgress {
-    color: #48bd56;
+    color: var(--color-sage);
 }
 
 .eventTypeComplete {
-    color: #f59e0b;
+    color: var(--color-gold);
     font-weight: 600;
 }
 
 .points {
     font-size: 0.75rem;
     font-weight: 500;
-    color: #2563eb;
+    color: var(--color-gold);
 }

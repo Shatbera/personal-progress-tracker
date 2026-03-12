@@ -12,7 +12,7 @@
     display: flex;
     gap: 1.5rem;
     font-size: 0.875rem;
-    color: #888;
+    color: var(--color-tan);
     margin-top: 0.75rem;
     flex-wrap: wrap;
 }
@@ -23,8 +23,8 @@
     border-radius: 999px;
     font-size: 0.75rem;
     font-weight: 500;
-    background-color: #e0e7ff;
-    color: #3730a3;
+    background-color: rgba(217, 177, 102, 0.15);
+    color: var(--color-brown);
 }
 
 .categoryBadge {
@@ -42,8 +42,8 @@
     border-radius: 999px;
     font-size: 0.8rem;
     font-weight: 500;
-    background-color: #d1fae5;
-    color: #065f46;
+    background-color: rgba(143, 165, 122, 0.15);
+    color: var(--color-brown);
 }
 
 .progressSection {
@@ -58,23 +58,23 @@
 
 .progressLabel {
     font-weight: 500;
-    color: #374151;
+    color: var(--color-brown);
 }
 
 .progressNumbers {
-    color: #6b7280;
+    color: var(--color-tan);
 }
 
 .progressBar {
     height: 12px;
-    background-color: #e5e7eb;
+    background-color: rgba(166, 127, 93, 0.15);
     border-radius: 999px;
     overflow: hidden;
 }
 
 .progressFill {
     height: 100%;
-    background-color: #3b82f6;
+    background-color: var(--color-sage);
     transition: width 0.3s ease;
 }
 
@@ -87,16 +87,17 @@
 }
 
 .sectionTitle {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-navy);
     margin: 0 0 1rem 0;
+    font-family: var(--font-handwriting);
 }
 
 .tableWrapper {
     overflow-x: auto;
-    border-radius: 0.75rem;
-    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    border: none;
 }
 
 .table {
@@ -106,21 +107,21 @@
 }
 
 .table thead {
-    background-color: #f9fafb;
+    background-color: rgba(217, 177, 102, 0.08);
 }
 
 .table th {
     padding: 0.75rem 1rem;
     text-align: left;
     font-weight: 600;
-    color: #374151;
-    border-bottom: 1px solid #e5e7eb;
+    color: var(--color-navy);
+    border-bottom: 1px solid var(--color-gold);
 }
 
 .table td {
     padding: 0.75rem 1rem;
-    color: #374151;
-    border-bottom: 1px solid #f3f4f6;
+    color: var(--color-brown);
+    border-bottom: 1px solid rgba(217, 177, 102, 0.2);
     vertical-align: top;
 }
 
@@ -129,45 +130,65 @@
 }
 
 .table tr:hover td {
-    background-color: #f9fafb;
+    background-color: rgba(217, 177, 102, 0.06);
 }
 
-.eventProgress {
-    color: #059669;
+.table td.eventProgress {
+    color: var(--color-sage);
+    font-weight: 500;
 }
 
-.eventComplete {
-    color: #059669;
+.table td.eventComplete {
+    color: var(--color-gold);
     font-weight: 600;
 }
 
-.eventUndo {
-    color: #dc2626;
+.table td.eventUndo {
+    color: var(--color-brown);
 }
 
-.eventReset {
-    color: #dc2626;
+.table td.eventReset {
+    color: var(--color-brown);
+}
+
+.pointsBadge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 99px;
+    font-size: 0.8rem;
     font-weight: 600;
+    background-color: rgba(166, 127, 93, 0.1);
+    color: var(--color-brown);
+}
+
+.pointsPositive {
+    background-color: rgba(143, 165, 122, 0.15);
+    color: var(--color-brown);
+}
+
+.pointsNegative {
+    background-color: rgba(166, 127, 93, 0.1);
+    color: var(--color-brown);
 }
 
 .weekComplete {
-    color: #059669;
+    color: var(--color-sage);
     font-weight: 500;
 }
 
 .weekPartial {
-    color: #6b7280;
+    color: var(--color-tan);
 }
 
 .emptyState {
     text-align: center;
-    color: #9ca3af;
+    color: var(--color-tan);
     padding: 2rem;
     font-style: italic;
 }
 
 .missingId {
-    color: #6b7280;
+    color: var(--color-tan);
     padding: 2rem;
     text-align: center;
 }

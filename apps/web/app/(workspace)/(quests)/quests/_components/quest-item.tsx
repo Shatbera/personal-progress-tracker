@@ -1,16 +1,21 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Quest } from "../../types";
 import styles from "./quest-item.module.css";
 import { logProgress, resetProgress } from "@/actions/quest-event-actions";
 import { archiveQuest, unarchiveQuest, deleteQuest as deleteQuestAction } from "@/actions/quest-actions";
 import { addQuestToTodaysPlan } from "@/actions/day-plan-actions";
+import ConfirmDialog from '@/app/(workspace)/_components/confirm-dialog';
 
 export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTodaysPlan = false, hasTomorrowsPlan = false, todayStatus = null, dailyTrackCompletedToday = false, onQuestChange, onQuestDelete }: { quest: Quest; hideMenu?: boolean; hasTodaysPlan?: boolean; hasTomorrowsPlan?: boolean; todayStatus?: 'scheduled' | 'completed' | null; dailyTrackCompletedToday?: boolean; onQuestChange?: (quest: Quest) => void; onQuestDelete?: (id: string) => void }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [quest, setQuest] = useState(initialQuest);
+    const [feedbackText, setFeedbackText] = useState<string | null>(null);
+    const [feedbackVariant, setFeedbackVariant] = useState<'success' | 'error'>('success');
+    const [feedbackKey, setFeedbackKey] = useState(0);
+    const [confirmAction, setConfirmAction] = useState<{ title: string; message: string; onConfirm: () => void } | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -37,21 +42,27 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
 
     const handleDelete = () => {
         setMenuOpen(false);
-        if (!window.confirm(`Are you sure you want to delete "${quest.title}"?`)) {
-            return;
-        }
-        onQuestDelete?.(quest.id);
-        deleteQuestAction(quest.id)
-            .then((result) => {
-                if ('error' in result) {
-                    router.refresh(); // revert by refreshing server state
-                    alert(result.error);
-                }
-            })
-            .catch((error) => {
-                router.refresh();
-                console.error("Failed to delete quest:", error);
-            });
+        setConfirmAction({
+            title: 'Delete Quest',
+            message: `Are you sure you want to delete "${quest.title}"?`,
+            onConfirm: () => {
+                setConfirmAction(null);
+                onQuestDelete?.(quest.id);
+                deleteQuestAction(quest.id)
+                    .then((result) => {
+                        if ('error' in result) {
+                            router.refresh();
+                            setFeedbackVariant('error');
+                            setFeedbackText(result.error ?? 'Failed to delete');
+                            setFeedbackKey((k) => k + 1);
+                        }
+                    })
+                    .catch((error) => {
+                        router.refresh();
+                        console.error("Failed to delete quest:", error);
+                    });
+            },
+        });
     };
 
     const handleArchive = () => {
@@ -102,21 +113,29 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
 
     const handleReset = () => {
         setMenuOpen(false);
-        if (!window.confirm(`Are you sure you want to reset progress for "${quest.title}"?`)) {
-            return;
-        }
-        resetProgress(quest.id)
-            .then((result) => {
-                if (result.error) {
-                    alert(result.error);
-                } else {
-                    router.refresh();
-                }
-            })
-            .catch((error) => {
-                console.error("Failed to reset progress:", error);
-                alert("Failed to reset progress. Please try again.");
-            });
+        setConfirmAction({
+            title: 'Reset Progress',
+            message: `Are you sure you want to reset progress for "${quest.title}"?`,
+            onConfirm: () => {
+                setConfirmAction(null);
+                resetProgress(quest.id)
+                    .then((result) => {
+                        if (result.error) {
+                            setFeedbackVariant('error');
+                            setFeedbackText(result.error);
+                            setFeedbackKey((k) => k + 1);
+                        } else {
+                            router.refresh();
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Failed to reset progress:", error);
+                        setFeedbackVariant('error');
+                        setFeedbackText('Failed to reset');
+                        setFeedbackKey((k) => k + 1);
+                    });
+            },
+        });
     };
 
     const handleLogProgress = async () => {
@@ -131,17 +150,22 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
         };
         setQuest(updatedQuest);
         onQuestChange?.(updatedQuest);
+        setFeedbackVariant('success');
+        setFeedbackText('+1 Point');
+        setFeedbackKey((k) => k + 1);
 
         try {
             const result = await logProgress(quest.id);
             if (result.error) {
                 setQuest(previousQuest); // Revert on error
                 onQuestChange?.(previousQuest);
+                setFeedbackText(null);
                 alert(result.error);
             }
         } catch (error) {
             setQuest(previousQuest); // Revert on error
             onQuestChange?.(previousQuest);
+            setFeedbackText(null);
             console.error("Failed to log progress:", error);
             alert("Failed to log progress. Please try again.");
         }
@@ -160,6 +184,15 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
 
     return (
         <div className={`${styles.questItem} ${isArchived ? styles.archivedItem : ''}`} onClick={handleCardClick}>
+            {feedbackText && (
+                <span
+                    key={feedbackKey}
+                    className={`${styles.progressFeedback} ${feedbackVariant === 'error' ? styles.progressFeedbackError : ''}`}
+                    onAnimationEnd={() => setFeedbackText(null)}
+                >
+                    {feedbackText}
+                </span>
+            )}
             <div className={styles.header}>
                 <h3 className={styles.questTitle}>
                     <span className={styles.questTypeIcon}>{questTypeIcon}</span>
@@ -232,7 +265,15 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
                                     className={styles.logProgressButton}
                                     onClick={async () => {
                                         const result = await addQuestToTodaysPlan(quest.title, quest.category?.id, quest.id);
-                                        if (result.error) alert(result.error);
+                                        if (result.error) {
+                                            setFeedbackVariant('error');
+                                            setFeedbackText(result.error);
+                                            setFeedbackKey((k) => k + 1);
+                                        } else {
+                                            setFeedbackVariant('success');
+                                            setFeedbackText('Scheduled');
+                                            setFeedbackKey((k) => k + 1);
+                                        }
                                     }}
                                     title="Add a 1-hour block for this quest to today's plan"
                                 >
@@ -251,6 +292,16 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
                     </div>
                 )}
             </div>
+            {confirmAction && (
+                <ConfirmDialog
+                    title={confirmAction.title}
+                    message={confirmAction.message}
+                    confirmLabel="Yes"
+                    variant="danger"
+                    onConfirm={confirmAction.onConfirm}
+                    onCancel={() => setConfirmAction(null)}
+                />
+            )}
         </div>
     );
 }

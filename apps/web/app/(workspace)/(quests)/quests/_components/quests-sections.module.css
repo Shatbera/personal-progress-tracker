@@ -10,17 +10,18 @@
 }
 
 .sectionTitle {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-navy);
     margin: 0;
+    font-family: var(--font-handwriting);
 }
 
 .sectionCount {
     font-size: 0.8rem;
     font-weight: 500;
-    background-color: #f0f0f0;
-    color: #666;
+    background-color: rgba(217, 177, 102, 0.1);
+    color: var(--color-tan);
     padding: 0.15rem 0.55rem;
     border-radius: 99px;
 }
@@ -38,12 +39,12 @@
 }
 
 .toggleButton:hover .sectionTitle {
-    color: #444;
+    color: var(--color-brown);
 }
 
 .chevron {
     font-size: 0.7rem;
-    color: #999;
+    color: var(--color-tan);
     transition: transform 0.2s;
     margin-left: auto;
 }
@@ -54,7 +55,7 @@
 
 .divider {
     border: none;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px dashed var(--color-gold);
     margin-bottom: 1.25rem;
 }
 
@@ -91,22 +92,23 @@
 
 .typeTitle {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    color: #2f2f2f;
+    color: var(--color-brown);
+    font-family: var(--font-handwriting);
 }
 
 .typeCount {
     font-size: 0.75rem;
     font-weight: 500;
-    background-color: #f3f4f6;
-    color: #6b7280;
+    background-color: rgba(217, 177, 102, 0.1);
+    color: var(--color-tan);
     padding: 0.12rem 0.5rem;
     border-radius: 99px;
 }
 
 .emptyState {
-    color: #999;
+    color: var(--color-tan);
     font-size: 0.9rem;
     font-style: italic;
     padding: 1rem 0;
@@ -114,16 +116,16 @@
 
 .showArchivedButton {
     background: none;
-    border: 1px dashed #ccc;
-    color: #999;
+    border: 1px dashed var(--color-tan);
+    color: var(--color-tan);
     font-size: 0.875rem;
     cursor: pointer;
     padding: 0.5rem 1rem;
-    border-radius: 8px;
+    border-radius: 4px;
     transition: all 0.2s;
 }
 
 .showArchivedButton:hover {
-    border-color: #999;
-    color: #666;
+    border-color: var(--color-gold);
+    color: var(--color-brown);
 }

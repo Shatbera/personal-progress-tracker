@@ -1,69 +1,86 @@
 .main {
-    padding: 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
+    padding: 2.5rem 3rem;
+    max-width: 900px;
+    margin: 2rem auto;
+    font-family: var(--font-handwriting);
+    background-color: var(--color-card);
+    border: none;
+    border-radius: 6px;
+    box-shadow:
+        2px 3px 12px rgba(89, 59, 32, 0.08),
+        inset 0 0 60px rgba(242, 241, 223, 0.4);
+    min-height: 80vh;
 }
 
 .header {
     margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px dashed var(--color-gold);
 }
 
 .title {
-    font-size: 2rem;
-    font-weight: 600;
+    font-size: 2.4rem;
+    font-weight: 700;
     margin: 0 0 0.5rem 0;
-    color: #1a1a1a;
+    color: var(--color-navy);
+    font-family: var(--font-handwriting);
 }
 
 .description {
-    font-size: 1rem;
-    color: #555;
+    font-size: 1.2rem;
+    color: var(--color-brown);
     margin: 0 0 0.5rem 0;
-    line-height: 1.5;
+    line-height: 2.1rem;
+    font-family: var(--font-handwriting);
 }
 
 .meta {
     display: flex;
-    gap: 1.5rem;
-    font-size: 0.875rem;
-    color: #888;
+    gap: 2rem;
+    font-size: 1.1rem;
+    color: var(--color-tan);
     margin-top: 0.75rem;
+    font-family: var(--font-handwriting);
 }
 
 .completedBadge {
     display: inline-block;
     margin-top: 0.75rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    background-color: #d1fae5;
-    color: #065f46;
+    padding: 0.3rem 1rem;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background-color: rgba(217, 177, 102, 0.15);
+    color: var(--color-brown);
+    border: 1px dashed var(--color-gold);
+    font-family: var(--font-handwriting);
 }
 
 .tableWrapper {
     overflow-x: auto;
-    border-radius: 0.75rem;
-    border: 1px solid #e5e7eb;
+    border-radius: 2px;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    font-size: 0.95rem;
+    font-size: 1.15rem;
+    font-family: var(--font-handwriting);
 }
 
 .table thead {
-    background-color: #f9fafb;
+    background: transparent;
 }
 
 .table th {
-    padding: 0.75rem 1rem;
+    padding: 0.6rem 1rem;
     text-align: left;
-    font-weight: 600;
-    color: #374151;
-    border-bottom: 1px solid #e5e7eb;
+    font-weight: 700;
+    color: var(--color-navy);
+    border-bottom: 2px solid var(--color-gold);
+    font-size: 1.25rem;
+    font-family: var(--font-handwriting);
 }
 
 .thNotes {
@@ -71,11 +88,13 @@
 }
 
 .table td {
-    padding: 0.75rem 1rem;
-    color: #374151;
-    border-bottom: 1px solid #f3f4f6;
+    padding: 0.5rem 1rem;
+    color: var(--color-brown);
+    border-bottom: 1px solid rgba(217, 177, 102, 0.3);
     vertical-align: top;
     overflow: hidden;
+    line-height: 2.1rem;
+    font-family: var(--font-handwriting);
 }
 
 .table tr:last-child td {
@@ -83,35 +102,59 @@
 }
 
 .table tr:hover td {
-    background-color: #f9fafb;
+    background-color: rgba(217, 177, 102, 0.08);
 }
 
 .checked {
-    color: #059669;
-    font-weight: 500;
+    color: var(--color-brown);
+    font-weight: 600;
 }
 
 .unchecked {
-    color: #9ca3af;
+    color: var(--color-tan);
 }
 
 .note {
-    color: #6b7280;
-    font-style: italic;
+    color: var(--color-brown);
+    font-style: normal;
 }
 
 .noNote {
-    color: #d1d5db;
+    color: var(--color-tan);
 }
 
 .error {
-    color: #dc2626;
+    color: var(--color-brown);
     padding: 2rem;
     text-align: center;
+    font-family: var(--font-handwriting);
+    font-size: 1.3rem;
 }
 
 .missingId {
-    color: #6b7280;
+    color: var(--color-tan);
     padding: 2rem;
     text-align: center;
+    font-family: var(--font-handwriting);
+    font-size: 1.3rem;
+}
+
+/* Override shared CheckMark component within this page */
+.main :global(.check-mark-module__box),
+.main :global([class*="check-mark-module"][class*="box"]) {
+    border-radius: 2px;
+    border-color: var(--color-tan);
+    background: transparent;
+}
+
+.main :global(.check-mark-module__checked),
+.main :global([class*="check-mark-module"][class*="checked"]) {
+    background: transparent;
+    border-color: var(--color-brown);
+}
+
+.main :global(.check-mark-module__icon),
+.main :global([class*="check-mark-module"][class*="icon"]) {
+    stroke: var(--color-brown);
+    stroke-width: 3.5;
 }

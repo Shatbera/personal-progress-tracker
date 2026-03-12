@@ -1,8 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 @import "tailwindcss";
 
 :root {
+  --color-navy: #010326;
+  --color-cream: #F2F1DF;
+  --color-gold: #D9B166;
+  --color-brown: #593B20;
+  --color-tan: #A67F5D;
+  --color-sage: #8FA57A;
+  --color-red: #C65A46;
+  --color-card: var(--color-cream);
+
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: var(--color-navy);
+  --font-handwriting: 'Caveat', cursive;
+  --font-body: 'Lora', Georgia, serif;
 }
 
 @theme inline {
@@ -12,15 +24,8 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
 }

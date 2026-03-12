@@ -1,18 +1,21 @@
 .questItem {
+    position: relative;
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.2s;
+    background-color: var(--color-card);
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(89, 59, 32, 0.06);
+    transition: box-shadow 0.2s, transform 0.15s;
     min-height: 280px;
     width: 100%;
+    overflow: hidden;
 }
 
 .questItem:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 20px rgba(89, 59, 32, 0.1);
+    transform: translateY(-2px);
     cursor: pointer;
 }
 
@@ -31,17 +34,18 @@
 
 .questTitleLink:hover .questTitle {
     text-decoration: underline;
-    color: #333;
+    color: var(--color-brown);
 }
 
 .questTitle {
     margin: 0;
-    font-size: 1.125rem;
+    font-size: 1.3rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-navy);
     display: flex;
     align-items: center;
     gap: 0.4rem;
+    font-family: var(--font-handwriting);
 }
 
 .questTypeIcon {
@@ -59,14 +63,14 @@
     font-size: 24px;
     cursor: pointer;
     padding: 4px 8px;
-    color: #666;
+    color: var(--color-tan);
     line-height: 1;
     transition: all 0.2s;
 }
 
 .menuButton:hover {
-    color: #000;
-    background: #f0f0f0;
+    color: var(--color-navy);
+    background: rgba(217, 177, 102, 0.1);
     border-radius: 4px;
 }
 
@@ -74,10 +78,10 @@
     position: absolute;
     right: 0;
     top: 100%;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: var(--color-card);
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(89, 59, 32, 0.12);
     min-width: 140px;
     z-index: 10;
     overflow: hidden;
@@ -93,16 +97,16 @@
     text-align: left;
     cursor: pointer;
     font-size: 0.95rem;
-    color: #333;
+    color: var(--color-navy);
     transition: background-color 0.2s;
 }
 
 .menu button:hover {
-    background: #f5f5f5;
+    background: rgba(217, 177, 102, 0.08);
 }
 
 .menu button:first-child {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid rgba(217, 177, 102, 0.3);
 }
 
 .status {
@@ -114,23 +118,23 @@
 }
 
 .status.not_started {
-    background-color: #e9ecef;
-    color: #495057;
+    background-color: rgba(166, 127, 93, 0.12);
+    color: var(--color-brown);
 }
 
 .status.in_progress {
-    background-color: #cfe2ff;
-    color: #084298;
+    background-color: rgba(217, 177, 102, 0.15);
+    color: var(--color-brown);
 }
 
 .status.completed {
-    background-color: #d1e7dd;
-    color: #0f5132;
+    background-color: rgba(143, 165, 122, 0.15);
+    color: var(--color-brown);
 }
 
 .description {
     margin: 0 0 0.75rem 0;
-    color: #666;
+    color: var(--color-tan);
     font-size: 0.9rem;
     line-height: 1.5;
     display: -webkit-box;
@@ -144,8 +148,8 @@
     width: fit-content;
     padding: 0.2rem 0.65rem;
     margin-bottom: 1rem;
-    background-color: #f0f4ff;
-    color: #3b5bdb;
+    background-color: rgba(217, 177, 102, 0.1);
+    color: var(--color-brown);
     border: 1px solid transparent;
     border-radius: 99px;
     white-space: nowrap;
@@ -173,26 +177,26 @@
 
 .progressLabel {
     font-size: 0.875rem;
-    color: #666;
+    color: var(--color-tan);
 }
 
 .progressNumbers {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--color-navy);
 }
 
 .progressBar {
     width: 100%;
     height: 10px;
-    background-color: #e5e7eb;
+    background-color: rgba(166, 127, 93, 0.12);
     border-radius: 5px;
     overflow: hidden;
 }
 
 .progressFill {
     height: 100%;
-    background-color: #1a1a1a;
+    background-color: var(--color-sage);
     transition: width 0.3s ease;
     border-radius: 5px;
 }
@@ -200,10 +204,10 @@
 .logProgressButton {
     flex: 1;
     padding: 0.75rem;
-    background-color: #1a1a1a;
-    color: white;
+    background-color: var(--color-navy);
+    color: var(--color-cream);
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 0.95rem;
     font-weight: 500;
     cursor: pointer;
@@ -211,11 +215,11 @@
 }
 
 .logProgressButton:hover {
-    background-color: #333;
+    background-color: var(--color-brown);
 }
 
 .logProgressButton:active {
-    background-color: #000;
+    background-color: var(--color-navy);
 }
 
 .progressActions {
@@ -227,23 +231,23 @@
 .todayStatus {
     font-size: 0.8rem;
     font-weight: 500;
-    color: #9ca3af;
+    color: var(--color-tan);
 }
 
 .todayCompleted {
-    color: #16a34a;
+    color: var(--color-sage);
 }
 
 .todayScheduled {
-    color: #2563eb;
+    color: var(--color-gold);
 }
 
 .addToPlanButton {
     padding: 0.75rem 0.9rem;
     background-color: transparent;
-    color: #1a1a1a;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
+    color: var(--color-navy);
+    border: 1px dashed var(--color-tan);
+    border-radius: 4px;
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -252,8 +256,8 @@
 }
 
 .addToPlanButton:hover {
-    background-color: #f3f4f6;
-    border-color: #9ca3af;
+    background-color: rgba(217, 177, 102, 0.08);
+    border-color: var(--color-gold);
 }
 
 .completedBadge {
@@ -261,9 +265,9 @@
     align-items: center;
     justify-content: center;
     padding: 0.75rem;
-    background-color: #d1e7dd;
-    color: #0f5132;
-    border-radius: 8px;
+    background-color: rgba(143, 165, 122, 0.15);
+    color: var(--color-brown);
+    border-radius: 4px;
     font-weight: 600;
     font-size: 1rem;
 }
@@ -273,9 +277,9 @@
     align-items: center;
     justify-content: center;
     padding: 0.75rem;
-    background-color: #e9ecef;
-    color: #495057;
-    border-radius: 8px;
+    background-color: rgba(166, 127, 93, 0.1);
+    color: var(--color-brown);
+    border-radius: 4px;
     font-weight: 600;
     font-size: 1rem;
     min-height: 120px;
@@ -283,8 +287,8 @@
 
 .archivedItem {
     opacity: 0.55;
-    background-color: #f8f8f8;
-    border-color: #d0d0d0;
+    background-color: rgba(242, 241, 223, 0.7);
+    border-color: var(--color-tan);
     box-shadow: none;
 }
 
@@ -299,9 +303,67 @@
     justify-content: center;
     gap: 0.4rem;
     padding: 0.75rem;
-    background-color: #e9ecef;
-    color: #6c757d;
-    border-radius: 8px;
+    background-color: rgba(166, 127, 93, 0.1);
+    color: var(--color-tan);
+    border-radius: 4px;
     font-weight: 600;
     font-size: 1rem;
+}
+
+@keyframes feedbackSlideIn {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -6px) scale(0.92);
+    }
+    20% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+    }
+    75% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -4px) scale(0.96);
+    }
+}
+
+.progressFeedback {
+    position: absolute;
+    top: 0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.9rem;
+    background-color: rgba(143, 165, 122, 0.12);
+    color: var(--color-brown);
+    border: 1px solid rgba(143, 165, 122, 0.3);
+    border-radius: 99px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(89, 59, 32, 0.08);
+    animation: feedbackSlideIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    z-index: 20;
+}
+
+.progressFeedback::before {
+    content: '\2713';
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+.progressFeedbackError {
+    background-color: color-mix(in srgb, var(--color-red) 8%, transparent);
+    color: var(--color-red);
+    border-color: color-mix(in srgb, var(--color-red) 25%, transparent);
+}
+
+.progressFeedbackError::before {
+    content: '\2717';
 }

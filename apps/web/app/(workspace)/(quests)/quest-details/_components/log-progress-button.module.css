@@ -1,9 +1,9 @@
 .button {
     padding: 0.625rem 1.25rem;
-    background-color: #1a1a1a;
-    color: white;
+    background-color: var(--color-navy);
+    color: var(--color-cream);
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 0.95rem;
     font-weight: 500;
     cursor: pointer;
@@ -11,11 +11,11 @@
 }
 
 .button:hover:not(:disabled) {
-    background-color: #333;
+    background-color: var(--color-brown);
 }
 
 .button:active:not(:disabled) {
-    background-color: #000;
+    background-color: var(--color-navy);
 }
 
 .button:disabled {

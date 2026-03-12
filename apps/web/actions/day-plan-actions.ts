@@ -258,18 +258,21 @@ export async function addQuestToTodaysPlan(label: string, categoryId?: string | 
         ? Math.max(...plan.blocks.map((b) => b.endMinute))
         : plan.startMinute;
 
-    if (lastEndMinute + 60 > plan.endMinute) {
-        return { error: "Not enough space in today's plan for a 1-hour block." };
+    const remaining = plan.endMinute - lastEndMinute;
+    const duration = remaining >= 60 ? 60 : remaining >= 30 ? 30 : 0;
+
+    if (duration === 0) {
+        return { error: "No space left in today's plan" };
     }
 
     try {
-        await createDayBlockApi(plan.id, lastEndMinute, lastEndMinute + 60, label, categoryId, questId);
+        await createDayBlockApi(plan.id, lastEndMinute, lastEndMinute + duration, label, categoryId, questId);
         revalidatePath('/day-plans');
         revalidatePath('/dashboard');
         return { success: true };
     } catch (error) {
         return {
-            error: error instanceof Error ? error.message : "Failed to add block to today's plan",
+            error: error instanceof Error ? error.message : "Failed to add block",
         };
     }
 }

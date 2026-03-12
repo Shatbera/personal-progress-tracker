@@ -1,8 +1,8 @@
 .sidebar {
     width: 220px;
     flex-shrink: 0;
-    border-right: 1px solid #e5e7eb;
-    background: white;
+    border-right: 1px dashed var(--color-gold);
+    background: #ffffff;
     padding: 1.5rem 0;
     overflow-y: auto;
 }
@@ -19,22 +19,22 @@
     align-items: center;
     gap: 0.625rem;
     padding: 0.625rem 0.75rem;
-    border-radius: 6px;
+    border-radius: 4px;
     text-decoration: none;
     font-size: 0.9375rem;
-    color: #6b7280;
+    color: var(--color-tan);
     font-weight: 500;
     transition: background 0.15s, color 0.15s;
 }
 
 .link:hover {
-    background: #f3f4f6;
-    color: #111827;
+    background: rgba(217, 177, 102, 0.1);
+    color: var(--color-navy);
 }
 
 .linkActive {
-    background: #eef4fc;
-    color: #2563eb;
+    background: rgba(217, 177, 102, 0.15);
+    color: var(--color-brown);
 }
 
 .icon {

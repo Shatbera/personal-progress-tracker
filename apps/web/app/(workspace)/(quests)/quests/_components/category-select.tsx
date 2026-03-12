@@ -6,6 +6,7 @@ import { QuestCategory } from '../../types';
 import { createCategory, deleteCategory, updateCategory } from '@/actions/quest-category-actions';
 import styles from './category-select.module.css';
 import { PREDEFINED_COLORS } from '@/lib/category-colors';
+import ConfirmDialog from '@/app/(workspace)/_components/confirm-dialog';
 
 
 type CategorySelectProps = {
@@ -96,6 +97,7 @@ export default function CategorySelect({ categories: initialCategories, defaultV
     const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
     const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
     const [modal, setModal] = useState<ModalState>(null);
+    const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
     const [isPending, startTransition] = useTransition();
     const triggerRef = useRef<HTMLButtonElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -136,8 +138,12 @@ export default function CategorySelect({ categories: initialCategories, defaultV
 
     function handleDelete(id: string) {
         const category = categories.find(c => c.id === id);
-        if (!window.confirm(`Are you sure you want to delete "${category?.name}"?`)) return;
         setMenuOpenId(null);
+        setDeleteConfirm({ id, name: category?.name ?? '' });
+    }
+
+    function executeDelete(id: string) {
+        setDeleteConfirm(null);
         startTransition(async () => {
             const result = await deleteCategory(id);
             if (!('error' in result && result.error)) {
@@ -238,6 +244,16 @@ export default function CategorySelect({ categories: initialCategories, defaultV
                 modal={modal}
                 onClose={handleModalClose}
             />
+            {deleteConfirm && (
+                <ConfirmDialog
+                    title="Delete Category"
+                    message={`Are you sure you want to delete "${deleteConfirm.name}"?`}
+                    confirmLabel="Delete"
+                    variant="danger"
+                    onConfirm={() => executeDelete(deleteConfirm.id)}
+                    onCancel={() => setDeleteConfirm(null)}
+                />
+            )}
         </div>
     );
 }

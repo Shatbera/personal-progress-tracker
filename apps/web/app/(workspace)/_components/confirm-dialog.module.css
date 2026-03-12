@@ -1,0 +1,103 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 20vh;
+    background: rgba(89, 59, 32, 0.25);
+    animation: overlayFadeIn 0.15s ease-out;
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes boxSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.box {
+    width: min(400px, calc(100vw - 2rem));
+    border-radius: 6px;
+    border: none;
+    background: var(--color-card);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 8px 30px rgba(89, 59, 32, 0.12);
+    animation: boxSlideIn 0.2s ease-out;
+}
+
+.title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 650;
+    color: var(--color-navy);
+    font-family: var(--font-handwriting);
+}
+
+.message {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-brown);
+    line-height: 1.5;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.cancelButton {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: 1px dashed var(--color-tan);
+    background: var(--color-cream);
+    color: var(--color-brown);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.cancelButton:hover {
+    background: rgba(217, 177, 102, 0.1);
+    border-color: var(--color-gold);
+}
+
+.confirmButton {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    background: var(--color-navy);
+    color: var(--color-cream);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.confirmButton:hover {
+    background: var(--color-brown);
+}
+
+.confirmButtonDanger {
+    background: var(--color-red);
+}
+
+.confirmButtonDanger:hover {
+    background: color-mix(in srgb, var(--color-red) 85%, black);
+}

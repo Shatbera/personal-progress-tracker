@@ -10,6 +10,7 @@ import DayBlockCreateModal from './day-block-create-modal';
 import PlanBlockItem from './plan-block-item';
 import Reflection from './reflection';
 import DayPlanCreateModal, { DayPlanKind } from '@/app/(workspace)/(day-plans)/day-plans/_components/day-plan-create-modal';
+import ConfirmDialog from '@/app/(workspace)/_components/confirm-dialog';
 import styles from "./day-plan-details.module.css";
 
 type DayPlanDetailsProps = {
@@ -152,6 +153,7 @@ export default function DayPlanDetails({
 	const [isPlanUpdatePending, setIsPlanUpdatePending] = useState(false);
 	const [isPlanDeletePending, setIsPlanDeletePending] = useState(false);
 	const [builderError, setBuilderError] = useState<string | null>(null);
+	const [confirmAction, setConfirmAction] = useState<{ title: string; message: string; onConfirm: () => void } | null>(null);
 	const hasScheduledBlocks = Boolean(
 		plan?.blocks?.some((block) => block.endMinute > block.startMinute),
 	);
@@ -543,23 +545,25 @@ export default function DayPlanDetails({
 		}
 
 		setIsPlanMenuOpen(false);
-		const confirmed = window.confirm('Delete this plan and all its blocks?');
-		if (!confirmed) {
-			return;
-		}
+		setConfirmAction({
+			title: 'Delete Plan',
+			message: 'Delete this plan and all its blocks?',
+			onConfirm: async () => {
+				setConfirmAction(null);
+				setBuilderError(null);
+				setIsPlanDeletePending(true);
+				const result = await deleteDayPlan(plan.id);
+				setIsPlanDeletePending(false);
 
-		setBuilderError(null);
-		setIsPlanDeletePending(true);
-		const result = await deleteDayPlan(plan.id);
-		setIsPlanDeletePending(false);
+				if ('error' in result && result.error) {
+					setBuilderError(result.error);
+					return;
+				}
 
-		if ('error' in result && result.error) {
-			setBuilderError(result.error);
-			return;
-		}
-
-		setIsEditPlanPanelOpen(false);
-		router.refresh();
+				setIsEditPlanPanelOpen(false);
+				router.refresh();
+			},
+		});
 	};
 
 	const getContextMenuOptionCount = (blockId: string): number => {
@@ -754,7 +758,7 @@ export default function DayPlanDetails({
 										height: `${visualHeightPercent}%`,
 									}}
 								>
-									Add next block
+									+ Add next block
 								</button>
 							);
 						})()}
@@ -863,6 +867,16 @@ export default function DayPlanDetails({
 					dayPlanId={plan.id}
 					dateIso={plan.date}
 					initialReflection={plan.reflection}
+				/>
+			)}
+			{confirmAction && (
+				<ConfirmDialog
+					title={confirmAction.title}
+					message={confirmAction.message}
+					confirmLabel="Yes"
+					variant="danger"
+					onConfirm={confirmAction.onConfirm}
+					onCancel={() => setConfirmAction(null)}
 				/>
 			)}
 		</section>

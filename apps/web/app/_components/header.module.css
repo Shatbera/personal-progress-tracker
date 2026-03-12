@@ -3,8 +3,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 3rem;
-    border-bottom: 1px solid #e5e7eb;
-    background-color: white;
+    border-bottom: 1px dashed var(--color-gold);
+    background-color: #ffffff;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -16,11 +16,13 @@
 }
 
 .logo {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--color-navy);
     margin: 0;
     cursor: pointer;
+    font-family: var(--font-handwriting);
+    letter-spacing: 0.02em;
 }
 
 .nav {
@@ -30,7 +32,7 @@
 
 .navLink {
     text-decoration: none;
-    color: #6b7280;
+    color: var(--color-tan);
     font-weight: 500;
     transition: color 0.2s;
     background: none;
@@ -42,5 +44,5 @@
 }
 
 .navLink:hover {
-    color: #111827;
+    color: var(--color-navy);
 }

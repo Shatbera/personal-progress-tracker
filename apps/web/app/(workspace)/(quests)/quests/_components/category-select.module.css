@@ -9,36 +9,36 @@
     justify-content: space-between;
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-tan);
     border-radius: 4px;
     font-size: 1rem;
     font-family: inherit;
-    background: white;
+    background: var(--color-card);
     cursor: pointer;
     text-align: left;
-    color: #333;
+    color: var(--color-navy);
 }
 
 .trigger:focus {
     outline: none;
-    border-color: #4a90e2;
+    border-color: var(--color-gold);
 }
 
 .triggerOpen {
-    border-color: #4a90e2;
+    border-color: var(--color-gold);
 }
 
 .chevron {
     font-size: 0.75rem;
-    color: #888;
+    color: var(--color-tan);
     flex-shrink: 0;
 }
 
 .dropdown {
-    background: white;
-    border: 1px solid #ddd;
+    background: var(--color-card);
+    border: 1px solid var(--color-tan);
     border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px rgba(89, 59, 32, 0.1);
     z-index: 9999;
     max-height: 240px;
     overflow-y: auto;
@@ -51,16 +51,16 @@
     padding: 0 0.25rem 0 0.75rem;
     cursor: pointer;
     font-size: 0.9375rem;
-    color: #333;
+    color: var(--color-navy);
     min-height: 2.5rem;
 }
 
 .option:hover {
-    background: #f5f5f5;
+    background: rgba(217, 177, 102, 0.08);
 }
 
 .optionSelected {
-    background: #eef4fc;
+    background: rgba(217, 177, 102, 0.12);
     font-weight: 500;
 }
 
@@ -80,25 +80,25 @@
     cursor: pointer;
     padding: 0.375rem 0.5rem;
     font-size: 1rem;
-    color: #aaa;
+    color: var(--color-tan);
     border-radius: 4px;
     line-height: 1;
     letter-spacing: 1px;
 }
 
 .menuBtn:hover {
-    background: #eee;
-    color: #333;
+    background: rgba(217, 177, 102, 0.1);
+    color: var(--color-navy);
 }
 
 .menu {
     position: absolute;
     right: 0;
     top: calc(100% + 2px);
-    background: white;
-    border: 1px solid #ddd;
+    background: var(--color-card);
+    border: 1px solid var(--color-tan);
     border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 12px rgba(89, 59, 32, 0.1);
     z-index: 200;
     min-width: 100px;
     overflow: hidden;
@@ -113,45 +113,45 @@
     text-align: left;
     font-size: 0.875rem;
     cursor: pointer;
-    color: #333;
+    color: var(--color-navy);
 }
 
 .menuItem:hover {
-    background: #f5f5f5;
+    background: rgba(217, 177, 102, 0.08);
 }
 
 .menuItemDelete {
-    color: #c33;
+    color: var(--color-red);
 }
 
 .menuItemDelete:hover {
-    background: #fee;
+    background: color-mix(in srgb, var(--color-red) 6%, transparent);
 }
 
 .categoriesDivider {
     height: 1px;
-    background: #eee;
+    background: var(--color-gold);
     margin: 0.25rem 0;
 }
 
 .addOption {
     padding: 0.625rem 0.75rem;
     font-size: 0.875rem;
-    color: #4a90e2;
+    color: var(--color-gold);
     cursor: pointer;
-    border-top: 1px solid #eee;
+    border-top: 1px solid rgba(217, 177, 102, 0.3);
     font-weight: 500;
 }
 
 .addOption:hover {
-    background: #f0f7ff;
+    background: rgba(217, 177, 102, 0.08);
 }
 
 /* Portal modal */
 .modalOverlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(89, 59, 32, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -159,26 +159,27 @@
 }
 
 .modalBox {
-    background: white;
-    border-radius: 8px;
+    background: var(--color-card);
+    border-radius: 6px;
     padding: 1.5rem;
     width: 320px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px rgba(89, 59, 32, 0.12);
 }
 
 .modalTitle {
-    font-size: 1.125rem;
+    font-size: 1.3rem;
     font-weight: 600;
     margin: 0 0 1rem 0;
-    color: #333;
+    color: var(--color-navy);
+    font-family: var(--font-handwriting);
 }
 
 .modalError {
     padding: 0.5rem 0.75rem;
-    background-color: #fee;
-    border: 1px solid #fcc;
+    background-color: color-mix(in srgb, var(--color-red) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-red) 25%, transparent);
     border-radius: 4px;
-    color: #c33;
+    color: var(--color-red);
     font-size: 0.875rem;
     margin-bottom: 0.75rem;
 }
@@ -191,17 +192,19 @@
 
 .modalInput {
     padding: 0.75rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-tan);
     border-radius: 4px;
     font-size: 1rem;
     font-family: inherit;
     width: 100%;
     box-sizing: border-box;
+    background: var(--color-card);
+    color: var(--color-navy);
 }
 
 .modalInput:focus {
     outline: none;
-    border-color: #4a90e2;
+    border-color: var(--color-gold);
 }
 
 .modalActions {
@@ -213,21 +216,21 @@
 .modalCancelBtn {
     padding: 0.5rem 1rem;
     background: none;
-    border: 1px solid #ddd;
+    border: 1px dashed var(--color-tan);
     border-radius: 4px;
     font-size: 0.875rem;
     cursor: pointer;
-    color: #666;
+    color: var(--color-tan);
 }
 
 .modalCancelBtn:hover {
-    background: #f5f5f5;
+    background: rgba(217, 177, 102, 0.08);
 }
 
 .modalSubmitBtn {
     padding: 0.5rem 1rem;
-    background-color: #4a90e2;
-    color: white;
+    background-color: var(--color-navy);
+    color: var(--color-cream);
     border: none;
     border-radius: 4px;
     font-size: 0.875rem;
@@ -236,14 +239,14 @@
 }
 
 .modalSubmitBtn:hover {
-    background-color: #357abd;
+    background-color: var(--color-brown);
 }
 
 /* Color picker */
 .colorPickerLabel {
     font-size: 0.875rem;
     font-weight: 500;
-    color: #555;
+    color: var(--color-brown);
     margin-bottom: -0.25rem;
 }
 
@@ -269,8 +272,8 @@
 }
 
 .colorSwatchSelected {
-    border-color: #333;
-    box-shadow: 0 0 0 2px white inset;
+    border-color: var(--color-navy);
+    box-shadow: 0 0 0 2px var(--color-cream) inset;
 }
 
 /* Color dot in trigger / dropdown options */

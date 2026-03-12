@@ -4,6 +4,7 @@ import { Quest, QuestCategory } from '@/app/(workspace)/(quests)/types';
 import CategorySelect from '@/app/(workspace)/(quests)/quests/_components/category-select';
 import { useEffect, useMemo, useState, useTransition } from 'react';
 import styles from './day-plan-details.module.css';
+import ConfirmDialog from '@/app/(workspace)/_components/confirm-dialog';
 
 const HALF_HOUR_MINUTES = 30;
 
@@ -92,6 +93,7 @@ export default function DayBlockCreateModal({
     const [title, setTitle] = useState(initialLabel ?? '');
     const [selectedQuestId, setSelectedQuestId] = useState<string | null>(initialQuestId ?? null);
     const [error, setError] = useState<string | null>(null);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isPending, startTransition] = useTransition();
 
     const selectedQuest = quests.find((q) => q.id === selectedQuestId) ?? null;
@@ -142,14 +144,14 @@ export default function DayBlockCreateModal({
             return;
         }
 
-        const confirmed = window.confirm('Delete this block? This action cannot be undone.');
-        if (!confirmed) {
-            return;
-        }
+        setShowDeleteConfirm(true);
+    };
 
+    const executeDelete = () => {
+        setShowDeleteConfirm(false);
         setError(null);
         startTransition(async () => {
-            const deleteError = await onDeleteBlock();
+            const deleteError = await onDeleteBlock!();
             if (deleteError) {
                 setError(deleteError);
                 return;
@@ -188,6 +190,7 @@ export default function DayBlockCreateModal({
     };
 
     return (
+        <>
         <div className={styles.modalOverlay} onClick={handleOverlayClick}>
             <div className={styles.modalBox} onClick={(event) => event.stopPropagation()}>
                 <div className={styles.modalHeader}>
@@ -305,5 +308,16 @@ export default function DayBlockCreateModal({
                 </form>
             </div>
         </div>
+        {showDeleteConfirm && (
+            <ConfirmDialog
+                title="Delete Block"
+                message="Delete this block? This action cannot be undone."
+                confirmLabel="Delete"
+                variant="danger"
+                onConfirm={executeDelete}
+                onCancel={() => setShowDeleteConfirm(false)}
+            />
+        )}
+        </>
     );
 }

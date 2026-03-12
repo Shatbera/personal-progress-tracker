@@ -13,15 +13,16 @@
 }
 
 .title {
-    font-size: 2rem;
+    font-size: 2.25rem;
     font-weight: 600;
     margin: 0 0 0.5rem 0;
-    color: #1a1a1a;
+    color: var(--color-navy);
+    font-family: var(--font-handwriting);
 }
 
 .subtitle {
     font-size: 1rem;
-    color: #666;
+    color: var(--color-tan);
     margin: 0;
 }
 
@@ -29,10 +30,10 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: #000;
-    color: #fff;
+    background-color: var(--color-navy);
+    color: var(--color-cream);
     padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
+    border-radius: 4px;
     font-weight: 500;
     font-size: 0.95rem;
     text-decoration: none;
@@ -41,18 +42,18 @@
 }
 
 .newQuestButton:hover {
-    background-color: #333;
+    background-color: var(--color-brown);
 }
 
 .noQuests {
-    color: #666;
+    color: var(--color-tan);
     font-style: italic;
     padding: 2rem;
     text-align: center;
 }
 
 .loading {
-    color: #666;
+    color: var(--color-tan);
     padding: 2rem;
     text-align: center;
 }

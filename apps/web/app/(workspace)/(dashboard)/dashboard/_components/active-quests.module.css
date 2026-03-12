@@ -1,22 +1,23 @@
 .container {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-gold);
+    border-radius: 6px;
     padding: 1.5rem;
 }
 
 .title {
-    font-size: 1.125rem;
+    font-size: 1.3rem;
     font-weight: 600;
-    color: #111827;
+    color: var(--color-navy);
     margin: 0 0 1.25rem 0;
     padding-bottom: 0.75rem;
-    border-bottom: 1px solid #e5e7eb;
+    font-family: var(--font-handwriting);
 }
 
 .placeholder {
     font-size: 0.9375rem;
-    color: #9ca3af;
+    color: var(--color-tan);
     margin: 0;
 }
 
@@ -51,7 +52,7 @@
     margin: 0;
     font-size: 0.9rem;
     font-weight: 600;
-    color: #374151;
+    color: var(--color-brown);
 }
 
 .card {
@@ -59,9 +60,9 @@
     flex-direction: column;
     gap: 0.5rem;
     padding: 0.875rem 1rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    background: #f9fafb;
+    border: none;
+    border-radius: 4px;
+    background: rgba(242, 241, 223, 0.5);
 }
 
 .cardHeader {
@@ -72,22 +73,23 @@
 }
 
 .questTitle {
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    color: #111827;
+    color: var(--color-navy);
+    font-family: var(--font-handwriting);
 }
 
 .points {
     font-size: 0.75rem;
     font-weight: 500;
-    color: #2563eb;
+    color: var(--color-gold);
     white-space: nowrap;
     flex-shrink: 0;
 }
 
 .description {
     font-size: 0.8125rem;
-    color: #6b7280;
+    color: var(--color-tan);
     margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -97,7 +99,7 @@
 
 .progressBar {
     height: 6px;
-    background: #e5e7eb;
+    background: rgba(166, 127, 93, 0.12);
     border-radius: 9999px;
     overflow: hidden;
     margin-top: 0.25rem;
@@ -105,7 +107,7 @@
 
 .progressFill {
     height: 100%;
-    background: #16a34a;
+    background: var(--color-sage);
     border-radius: 9999px;
     transition: width 0.3s ease;
 }

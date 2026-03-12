@@ -26,13 +26,13 @@ function formatDateTime(dateStr: string): string {
 function getEventLabel(eventType: string): string {
     switch (eventType) {
         case 'PROGRESS':
-            return 'Progress logged';
+            return '▲ Progress';
         case 'COMPLETE':
-            return 'Quest completed!';
+            return '★ Completed';
         case 'UNDO':
-            return 'Progress undone';
+            return '↩ Undo';
         case 'RESET':
-            return 'Progress reset';
+            return '↺ Reset';
         default:
             return eventType;
     }
@@ -76,8 +76,10 @@ export default function EventHistory({ events }: EventHistoryProps) {
                                 {getEventLabel(event.eventType)}
                             </td>
                             <td>
-                                {event.pointsChanged > 0 ? '+' : ''}
-                                {event.pointsChanged}
+                                <span className={`${styles.pointsBadge} ${event.pointsChanged > 0 ? styles.pointsPositive : event.pointsChanged < 0 ? styles.pointsNegative : ''}`}>
+                                    {event.pointsChanged > 0 ? '+' : ''}
+                                    {event.pointsChanged}
+                                </span>
                             </td>
                         </tr>
                     ))}

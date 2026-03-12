@@ -3,7 +3,6 @@ import { getQuestEvents, getWeeklyHistory } from "@/lib/api/quest-events";
 import EditableHeader from "./_components/editable-header";
 import EventHistory from "./_components/event-history";
 import WeeklySummary from "./_components/weekly-summary";
-import LogProgressButton from "./_components/log-progress-button";
 import styles from "./page.module.css";
 
 interface QuestDetailsPageProps {
@@ -102,13 +101,6 @@ export default async function QuestDetailsPage({ searchParams }: QuestDetailsPag
                         <div
                             className={styles.progressFill}
                             style={{ width: `${progressPercentage}%` }}
-                        />
-                    </div>
-                    <div className={styles.progressActions}>
-                        <LogProgressButton
-                            questId={questId}
-                            currentPoints={quest.currentPoints}
-                            maxPoints={quest.maxPoints}
                         />
                     </div>
                 </div>

@@ -4,5 +4,5 @@
     justify-content: center;
     min-height: 100vh;
     padding: 1rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-brown) 100%);
 }
