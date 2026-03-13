@@ -255,7 +255,7 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
                             </span>
                         </div>
                         {quest.questType === 'DAILY_TRACK' && (
-                            <span className={`${styles.todayStatus} ${dailyTrackCompletedToday ? styles.todayCompleted : todayStatus === 'scheduled' ? styles.todayScheduled : ''}`}>
+                            <span className={`${styles.todayStatus} ${dailyTrackCompletedToday ? styles.todayCompleted : todayStatus === 'scheduled' ? styles.todayScheduled : styles.todayNotScheduled}`}>
                                 {dailyTrackCompletedToday ? '✓ Completed today' : todayStatus === 'scheduled' ? 'Scheduled today' : 'Not scheduled today'}
                             </span>
                         )}

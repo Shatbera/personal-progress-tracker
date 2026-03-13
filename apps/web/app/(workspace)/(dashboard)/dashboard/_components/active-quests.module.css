@@ -1,23 +1,23 @@
 .container {
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--color-gold);
-    border-radius: 6px;
+    /* border: 1px solid var(--color-border); */
+    /* border-radius: 6px; */
     padding: 1.5rem;
 }
 
 .title {
     font-size: 1.3rem;
     font-weight: 600;
-    color: var(--color-navy);
-    margin: 0 0 1.25rem 0;
+    color: var(--color-foreground);
+    /* margin: 0 0 1.25rem 0; */
     padding-bottom: 0.75rem;
     font-family: var(--font-handwriting);
 }
 
 .placeholder {
     font-size: 0.9375rem;
-    color: var(--color-tan);
+    color: var(--color-text-muted);
     margin: 0;
 }
 
@@ -52,7 +52,7 @@
     margin: 0;
     font-size: 0.9rem;
     font-weight: 600;
-    color: var(--color-brown);
+    color: var(--color-text);
 }
 
 .card {
@@ -62,8 +62,9 @@
     padding: 0.875rem 1rem;
     border: none;
     border-radius: 4px;
-    background: rgba(242, 241, 223, 0.5);
+    background: var(--color-card);
 }
+
 
 .cardHeader {
     display: flex;
@@ -75,21 +76,21 @@
 .questTitle {
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--color-navy);
+    color: var(--color-foreground);
     font-family: var(--font-handwriting);
 }
 
 .points {
     font-size: 0.75rem;
     font-weight: 500;
-    color: var(--color-gold);
+    color: var(--color-border);
     white-space: nowrap;
     flex-shrink: 0;
 }
 
 .description {
     font-size: 0.8125rem;
-    color: var(--color-tan);
+    color: var(--color-text-muted);
     margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -107,7 +108,7 @@
 
 .progressFill {
     height: 100%;
-    background: var(--color-sage);
+    background: var(--color-success);
     border-radius: 9999px;
     transition: width 0.3s ease;
 }

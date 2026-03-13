@@ -3,32 +3,30 @@
     max-width: 900px;
     margin: 2rem auto;
     font-family: var(--font-handwriting);
-    background-color: var(--color-card);
-    border: none;
-    border-radius: 6px;
-    box-shadow:
-        2px 3px 12px rgba(89, 59, 32, 0.08),
-        inset 0 0 60px rgba(242, 241, 223, 0.4);
     min-height: 80vh;
+    border: 2px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(217, 177, 102, 0.15);
+    background: var(--color-card);
 }
 
 .header {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 2px dashed var(--color-gold);
+    border-bottom: 2px dashed var(--color-foreground);
 }
 
 .title {
     font-size: 2.4rem;
     font-weight: 700;
     margin: 0 0 0.5rem 0;
-    color: var(--color-navy);
+    color: var(--color-foreground);
     font-family: var(--font-handwriting);
 }
 
 .description {
     font-size: 1.2rem;
-    color: var(--color-brown);
+    color: var(--color-text);
     margin: 0 0 0.5rem 0;
     line-height: 2.1rem;
     font-family: var(--font-handwriting);
@@ -38,7 +36,7 @@
     display: flex;
     gap: 2rem;
     font-size: 1.1rem;
-    color: var(--color-tan);
+    color: var(--color-text-muted);
     margin-top: 0.75rem;
     font-family: var(--font-handwriting);
 }
@@ -50,9 +48,9 @@
     border-radius: 4px;
     font-size: 1.1rem;
     font-weight: 600;
-    background-color: rgba(217, 177, 102, 0.15);
-    color: var(--color-brown);
-    border: 1px dashed var(--color-gold);
+    background-color: var(--color-border);
+    color: var(--color-text);
+    border: 1px dashed var(--color-border);
     font-family: var(--font-handwriting);
 }
 
@@ -60,6 +58,7 @@
     overflow-x: auto;
     border-radius: 2px;
 }
+
 
 .table {
     width: 100%;
@@ -77,8 +76,8 @@
     padding: 0.6rem 1rem;
     text-align: left;
     font-weight: 700;
-    color: var(--color-navy);
-    border-bottom: 2px solid var(--color-gold);
+    color: var(--color-foreground);
+    border-bottom: 2px solid var(--color-border);
     font-size: 1.25rem;
     font-family: var(--font-handwriting);
 }
@@ -89,8 +88,8 @@
 
 .table td {
     padding: 0.5rem 1rem;
-    color: var(--color-brown);
-    border-bottom: 1px solid rgba(217, 177, 102, 0.3);
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
     vertical-align: top;
     overflow: hidden;
     line-height: 2.1rem;
@@ -102,29 +101,29 @@
 }
 
 .table tr:hover td {
-    background-color: rgba(217, 177, 102, 0.08);
+    background-color: var(--color-border);
 }
 
 .checked {
-    color: var(--color-brown);
+    color: var(--color-text);
     font-weight: 600;
 }
 
 .unchecked {
-    color: var(--color-tan);
+    color: var(--color-text-muted);
 }
 
 .note {
-    color: var(--color-brown);
+    color: var(--color-text);
     font-style: normal;
 }
 
 .noNote {
-    color: var(--color-tan);
+    color: var(--color-text-muted);
 }
 
 .error {
-    color: var(--color-brown);
+    color: var(--color-text);
     padding: 2rem;
     text-align: center;
     font-family: var(--font-handwriting);
@@ -132,7 +131,7 @@
 }
 
 .missingId {
-    color: var(--color-tan);
+    color: var(--color-text-muted);
     padding: 2rem;
     text-align: center;
     font-family: var(--font-handwriting);
@@ -143,18 +142,18 @@
 .main :global(.check-mark-module__box),
 .main :global([class*="check-mark-module"][class*="box"]) {
     border-radius: 2px;
-    border-color: var(--color-tan);
+    border-color: var(--color-text-muted);
     background: transparent;
 }
 
 .main :global(.check-mark-module__checked),
 .main :global([class*="check-mark-module"][class*="checked"]) {
     background: transparent;
-    border-color: var(--color-brown);
+    border-color: var(--color-text);
 }
 
 .main :global(.check-mark-module__icon),
 .main :global([class*="check-mark-module"][class*="icon"]) {
-    stroke: var(--color-brown);
+    stroke: var(--color-text);
     stroke-width: 3.5;
 }

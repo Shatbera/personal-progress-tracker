@@ -3,7 +3,7 @@
 }
 
 .note {
-    color: var(--color-brown);
+    color: var(--color-text);
     cursor: pointer;
     word-break: break-word;
     font-family: var(--font-handwriting);
@@ -13,12 +13,12 @@
 }
 
 .note:hover {
-    color: var(--color-navy);
-    border-bottom-color: var(--color-gold);
+    color: var(--color-foreground);
+    border-bottom-color: var(--color-border);
 }
 
 .noNote {
-    color: var(--color-tan);
+    color: var(--color-text-muted);
     cursor: pointer;
     font-style: normal;
     font-family: var(--font-handwriting);
@@ -26,7 +26,7 @@
 }
 
 .noNote:hover {
-    color: var(--color-brown);
+    color: var(--color-text);
 }
 
 .textarea {
@@ -36,11 +36,11 @@
     font-size: 1.15rem;
     font-family: var(--font-handwriting);
     border: none;
-    border-bottom: 2px dashed var(--color-gold);
+    border-bottom: 2px dashed var(--color-border);
     border-radius: 0;
     outline: none;
     resize: none;
-    color: var(--color-navy);
+    color: var(--color-foreground);
     line-height: 2.1rem;
     background: transparent;
 }

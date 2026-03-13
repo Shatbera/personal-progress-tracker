@@ -64,30 +64,32 @@ export default function RecentActivities({ items }: { items: DashboardRecentActi
     const sections = groupByDate(items);
 
     return (
-        <div className={styles.container} style={{ flex: 1 }}>
+        <div className={styles.wrapper}>
             <h2 className={styles.title}>Recent Activities</h2>
-            {items.length === 0 ? (
-                <p className={styles.placeholder}>Your recent quest activity will appear here.</p>
-            ) : (
-                <ul className={styles.list}>
-                    {sections.map((section) => (
-                        <li key={section.label} className={styles.section}>
-                            <h3 className={styles.sectionTitle}>{section.label}</h3>
-                            <ul className={styles.sectionList}>
-                                {section.entries.map((item, i) => (
-                                    <li key={`${item.questId}-${item.createdAt}-${i}`} className={styles.item}>
-                                        <span className={styles.questTitle}>{item.questTitle}</span>
-                                        <span className={styles.meta}>
-                                            <span className={`${styles.eventType} ${item.eventType === QuestEventType.PROGRESS ? styles.eventTypeProgress : ''} ${item.eventType === QuestEventType.COMPLETE ? styles.eventTypeComplete : ''}`}>{eventLabel[item.eventType]}</span>
-                                            <span className={styles.points}>{item.pointsChanged > 0 ? `+${item.pointsChanged}` : item.pointsChanged} pts</span>
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </li>
-                    ))}
-                </ul>
-            )}
+            <div className={styles.container}>
+                {items.length === 0 ? (
+                    <p className={styles.placeholder}>Your recent quest activity will appear here.</p>
+                ) : (
+                    <ul className={styles.list}>
+                        {sections.map((section) => (
+                            <li key={section.label} className={styles.section}>
+                                <h3 className={styles.sectionTitle}>{section.label}</h3>
+                                <ul className={styles.sectionList}>
+                                    {section.entries.map((item, i) => (
+                                        <li key={`${item.questId}-${item.createdAt}-${i}`} className={styles.item}>
+                                            <span className={styles.questTitle}>{item.questTitle}</span>
+                                            <span className={styles.meta}>
+                                                <span className={`${styles.eventType} ${item.eventType === QuestEventType.PROGRESS ? styles.eventTypeProgress : ''} ${item.eventType === QuestEventType.COMPLETE ? styles.eventTypeComplete : ''}`}>{eventLabel[item.eventType]}</span>
+                                                <span className={styles.points}>{item.pointsChanged > 0 ? `+${item.pointsChanged}` : item.pointsChanged} pts</span>
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
         </div>
     );
 }

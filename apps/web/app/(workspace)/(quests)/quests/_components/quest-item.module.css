@@ -4,14 +4,15 @@
     flex-direction: column;
     padding: 1.5rem;
     background-color: var(--color-card);
-    border: none;
+    border: 1px solid var(--color-border);
     border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(89, 59, 32, 0.06);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.04);
     transition: box-shadow 0.2s, transform 0.15s;
     min-height: 280px;
     width: 100%;
     overflow: hidden;
 }
+
 
 .questItem:hover {
     box-shadow: 0 6px 20px rgba(89, 59, 32, 0.1);
@@ -34,14 +35,14 @@
 
 .questTitleLink:hover .questTitle {
     text-decoration: underline;
-    color: var(--color-brown);
+    color: var(--color-text);
 }
 
 .questTitle {
     margin: 0;
     font-size: 1.3rem;
     font-weight: 600;
-    color: var(--color-navy);
+    color: var(--color-foreground);
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -63,13 +64,13 @@
     font-size: 24px;
     cursor: pointer;
     padding: 4px 8px;
-    color: var(--color-tan);
+    color: var(--color-text);
     line-height: 1;
     transition: all 0.2s;
 }
 
 .menuButton:hover {
-    color: var(--color-navy);
+    color: var(--color-foreground);
     background: rgba(217, 177, 102, 0.1);
     border-radius: 4px;
 }
@@ -97,7 +98,7 @@
     text-align: left;
     cursor: pointer;
     font-size: 0.95rem;
-    color: var(--color-navy);
+    color: var(--color-foreground);
     transition: background-color 0.2s;
 }
 
@@ -119,22 +120,22 @@
 
 .status.not_started {
     background-color: rgba(166, 127, 93, 0.12);
-    color: var(--color-brown);
+    color: var(--color-text);
 }
 
 .status.in_progress {
     background-color: rgba(217, 177, 102, 0.15);
-    color: var(--color-brown);
+    color: var(--color-text);
 }
 
 .status.completed {
     background-color: rgba(143, 165, 122, 0.15);
-    color: var(--color-brown);
+    color: var(--color-text);
 }
 
 .description {
     margin: 0 0 0.75rem 0;
-    color: var(--color-tan);
+    color: var(--color-text);
     font-size: 0.9rem;
     line-height: 1.5;
     display: -webkit-box;
@@ -149,7 +150,7 @@
     padding: 0.2rem 0.65rem;
     margin-bottom: 1rem;
     background-color: rgba(217, 177, 102, 0.1);
-    color: var(--color-brown);
+    color: var(--color-text);
     border: 1px solid transparent;
     border-radius: 99px;
     white-space: nowrap;
@@ -177,13 +178,13 @@
 
 .progressLabel {
     font-size: 0.875rem;
-    color: var(--color-tan);
+    color: var(--color-text);
 }
 
 .progressNumbers {
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--color-navy);
+    color: var(--color-foreground);
 }
 
 .progressBar {
@@ -196,7 +197,7 @@
 
 .progressFill {
     height: 100%;
-    background-color: var(--color-sage);
+    background-color: var(--color-success);
     transition: width 0.3s ease;
     border-radius: 5px;
 }
@@ -204,8 +205,8 @@
 .logProgressButton {
     flex: 1;
     padding: 0.75rem;
-    background-color: var(--color-navy);
-    color: var(--color-cream);
+    background-color: var(--color-foreground);
+    color: var(--color-background);
     border: none;
     border-radius: 4px;
     font-size: 0.95rem;
@@ -215,11 +216,11 @@
 }
 
 .logProgressButton:hover {
-    background-color: var(--color-brown);
+    background-color: var(--color-text);
 }
 
 .logProgressButton:active {
-    background-color: var(--color-navy);
+    background-color: var(--color-foreground);
 }
 
 .progressActions {
@@ -231,22 +232,26 @@
 .todayStatus {
     font-size: 0.8rem;
     font-weight: 500;
-    color: var(--color-tan);
+    color: var(--color-text);
 }
 
 .todayCompleted {
-    color: var(--color-sage);
+    color: var(--color-success);
 }
 
 .todayScheduled {
-    color: var(--color-gold);
+    color: var(--color-text);
+}
+
+.todayNotScheduled {
+    color: var(--color-text-muted);
 }
 
 .addToPlanButton {
     padding: 0.75rem 0.9rem;
     background-color: transparent;
-    color: var(--color-navy);
-    border: 1px dashed var(--color-tan);
+    color: var(--color-foreground);
+    border: 1px dashed var(--color-text);
     border-radius: 4px;
     font-size: 0.875rem;
     font-weight: 500;
@@ -257,7 +262,7 @@
 
 .addToPlanButton:hover {
     background-color: rgba(217, 177, 102, 0.08);
-    border-color: var(--color-gold);
+    border-color: var(--color-border);
 }
 
 .completedBadge {
@@ -266,7 +271,7 @@
     justify-content: center;
     padding: 0.75rem;
     background-color: rgba(143, 165, 122, 0.15);
-    color: var(--color-brown);
+    color: var(--color-text);
     border-radius: 4px;
     font-weight: 600;
     font-size: 1rem;
@@ -278,7 +283,7 @@
     justify-content: center;
     padding: 0.75rem;
     background-color: rgba(166, 127, 93, 0.1);
-    color: var(--color-brown);
+    color: var(--color-text);
     border-radius: 4px;
     font-weight: 600;
     font-size: 1rem;
@@ -288,7 +293,7 @@
 .archivedItem {
     opacity: 0.55;
     background-color: rgba(242, 241, 223, 0.7);
-    border-color: var(--color-tan);
+    border-color: var(--color-text);
     box-shadow: none;
 }
 
@@ -304,11 +309,12 @@
     gap: 0.4rem;
     padding: 0.75rem;
     background-color: rgba(166, 127, 93, 0.1);
-    color: var(--color-tan);
+    color: var(--color-text);
     border-radius: 4px;
     font-weight: 600;
     font-size: 1rem;
 }
+
 
 @keyframes feedbackSlideIn {
     0% {
@@ -339,7 +345,7 @@
     gap: 0.35rem;
     padding: 0.4rem 0.9rem;
     background-color: rgba(143, 165, 122, 0.12);
-    color: var(--color-brown);
+    color: var(--color-text);
     border: 1px solid rgba(143, 165, 122, 0.3);
     border-radius: 99px;
     font-size: 0.8rem;
@@ -359,9 +365,9 @@
 }
 
 .progressFeedbackError {
-    background-color: color-mix(in srgb, var(--color-red) 8%, transparent);
-    color: var(--color-red);
-    border-color: color-mix(in srgb, var(--color-red) 25%, transparent);
+    background-color: color-mix(in srgb, var(--color-danger) 8%, transparent);
+    color: var(--color-danger);
+    border-color: color-mix(in srgb, var(--color-danger) 25%, transparent);
 }
 
 .progressFeedbackError::before {

@@ -43,14 +43,14 @@
     margin: 0;
     font-size: 1.25rem;
     font-weight: 650;
-    color: var(--color-navy);
+    color: var(--color-foreground);
     font-family: var(--font-handwriting);
 }
 
 .message {
     margin: 0;
     font-size: 0.9rem;
-    color: var(--color-brown);
+    color: var(--color-text);
     line-height: 1.5;
 }
 
@@ -64,9 +64,9 @@
 .cancelButton {
     padding: 0.5rem 1rem;
     border-radius: 4px;
-    border: 1px dashed var(--color-tan);
-    background: var(--color-cream);
-    color: var(--color-brown);
+    border: 1px dashed var(--color-text-muted);
+    background: var(--color-background);
+    color: var(--color-text);
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -75,15 +75,15 @@
 
 .cancelButton:hover {
     background: rgba(217, 177, 102, 0.1);
-    border-color: var(--color-gold);
+    border-color: var(--color-border);
 }
 
 .confirmButton {
     padding: 0.5rem 1rem;
     border-radius: 4px;
     border: none;
-    background: var(--color-navy);
-    color: var(--color-cream);
+    background: var(--color-foreground);
+    color: var(--color-background);
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -91,13 +91,13 @@
 }
 
 .confirmButton:hover {
-    background: var(--color-brown);
+    background: var(--color-text);
 }
 
 .confirmButtonDanger {
-    background: var(--color-red);
+    background: var(--color-danger);
 }
 
 .confirmButtonDanger:hover {
-    background: color-mix(in srgb, var(--color-red) 85%, black);
+    background: color-mix(in srgb, var(--color-danger) 85%, black);
 }

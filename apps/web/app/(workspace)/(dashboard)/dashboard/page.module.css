@@ -20,16 +20,17 @@
     gap: 0.25rem;
 }
 
+
 .title {
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--color-navy);
+    color: var(--color-foreground);
     margin: 0 0 0.5rem 0;
     font-family: var(--font-handwriting);
 }
 
 .subtitle {
-    color: var(--color-tan);
+    color: var(--color-text-muted);
     margin: 0;
     font-size: 0.9375rem;
 }

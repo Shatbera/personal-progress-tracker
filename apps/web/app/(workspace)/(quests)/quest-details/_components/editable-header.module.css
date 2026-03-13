@@ -12,14 +12,14 @@
     font-size: 2.25rem;
     font-weight: 600;
     margin: 0 0 0.5rem 0;
-    color: var(--color-navy);
+    color: var(--color-foreground);
     font-family: var(--font-handwriting);
 }
 
 .titleInput {
     font-size: 2.25rem;
     font-weight: 600;
-    color: var(--color-navy);
+    color: var(--color-foreground);
     margin: 0 0 0.5rem 0;
     border: none;
     outline: none;
@@ -31,7 +31,7 @@
 
 .description {
     font-size: 1rem;
-    color: var(--color-brown);
+    color: var(--color-text);
     margin: 0 0 0.5rem 0;
     line-height: 1.5;
     min-height: 1.5rem;
@@ -39,6 +39,6 @@
 }
 
 .placeholder {
-    color: var(--color-tan);
+    color: var(--color-text-muted);
     font-style: italic;
 }

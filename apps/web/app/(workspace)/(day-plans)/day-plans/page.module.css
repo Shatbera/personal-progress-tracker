@@ -21,7 +21,7 @@
 .tabButton {
     border: 1px solid transparent;
     background: transparent;
-    color: var(--color-brown);
+    color: var(--color-text);
     padding: 0.5rem 0.9rem;
     border-radius: 4px;
     font-weight: 600;
@@ -34,6 +34,6 @@
 
 .tabButtonActive {
     background: var(--color-card);
-    color: var(--color-navy);
-    border-color: var(--color-tan);
+    color: var(--color-foreground);
+    border-color: var(--color-text-muted);
 }

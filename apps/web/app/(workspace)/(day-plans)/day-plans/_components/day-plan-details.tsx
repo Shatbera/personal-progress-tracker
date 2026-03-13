@@ -715,127 +715,129 @@ export default function DayPlanDetails({
 			{!plan && readOnly && <p className={styles.emptyText}>No plan created yet.</p>}
 
 			{plan && (
-				<div className={styles.planCalendar} onContextMenu={(event) => event.preventDefault()}>
-					{emptyCalendarHours.map((hour) => (
-						<div key={hour} className={styles.emptyCalendarRow}>
-							<span className={styles.emptyCalendarHour}>{formatHourLabel(hour)}</span>
-							<div className={styles.emptyCalendarLine} />
-						</div>
-					))}
-					{shouldShowCurrentTimeLine && (
-						<>
-							<div className={styles.currentTimeRail} aria-hidden="true">
-								<div className={styles.currentTimeRailLine} />
+				<div className={styles.timelineCard}>
+					<div className={styles.planCalendar} onContextMenu={(event) => event.preventDefault()}>
+						{emptyCalendarHours.map((hour) => (
+							<div key={hour} className={styles.emptyCalendarRow}>
+								<span className={styles.emptyCalendarHour}>{formatHourLabel(hour)}</span>
+								<div className={styles.emptyCalendarLine} />
 							</div>
-							<div
-								className={styles.currentTimeMarker}
-								style={{
-									top: `calc((var(--timeline-row-height) / 2) + ((100% - var(--timeline-row-height)) * ${currentTimeTopRatio}))`,
-								}}
-								aria-hidden="true"
-							>
-								<div className={styles.currentTimeHorizontalLine} />
-								<div className={styles.currentTimeBubble} />
-							</div>
-						</>
-					)}
-					<div className={styles.blocksOverlay}>
-						{canAddNextBlock && !readOnly && (() => {
-							const totalMinutes = Math.max(1, timelineEndMinute - timelineStartMinute);
-							const topPercent = ((addNextStartMinute - timelineStartMinute) / totalMinutes) * 100;
-							const heightPercent = (addNextPreviewDurationMinutes / totalMinutes) * 100;
-							const visualScale = 0.86;
-							const visualHeightPercent = heightPercent * visualScale;
-							const visualTopPercent = topPercent + ((heightPercent - visualHeightPercent) / 2);
-
-							return (
-								<button
-									type="button"
-									className={styles.addNextBlockButton}
-									onClick={openAddNextBlockModal}
+						))}
+						{shouldShowCurrentTimeLine && (
+							<>
+								<div className={styles.currentTimeRail} aria-hidden="true">
+									<div className={styles.currentTimeRailLine} />
+								</div>
+								<div
+									className={styles.currentTimeMarker}
 									style={{
-										top: `${visualTopPercent}%`,
-										height: `${visualHeightPercent}%`,
+										top: `calc((var(--timeline-row-height) / 2) + ((100% - var(--timeline-row-height)) * ${currentTimeTopRatio}))`,
 									}}
+									aria-hidden="true"
 								>
-									+ Add next block
-								</button>
-							);
-						})()}
-						{sortedBlocks.map((block) => {
-							const totalMinutes = Math.max(1, timelineEndMinute - timelineStartMinute);
-							const topPercent = ((block.startMinute - timelineStartMinute) / totalMinutes) * 100;
-							const heightPercent = ((block.endMinute - block.startMinute) / totalMinutes) * 100;
+									<div className={styles.currentTimeHorizontalLine} />
+									<div className={styles.currentTimeBubble} />
+								</div>
+							</>
+						)}
+						<div className={styles.blocksOverlay}>
+							{canAddNextBlock && !readOnly && (() => {
+								const totalMinutes = Math.max(1, timelineEndMinute - timelineStartMinute);
+								const topPercent = ((addNextStartMinute - timelineStartMinute) / totalMinutes) * 100;
+								const heightPercent = (addNextPreviewDurationMinutes / totalMinutes) * 100;
+								const visualScale = 0.86;
+								const visualHeightPercent = heightPercent * visualScale;
+								const visualTopPercent = topPercent + ((heightPercent - visualHeightPercent) / 2);
 
-							return (
-								<PlanBlockItem
-									key={block.id}
-									block={block}
-									dayPlanId={plan.id}
-									topPercent={topPercent}
-									heightPercent={heightPercent}
-									readOnly={readOnly}
-									isFuture={plan.date.slice(0, 10) > new Date().toLocaleDateString('en-CA')}
-									isContextMenuBusy={isContextMenuBusy}
-									hasContextMenuOptions={getContextMenuOptionCount(block.id) > 0}
-									onContextMenu={(blockId, x, y) => setContextMenu({ blockId, x, y })}
-									onClick={(blockId) => { setContextMenu(null); openEditBlockModal(blockId); }}
-								/>
-							);
-						})}
-					</div>
-					{contextMenu && !readOnly && (
-						<div
-							className={styles.blockContextMenu}
-							style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}
-							onClick={(event) => event.stopPropagation()}
-						>
-							{canMoveBlockUp && (
-								<button
-									type="button"
-									className={styles.blockContextMenuButton}
-									disabled={isContextMenuBusy}
-									onClick={() => {
-										void moveBlockByOffset(contextMenu.blockId, -1);
-									}}
-								>
-									Move block up
-								</button>
-							)}
-							{canMoveBlockDown && (
-								<button
-									type="button"
-									className={styles.blockContextMenuButton}
-									disabled={isContextMenuBusy}
-									onClick={() => {
-										void moveBlockByOffset(contextMenu.blockId, 1);
-									}}
-								>
-									Move block down
-								</button>
-							)}
-							{canInsertNearBlock && (
-								<button
-									type="button"
-									className={styles.blockContextMenuButton}
-									disabled={isContextMenuBusy}
-									onClick={() => openInsertBlockModal(contextMenu.blockId, 'above')}
-								>
-									Insert block above
-								</button>
-							)}
-							{canInsertNearBlock && (
-								<button
-									type="button"
-									className={styles.blockContextMenuButton}
-									disabled={isContextMenuBusy}
-									onClick={() => openInsertBlockModal(contextMenu.blockId, 'below')}
-								>
-									Insert block below
-								</button>
-							)}
+								return (
+									<button
+										type="button"
+										className={styles.addNextBlockButton}
+										onClick={openAddNextBlockModal}
+										style={{
+											top: `${visualTopPercent}%`,
+											height: `${visualHeightPercent}%`,
+										}}
+									>
+										+ Add next block
+									</button>
+								);
+							})()}
+							{sortedBlocks.map((block) => {
+								const totalMinutes = Math.max(1, timelineEndMinute - timelineStartMinute);
+								const topPercent = ((block.startMinute - timelineStartMinute) / totalMinutes) * 100;
+								const heightPercent = ((block.endMinute - block.startMinute) / totalMinutes) * 100;
+
+								return (
+									<PlanBlockItem
+										key={block.id}
+										block={block}
+										dayPlanId={plan.id}
+										topPercent={topPercent}
+										heightPercent={heightPercent}
+										readOnly={readOnly}
+										isFuture={plan.date.slice(0, 10) > new Date().toLocaleDateString('en-CA')}
+										isContextMenuBusy={isContextMenuBusy}
+										hasContextMenuOptions={getContextMenuOptionCount(block.id) > 0}
+										onContextMenu={(blockId, x, y) => setContextMenu({ blockId, x, y })}
+										onClick={(blockId) => { setContextMenu(null); openEditBlockModal(blockId); }}
+									/>
+								);
+							})}
 						</div>
-					)}
+						{contextMenu && !readOnly && (
+							<div
+								className={styles.blockContextMenu}
+								style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}
+								onClick={(event) => event.stopPropagation()}
+							>
+								{canMoveBlockUp && (
+									<button
+										type="button"
+										className={styles.blockContextMenuButton}
+										disabled={isContextMenuBusy}
+										onClick={() => {
+											void moveBlockByOffset(contextMenu.blockId, -1);
+										}}
+									>
+										Move block up
+									</button>
+								)}
+								{canMoveBlockDown && (
+									<button
+										type="button"
+										className={styles.blockContextMenuButton}
+										disabled={isContextMenuBusy}
+										onClick={() => {
+											void moveBlockByOffset(contextMenu.blockId, 1);
+										}}
+									>
+										Move block down
+									</button>
+								)}
+								{canInsertNearBlock && (
+									<button
+										type="button"
+										className={styles.blockContextMenuButton}
+										disabled={isContextMenuBusy}
+										onClick={() => openInsertBlockModal(contextMenu.blockId, 'above')}
+									>
+										Insert block above
+									</button>
+								)}
+								{canInsertNearBlock && (
+									<button
+										type="button"
+										className={styles.blockContextMenuButton}
+										disabled={isContextMenuBusy}
+										onClick={() => openInsertBlockModal(contextMenu.blockId, 'below')}
+									>
+										Insert block below
+									</button>
+								)}
+							</div>
+						)}
+					</div>
 				</div>
 			)}
 
@@ -854,10 +856,10 @@ export default function DayPlanDetails({
 					startMinute={blockModalStartMinute}
 					maxDurationMinutes={Math.max(30, plan.endMinute - blockModalStartMinute)}
 					initialLabel={blockModalInitialLabel}
-					initialDurationMinutes={blockModalInitialDurationMinutes}				initialCategoryId={blockModalInitialCategoryId}
-				initialQuestId={blockModalInitialQuestId}
-				categories={categories}
-				quests={quests}					onSubmitBlock={handleBlockModalSubmit}
+					initialDurationMinutes={blockModalInitialDurationMinutes} initialCategoryId={blockModalInitialCategoryId}
+					initialQuestId={blockModalInitialQuestId}
+					categories={categories}
+					quests={quests} onSubmitBlock={handleBlockModalSubmit}
 					onDeleteBlock={blockModalMode === 'edit' ? handleDeleteBlock : undefined}
 				/>
 			)}

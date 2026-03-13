@@ -3,7 +3,7 @@
     -webkit-appearance: none;
     width: 1.4rem;
     height: 1.4rem;
-    border: 2px solid var(--color-tan);
+    border: 2px solid var(--color-text-muted);
     border-radius: 2px;
     background: transparent;
     cursor: pointer;
@@ -13,12 +13,12 @@
 }
 
 .checkbox:hover {
-    border-color: var(--color-brown);
+    border-color: var(--color-text);
 }
 
 .checkbox:checked {
     background: transparent;
-    border-color: var(--color-brown);
+    border-color: var(--color-text);
 }
 
 .checkbox:checked::before {
@@ -26,18 +26,18 @@
     font-family: var(--font-handwriting);
     font-size: 1.3rem;
     font-weight: 700;
-    color: var(--color-brown);
+    color: var(--color-text);
     line-height: 1;
     display: block;
 }
 
 .checkbox:focus-visible {
     outline: none;
-    border-color: var(--color-brown);
+    border-color: var(--color-text);
 }
 
 .checkbox:disabled {
     opacity: 0.25;
-    border-color: var(--color-tan);
+    border-color: var(--color-text-muted);
     background: transparent;
 }

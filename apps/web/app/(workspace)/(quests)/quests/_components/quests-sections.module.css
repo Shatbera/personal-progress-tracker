@@ -12,7 +12,7 @@
 .sectionTitle {
     font-size: 1.3rem;
     font-weight: 600;
-    color: var(--color-navy);
+    color: var(--color-foreground);
     margin: 0;
     font-family: var(--font-handwriting);
 }
@@ -21,7 +21,7 @@
     font-size: 0.8rem;
     font-weight: 500;
     background-color: rgba(217, 177, 102, 0.1);
-    color: var(--color-tan);
+    color: var(--color-text-muted);
     padding: 0.15rem 0.55rem;
     border-radius: 99px;
 }
@@ -39,12 +39,12 @@
 }
 
 .toggleButton:hover .sectionTitle {
-    color: var(--color-brown);
+    color: var(--color-text);
 }
 
 .chevron {
     font-size: 0.7rem;
-    color: var(--color-tan);
+    color: var(--color-text-muted);
     transition: transform 0.2s;
     margin-left: auto;
 }
@@ -55,7 +55,7 @@
 
 .divider {
     border: none;
-    border-top: 1px dashed var(--color-gold);
+    border-top: 1px dashed var(--color-border);
     margin-bottom: 1.25rem;
 }
 
@@ -94,7 +94,7 @@
     margin: 0;
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--color-brown);
+    color: var(--color-text);
     font-family: var(--font-handwriting);
 }
 
@@ -102,13 +102,13 @@
     font-size: 0.75rem;
     font-weight: 500;
     background-color: rgba(217, 177, 102, 0.1);
-    color: var(--color-tan);
+    color: var(--color-text-muted);
     padding: 0.12rem 0.5rem;
     border-radius: 99px;
 }
 
 .emptyState {
-    color: var(--color-tan);
+    color: var(--color-text-muted);
     font-size: 0.9rem;
     font-style: italic;
     padding: 1rem 0;
@@ -116,8 +116,8 @@
 
 .showArchivedButton {
     background: none;
-    border: 1px dashed var(--color-tan);
-    color: var(--color-tan);
+    border: 1px dashed var(--color-text-muted);
+    color: var(--color-text-muted);
     font-size: 0.875rem;
     cursor: pointer;
     padding: 0.5rem 1rem;
@@ -126,6 +126,6 @@
 }
 
 .showArchivedButton:hover {
-    border-color: var(--color-gold);
-    color: var(--color-brown);
+    border-color: var(--color-border);
+    color: var(--color-text);
 }
