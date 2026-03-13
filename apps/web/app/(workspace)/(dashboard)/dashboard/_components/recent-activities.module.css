@@ -8,15 +8,15 @@
 
 .container {
     border-radius: 6px;
-    padding: 1.5rem;
+    /* padding: 1.5rem; */
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(89, 59, 32, 0.06);
-    background: var(--color-card);
-    border: 1px solid var(--color-border);
+    /* box-shadow: 0 2px 8px rgba(89, 5 9, 32, 0.06); */
+    /* background: var(--color-card); */
+    /* border: 1px solid var(--color-border); */
 }
 
 .title {
@@ -42,6 +42,7 @@
     flex-direction: column;
     gap: 0;
     overflow-y: auto;
+    scrollbar-width: none;
     flex: 1;
     min-height: 0;
 }
@@ -64,7 +65,8 @@
     color: var(--color-text);
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    border-bottom: 1px solid var(--color-border);
+    /* border-bottom: 1px solid var(--color-border); */
+    text-align: left;
 }
 
 .sectionList {
@@ -79,13 +81,19 @@
 .item {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 0.25rem;
-    padding: 0.625rem 0.75rem;
-    border-bottom: 1px solid var(--color-border);
+    padding: 0.625rem;
+    /* border: 1px solid var(--color-border); */
+    background: var(--color-card);
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(89, 59, 32, 0.06);
+    /* margin-left: 1rem; */
+    /* border-bottom: 1px solid var(--color-border); */
 }
 
 .item:last-child {
-    border-bottom: none;
+    /* border-bottom: none; */
 }
 
 .questTitle {
