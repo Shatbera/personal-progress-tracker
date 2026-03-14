@@ -12,6 +12,7 @@ import Reflection from './reflection';
 import DayPlanCreateModal, { DayPlanKind } from '@/app/(workspace)/(day-plans)/day-plans/_components/day-plan-create-modal';
 import ConfirmDialog from '@/app/(workspace)/_components/confirm-dialog';
 import styles from "./day-plan-details.module.css";
+import AiInsight from "./ai-insight";
 
 type DayPlanDetailsProps = {
 	kind: DayPlanKind;
@@ -880,6 +881,10 @@ export default function DayPlanDetails({
 					onConfirm={confirmAction.onConfirm}
 					onCancel={() => setConfirmAction(null)}
 				/>
+			)}
+
+			{plan && kind === 'today' && (
+				<AiInsight />
 			)}
 		</section>
 	);
