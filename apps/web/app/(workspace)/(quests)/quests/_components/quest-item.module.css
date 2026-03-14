@@ -4,9 +4,9 @@
     flex-direction: column;
     padding: 1.5rem;
     background-color: var(--color-card);
-    border: 1px solid var(--color-border);
+    border: none;
     border-radius: 6px;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.06);
     transition: box-shadow 0.2s, transform 0.15s;
     min-height: 280px;
     width: 100%;

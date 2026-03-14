@@ -4,9 +4,10 @@
     margin: 2rem auto;
     font-family: var(--font-handwriting);
     min-height: 80vh;
-    border: 2px solid var(--color-border);
+    /* border: 2px solid var(--color-border); */
     border-radius: 8px;
-    box-shadow: 0 4px 24px rgba(217, 177, 102, 0.15);
+    /* box-shadow: 0 4px 24px rgba(217, 177, 102, 0.15); */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.06);
     background: var(--color-card);
 }
 
