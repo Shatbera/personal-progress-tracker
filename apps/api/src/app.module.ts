@@ -8,6 +8,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { DailyTrackModule } from './daily-track/daily-track.module';
 import { DayPlansModule } from './day-plans/day-plans.module';
 import { AiModule } from './ai/ai.module';
+import { ConfigModule } from '@nestjs/config/dist/config.module';
 
 @Module({
   imports: [
@@ -21,6 +22,9 @@ import { AiModule } from './ai/ai.module';
       database: 'quests_db',
       autoLoadEntities: true,
       synchronize: true,
+    }),
+    ConfigModule.forRoot({
+      isGlobal: true,
     }),
     AuthModule,
     QuestEventsModule,
