@@ -94,7 +94,7 @@
     margin: 0;
     font-size: 1.5rem;
     font-weight: 700;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .meta {
@@ -471,18 +471,19 @@
     position: absolute;
     left: 0.45rem;
     right: 0.45rem;
-    min-height: 2.15rem;
     padding: 0.45rem 0.55rem 0.45rem 2.6rem;
     border-radius: 0.2rem;
-    /* background: var(--color-success);
-    border: 1px solid color-mix(in srgb, #ffffff 55%, transparent); */
-    background: rgba(110, 139, 107, 0.18);
+    /* background: var(--color-success);*/
+    border-bottom: 3px solid var(--color-card); 
+    background: #CDD5C6;
     border-left: 3px solid #6E8B6B;
     /* color: var(--background); */
     box-sizing: border-box;
     overflow: hidden;
     cursor: default;
+
 }
+
 
 .planBlockInteractive {
     cursor: pointer;
@@ -608,7 +609,7 @@
 .segmentCategoryBadge {
     flex-shrink: 0;
     font-size: 0.7rem;
-    font-weight: 600;
+    font-weight: 400;
     line-height: 1;
     padding: 0.2em 0.45em;
     border-radius: 0.25rem;
@@ -618,7 +619,7 @@
 }
 
 .planBlockCompleted {
-    opacity: 0.55;
+    opacity: 0.65;
 }
 
 .blockCheckboxRow {

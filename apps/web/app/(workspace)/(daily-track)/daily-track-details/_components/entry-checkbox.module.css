@@ -3,7 +3,6 @@
     -webkit-appearance: none;
     width: 1.4rem;
     height: 1.4rem;
-    border: 2px solid var(--color-text-muted);
     border-radius: 2px;
     background: transparent;
     cursor: pointer;
@@ -23,7 +22,7 @@
 
 .checkbox:checked::before {
     content: '\2713';
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--color-text);

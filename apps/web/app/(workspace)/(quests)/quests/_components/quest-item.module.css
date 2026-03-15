@@ -46,7 +46,7 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .questTypeIcon {

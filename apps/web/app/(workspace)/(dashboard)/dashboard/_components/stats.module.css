@@ -20,7 +20,7 @@
     font-weight: 700;
     color: var(--color-foreground);
     line-height: 1;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .label {

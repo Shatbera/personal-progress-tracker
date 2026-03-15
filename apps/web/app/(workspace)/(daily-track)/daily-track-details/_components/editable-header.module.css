@@ -13,7 +13,7 @@
     font-weight: 700;
     margin: 0 0 0.5rem 0;
     color: var(--color-foreground);
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .titleInput {
@@ -26,7 +26,7 @@
     outline: none;
     background: transparent;
     width: 100%;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
     padding: 0;
 }
 
@@ -37,11 +37,11 @@
     line-height: 2.1rem;
     min-height: 2.1rem;
     outline: none;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .placeholder {
     color: var(--color-text-muted);
     font-style: normal;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }

@@ -2,7 +2,7 @@
     padding: 2.5rem 3rem;
     max-width: 900px;
     margin: 2rem auto;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
     min-height: 80vh;
     /* border: 2px solid var(--color-border); */
     border-radius: 8px;
@@ -22,7 +22,7 @@
     font-weight: 700;
     margin: 0 0 0.5rem 0;
     color: var(--color-foreground);
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .description {
@@ -30,7 +30,7 @@
     color: var(--color-text);
     margin: 0 0 0.5rem 0;
     line-height: 2.1rem;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .meta {
@@ -39,7 +39,7 @@
     font-size: 1.1rem;
     color: var(--color-text-muted);
     margin-top: 0.75rem;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .completedBadge {
@@ -52,7 +52,7 @@
     background-color: var(--color-border);
     color: var(--color-text);
     border: 1px dashed var(--color-border);
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .tableWrapper {
@@ -66,7 +66,7 @@
     border-collapse: collapse;
     table-layout: fixed;
     font-size: 1.15rem;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .table thead {
@@ -80,7 +80,7 @@
     color: var(--color-foreground);
     border-bottom: 2px solid var(--color-border);
     font-size: 1.25rem;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .thNotes {
@@ -94,7 +94,7 @@
     vertical-align: top;
     overflow: hidden;
     line-height: 2.1rem;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .table tr:last-child td {
@@ -127,7 +127,7 @@
     color: var(--color-text);
     padding: 2rem;
     text-align: center;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
     font-size: 1.3rem;
 }
 
@@ -135,7 +135,7 @@
     color: var(--color-text-muted);
     padding: 2rem;
     text-align: center;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
     font-size: 1.3rem;
 }
 

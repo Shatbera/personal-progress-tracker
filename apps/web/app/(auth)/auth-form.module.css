@@ -16,7 +16,7 @@
     margin: 0 0 0.5rem 0;
     text-align: center;
     color: var(--color-foreground);
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .error {

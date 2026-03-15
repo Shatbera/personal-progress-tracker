@@ -6,7 +6,7 @@
     color: var(--color-text);
     cursor: pointer;
     word-break: break-word;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
     font-size: 1.15rem;
     border-bottom: 1px dashed transparent;
     transition: border-color 0.15s;
@@ -21,7 +21,7 @@
     color: var(--color-text-muted);
     cursor: pointer;
     font-style: normal;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
     font-size: 1.15rem;
 }
 
@@ -34,7 +34,7 @@
     box-sizing: border-box;
     padding: 0.3rem 0.4rem;
     font-size: 1.15rem;
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
     border: none;
     border-bottom: 2px dashed var(--color-border);
     border-radius: 0;

@@ -17,7 +17,7 @@
     font-weight: 600;
     margin: 0 0 0.5rem 0;
     color: var(--color-foreground);
-    font-family: var(--font-handwriting);
+    font-family: var(--font-header);
 }
 
 .subtitle {
