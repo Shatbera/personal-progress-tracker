@@ -1,0 +1,15 @@
+.cursor {
+	display: inline-block;
+	margin-left: 2px;
+	animation: blink 1s step-end infinite;
+}
+
+.text {
+	color: var(--color-text-muted);
+}
+
+@keyframes blink {
+	50% {
+		opacity: 0;
+	}
+}

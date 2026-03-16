@@ -19,5 +19,6 @@ export type DayPlan = {
     startMinute: number;
     endMinute: number;
     reflection: string;
+    insight: string;
     blocks: DayBlock[];
 };

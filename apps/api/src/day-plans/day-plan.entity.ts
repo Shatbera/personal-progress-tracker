@@ -24,6 +24,9 @@ export class DayPlan {
 	@Column({ type: 'text', default: '' })
 	reflection: string;
 
+	@Column({ type: 'text', default: '' })
+	insight: string;
+
 	@OneToMany(() => DayBlock, (dayBlock) => dayBlock.dayPlan)
 	blocks: DayBlock[];
 }

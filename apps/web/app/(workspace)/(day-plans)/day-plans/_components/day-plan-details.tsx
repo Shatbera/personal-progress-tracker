@@ -884,7 +884,7 @@ export default function DayPlanDetails({
 			)}
 
 			{plan && kind === 'today' && (
-				<AiInsight />
+				<AiInsight currentInsight={plan.insight}/>
 			)}
 		</section>
 	);

@@ -1,0 +1,60 @@
+.container {
+	padding: 1.25rem;
+	background: var(--color-card);
+	border-radius: 10px;
+	border: 1px solid var(--color-border);
+	margin-bottom: 1.25rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+    min-height: 120px;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.title {
+	font-family: var(--font-header);
+	font-size: 1.25rem;
+	margin: 0;
+	color: var(--color-foreground);
+}
+
+.button {
+	background: var(--color-accent);
+	color: white;
+	border: none;
+	border-radius: 6px;
+	padding: 0.35rem 0.75rem;
+	font-size: 0.85rem;
+	cursor: pointer;
+	transition: opacity 0.15s ease;
+}
+
+.button:hover {
+	opacity: 0.85;
+}
+
+.button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.content {
+	font-size: 0.95rem;
+	line-height: 1.5;
+}
+
+.loading {
+	color: var(--color-text-muted);
+	font-style: italic;
+	margin: 0;
+}
+
+.insight {
+	margin: 0;
+	color: var(--color-text-muted);
+}
