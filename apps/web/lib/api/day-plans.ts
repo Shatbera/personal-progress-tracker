@@ -21,6 +21,20 @@ async function readDayPlan(response: Response): Promise<DayPlan | null> {
     return JSON.parse(responseText) as DayPlan;
 }
 
+export async function getAllPlans(): Promise<DayPlan[]> {
+    const response = await apiFetch("/day-plan", {
+        cache: "no-store",
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error("API Error:", response.status, errorText);
+        throw new Error(`Failed to fetch day plans: ${response.status} ${errorText}`);
+    }
+
+    return (await response.json()) as DayPlan[];
+}
+
 export async function getTodaysPlan(): Promise<DayPlan | null> {
     const response = await apiFetch("/day-plan/today", {
         cache: "no-store",
@@ -152,6 +166,19 @@ export async function toggleBlockCompletion(dayPlanId: string, dayBlockId: strin
         const errorText = await response.text();
         console.error('API Error:', response.status, errorText);
         throw new Error(`Failed to toggle block completion: ${response.status} ${errorText}`);
+    }
+}
+
+export async function updateMood(dayPlanId: string, mood: number | null): Promise<void> {
+    const response = await apiFetch(`/day-plan/${dayPlanId}/mood`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mood }),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update mood: ${response.status} ${errorText}`);
     }
 }
 

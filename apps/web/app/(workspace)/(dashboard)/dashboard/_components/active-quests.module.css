@@ -17,7 +17,7 @@
 
 .placeholder {
     font-size: 0.9375rem;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     margin: 0;
 }
 
@@ -52,7 +52,7 @@
     margin: 0;
     font-size: 0.9rem;
     font-weight: 600;
-    color: var(--color-text);
+    color: var(--color-text-primary);
 }
 
 .card {
@@ -90,7 +90,7 @@
 
 .description {
     font-size: 0.8125rem;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;

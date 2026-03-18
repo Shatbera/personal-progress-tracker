@@ -20,5 +20,6 @@ export type DayPlan = {
     endMinute: number;
     reflection: string;
     insight: string;
+    mood: number | null;
     blocks: DayBlock[];
 };

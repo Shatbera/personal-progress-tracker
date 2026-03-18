@@ -20,13 +20,13 @@ export class DayPlansRepository extends Repository<DayPlan> {
 	}
 
 	public getAllPlans(user: User): Promise<DayPlan[]> {
-		return this.find({
-			where: { user },
-			relations: ["blocks", "blocks.category"],
-			order: {
-				date: "ASC",
-			},
-		});
+		return this.createQueryBuilder("dayPlan")
+			.leftJoinAndSelect("dayPlan.blocks", "block")
+			.leftJoinAndSelect("block.category", "blockCategory")
+			.where("dayPlan.userId = :userId", { userId: user.id })
+			.orderBy("dayPlan.date", "ASC")
+			.addOrderBy("block.startMinute", "ASC")
+			.getMany();
 	}
 
 	public async getPlanByDate(date: Date, user: User): Promise<DayPlan | null> {
@@ -466,6 +466,23 @@ export class DayPlansRepository extends Repository<DayPlan> {
 			.getRawOne<{ points: string | number | null }>();
 
 		return Number(raw?.points ?? 0);
+	}
+
+	public async updateMood(dayPlanId: string, mood: number | null, user: User): Promise<DayPlan> {
+		const dayPlan = await this.createQueryBuilder('dayPlan')
+			.leftJoinAndSelect('dayPlan.blocks', 'block')
+			.leftJoinAndSelect('block.category', 'blockCategory')
+			.where('dayPlan.id = :dayPlanId', { dayPlanId })
+			.andWhere('dayPlan.userId = :userId', { userId: user.id })
+			.orderBy('block.startMinute', 'ASC')
+			.getOne();
+
+		if (!dayPlan) {
+			throw new NotFoundException('Day plan not found');
+		}
+
+		dayPlan.mood = mood;
+		return this.save(dayPlan);
 	}
 
 	public async updateReflection(dayPlanId: string, reflection: string, user: User): Promise<DayPlan> {

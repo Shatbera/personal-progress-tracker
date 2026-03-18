@@ -6,9 +6,8 @@
 }
 
 .label {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: color-mix(in srgb, var(--foreground) 80%, transparent);
+    font-size: 1.05rem;
+    font-weight: 450;
 }
 
 .textarea {
@@ -22,7 +21,6 @@
     line-height: 1.5;
     resize: vertical;
     background: var(--color-card);
-    color: inherit;
 }
 
 .textarea:focus {

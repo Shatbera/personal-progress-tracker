@@ -3,7 +3,7 @@ import { useState } from "react";
 import styles from "./ai-insight.module.css";
 import TypingText from "./typing-text";
 
-export default function AiInsight({ currentInsight }: { currentInsight?: string }) {
+export default function AiInsight({ currentInsight, readOnly = false }: { currentInsight?: string; readOnly?: boolean }) {
     const [dailyInsight, setDailyInsight] = useState<DailyInsightResponse | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -27,15 +27,17 @@ export default function AiInsight({ currentInsight }: { currentInsight?: string 
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h3 className={styles.title}>✨ Today's Insight</h3>
+                <h3 className={styles.title}>✨ Insight</h3>
 
-                <button
-                    onClick={fetchDailyInsight}
-                    disabled={loading}
-                    className={styles.button}
-                >
-                    {loading ? "Generating..." : dailyInsight ? "Regenerate" : "Generate"}
-                </button>
+                {!readOnly && (
+                    <button
+                        onClick={fetchDailyInsight}
+                        disabled={loading}
+                        className={styles.button}
+                    >
+                        {loading ? "Generating..." : dailyInsight ? "Regenerate" : "Generate"}
+                    </button>
+                )}
             </div>
 
             <div className={styles.content}>

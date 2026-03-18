@@ -21,7 +21,7 @@
     font-size: 0.8rem;
     font-weight: 500;
     background-color: rgba(217, 177, 102, 0.1);
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     padding: 0.15rem 0.55rem;
     border-radius: 99px;
 }
@@ -39,12 +39,12 @@
 }
 
 .toggleButton:hover .sectionTitle {
-    color: var(--color-text);
+    color: var(--color-text-primary);
 }
 
 .chevron {
     font-size: 0.7rem;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     transition: transform 0.2s;
     margin-left: auto;
 }
@@ -94,7 +94,7 @@
     margin: 0;
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--color-text);
+    color: var(--color-text-primary);
     font-family: var(--font-header);
 }
 
@@ -102,13 +102,13 @@
     font-size: 0.75rem;
     font-weight: 500;
     background-color: rgba(217, 177, 102, 0.1);
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     padding: 0.12rem 0.5rem;
     border-radius: 99px;
 }
 
 .emptyState {
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     font-size: 0.9rem;
     font-style: italic;
     padding: 1rem 0;
@@ -116,8 +116,8 @@
 
 .showArchivedButton {
     background: none;
-    border: 1px dashed var(--color-text-muted);
-    color: var(--color-text-muted);
+    border: 1px dashed var(--color-text-secondary);
+    color: var(--color-text-secondary);
     font-size: 0.875rem;
     cursor: pointer;
     padding: 0.5rem 1rem;
@@ -127,5 +127,5 @@
 
 .showArchivedButton:hover {
     border-color: var(--color-border);
-    color: var(--color-text);
+    color: var(--color-text-primary);
 }

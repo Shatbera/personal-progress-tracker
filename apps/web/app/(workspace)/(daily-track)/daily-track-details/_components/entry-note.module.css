@@ -3,7 +3,7 @@
 }
 
 .note {
-    color: var(--color-text);
+    color: var(--color-text-primary);
     cursor: pointer;
     word-break: break-word;
     font-family: var(--font-header);
@@ -18,7 +18,7 @@
 }
 
 .noNote {
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     cursor: pointer;
     font-style: normal;
     font-family: var(--font-header);
@@ -26,7 +26,7 @@
 }
 
 .noNote:hover {
-    color: var(--color-text);
+    color: var(--color-text-primary);
 }
 
 .textarea {

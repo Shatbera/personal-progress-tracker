@@ -12,7 +12,7 @@
     display: flex;
     gap: 1.5rem;
     font-size: 0.875rem;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     margin-top: 0.75rem;
     flex-wrap: wrap;
 }
@@ -24,7 +24,7 @@
     font-size: 0.75rem;
     font-weight: 500;
     background-color: rgba(217, 177, 102, 0.15);
-    color: var(--color-text);
+    color: var(--color-text-primary);
 }
 
 .categoryBadge {
@@ -43,7 +43,7 @@
     font-size: 0.8rem;
     font-weight: 500;
     background-color: rgba(143, 165, 122, 0.15);
-    color: var(--color-text);
+    color: var(--color-text-primary);
 }
 
 .progressSection {
@@ -58,11 +58,11 @@
 
 .progressLabel {
     font-weight: 500;
-    color: var(--color-text);
+    color: var(--color-text-primary);
 }
 
 .progressNumbers {
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
 }
 
 .progressBar {
@@ -120,7 +120,7 @@
 
 .table td {
     padding: 0.75rem 1rem;
-    color: var(--color-text);
+    color: var(--color-text-primary);
     border-bottom: 1px solid rgba(217, 177, 102, 0.2);
     vertical-align: top;
 }
@@ -144,11 +144,11 @@
 }
 
 .table td.eventUndo {
-    color: var(--color-text);
+    color: var(--color-text-primary);
 }
 
 .table td.eventReset {
-    color: var(--color-text);
+    color: var(--color-text-primary);
 }
 
 .pointsBadge {
@@ -158,17 +158,17 @@
     font-size: 0.8rem;
     font-weight: 600;
     background-color: rgba(166, 127, 93, 0.1);
-    color: var(--color-text);
+    color: var(--color-text-primary);
 }
 
 .pointsPositive {
     background-color: rgba(143, 165, 122, 0.15);
-    color: var(--color-text);
+    color: var(--color-text-primary);
 }
 
 .pointsNegative {
     background-color: rgba(166, 127, 93, 0.1);
-    color: var(--color-text);
+    color: var(--color-text-primary);
 }
 
 .weekComplete {
@@ -177,18 +177,18 @@
 }
 
 .weekPartial {
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
 }
 
 .emptyState {
     text-align: center;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     padding: 2rem;
     font-style: italic;
 }
 
 .missingId {
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     padding: 2rem;
     text-align: center;
 }

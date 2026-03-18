@@ -1,12 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 :root {
   --color-foreground: #010326;
   --color-background: #F5F3EB;
   --color-border: #D8D4C8;
-  --color-text: #010326;
+  --color-text-primary: #010326;
   --color-text-muted: #7A7A7A;
+  --color-text-secondary: #3A3A3A;
   --color-success: #6E8B6B;
   --color-danger: #F22613;
   --color-accent: #C49A3A;
@@ -15,9 +17,17 @@
   --background: var(--color-background);
   --foreground: var(--color-foreground);
   /* --font-header: 'Caveat', cursive; */
-  --font-header: 'Inter', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  --font-header: 'Nunito', sans-serif;
+  --font-body: 'Nunito', sans-serif;
+  --font-stylized: 'Nunito', sans-serif;
 }
+
+
+
+p, label{
+  color: var(--color-text-secondary);
+}
+
 
 body {
   background: var(--background);

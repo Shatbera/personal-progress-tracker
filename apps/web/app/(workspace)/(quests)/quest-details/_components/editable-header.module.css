@@ -31,7 +31,7 @@
 
 .description {
     font-size: 1rem;
-    color: var(--color-text);
+    color: var(--color-text-primary);
     margin: 0 0 0.5rem 0;
     line-height: 1.5;
     min-height: 1.5rem;
@@ -39,6 +39,6 @@
 }
 
 .placeholder {
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     font-style: italic;
 }

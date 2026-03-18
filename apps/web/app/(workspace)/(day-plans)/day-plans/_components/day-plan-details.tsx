@@ -13,6 +13,7 @@ import DayPlanCreateModal, { DayPlanKind } from '@/app/(workspace)/(day-plans)/d
 import ConfirmDialog from '@/app/(workspace)/_components/confirm-dialog';
 import styles from "./day-plan-details.module.css";
 import AiInsight from "./ai-insight";
+import MoodSelects from "./mood-selects";
 
 type DayPlanDetailsProps = {
 	kind: DayPlanKind;
@@ -120,6 +121,14 @@ function getCurrentMinuteOfDay(reference: Date = new Date()): number {
 
 function isSameLocalDate(dateIso: string, reference: Date): boolean {
 	return new Date(dateIso).toDateString() === reference.toDateString();
+}
+
+function isPastDate(dateIso: string, reference: Date): boolean {
+	const d = new Date(dateIso);
+	d.setHours(0, 0, 0, 0);
+	const r = new Date(reference);
+	r.setHours(0, 0, 0, 0);
+	return d < r;
 }
 
 export default function DayPlanDetails({
@@ -620,6 +629,7 @@ export default function DayPlanDetails({
 	const planTimeOptions = buildHalfHourOptions(0, 1440);
 	const nowReferenceDate = new Date();
 	const isTimelineForToday = Boolean(plan && isSameLocalDate(plan.date, nowReferenceDate));
+	const isPlanPast = Boolean(plan && isPastDate(plan.date, nowReferenceDate));
 	const shouldShowCurrentTimeLine = Boolean(
 		plan
 		&& isTimelineForToday
@@ -634,7 +644,7 @@ export default function DayPlanDetails({
 		<section className={`${styles.card} ${fullWidth ? styles.fullWidth : ''}`.trim()}>
 			<header className={styles.header}>
 				<div className={styles.headerRow}>
-					<h2 className={styles.title}>{getCardTitle(kind)}</h2>
+					<h2 className={styles.title}>{isPlanPast ? formatDateLine(plan!.date) : getCardTitle(kind)}</h2>
 					{plan && !readOnly && showPlanActions && (
 						<div className={styles.headerMenuWrap} onClick={(event) => event.stopPropagation()}>
 							<button
@@ -647,9 +657,11 @@ export default function DayPlanDetails({
 							</button>
 							{isPlanMenuOpen && (
 								<div className={styles.headerMenuDropdown}>
-									<button type="button" className={styles.headerMenuItem} onClick={openEditPlanPanel}>
-										Edit plan times
-									</button>
+									{!isPlanPast && (
+										<button type="button" className={styles.headerMenuItem} onClick={openEditPlanPanel}>
+											Edit plan times
+										</button>
+									)}
 									<button
 										type="button"
 										className={`${styles.headerMenuItem} ${styles.headerMenuItemDanger}`}
@@ -665,7 +677,6 @@ export default function DayPlanDetails({
 						</div>
 					)}
 				</div>
-				{plan && <p className={styles.meta}>{formatDateLine(plan.date)}</p>}
 			</header>
 			{plan && isEditPlanPanelOpen && (
 				<div className={styles.editPlanPanel} onClick={(event) => event.stopPropagation()}>
@@ -742,7 +753,7 @@ export default function DayPlanDetails({
 							</>
 						)}
 						<div className={styles.blocksOverlay}>
-							{canAddNextBlock && !readOnly && (() => {
+							{canAddNextBlock && !readOnly && !isPlanPast && (() => {
 								const totalMinutes = Math.max(1, timelineEndMinute - timelineStartMinute);
 								const topPercent = ((addNextStartMinute - timelineStartMinute) / totalMinutes) * 100;
 								const heightPercent = (addNextPreviewDurationMinutes / totalMinutes) * 100;
@@ -777,16 +788,15 @@ export default function DayPlanDetails({
 										topPercent={topPercent}
 										heightPercent={heightPercent}
 										readOnly={readOnly}
-										isFuture={plan.date.slice(0, 10) > new Date().toLocaleDateString('en-CA')}
-										isContextMenuBusy={isContextMenuBusy}
+										isFuture={plan.date.slice(0, 10) > new Date().toLocaleDateString('en-CA')}									isPast={isPlanPast}										isContextMenuBusy={isContextMenuBusy}
 										hasContextMenuOptions={getContextMenuOptionCount(block.id) > 0}
 										onContextMenu={(blockId, x, y) => setContextMenu({ blockId, x, y })}
-										onClick={(blockId) => { setContextMenu(null); openEditBlockModal(blockId); }}
+										onClick={(blockId) => { setContextMenu(null); if (!isPlanPast) openEditBlockModal(blockId); }}
 									/>
 								);
 							})}
 						</div>
-						{contextMenu && !readOnly && (
+						{contextMenu && !readOnly && !isPlanPast && (
 							<div
 								className={styles.blockContextMenu}
 								style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}
@@ -849,7 +859,7 @@ export default function DayPlanDetails({
 			)}
 
 			{!readOnly && !plan && <DayPlanCreateModal kind={kind} open={isModalOpen} onClose={closeModal} />}
-			{!readOnly && plan && isBlockModalOpen && (
+			{!readOnly && !isPlanPast && plan && isBlockModalOpen && (
 				<DayBlockCreateModal
 					open={isBlockModalOpen}
 					onClose={closeBlockModal}
@@ -883,8 +893,12 @@ export default function DayPlanDetails({
 				/>
 			)}
 
-			{plan && kind === 'today' && (
-				<AiInsight currentInsight={plan.insight}/>
+			{plan && (isSameLocalDate(plan.date, nowReferenceDate) || isPastDate(plan.date, nowReferenceDate)) && (
+				<MoodSelects dayPlanId={plan.id} initialMood={plan.mood} readOnly={isPastDate(plan.date, nowReferenceDate)} />
+			)}
+
+			{plan && (isSameLocalDate(plan.date, nowReferenceDate) || isPastDate(plan.date, nowReferenceDate)) && (!isPlanPast || plan.insight) && (
+				<AiInsight currentInsight={plan.insight} readOnly={isPlanPast} />
 			)}
 		</section>
 	);

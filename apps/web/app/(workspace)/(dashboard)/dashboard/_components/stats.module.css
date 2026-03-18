@@ -25,6 +25,6 @@
 
 .label {
     font-size: 0.75rem;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     font-weight: 500;
 }

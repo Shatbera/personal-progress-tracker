@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { createDayBlock as createDayBlockApi, createPlanForToday, createPlanForTomorrow, deleteDayBlock as deleteDayBlockApi, deleteDayPlan as deleteDayPlanApi, resequenceDayBlocks as resequenceDayBlocksApi, toggleBlockCompletion as toggleBlockCompletionApi, updateDayBlock as updateDayBlockApi, updateDayPlan as updateDayPlanApi, updateReflection as updateReflectionApi } from '@/lib/api/day-plans';
+import { createDayBlock as createDayBlockApi, createPlanForToday, createPlanForTomorrow, deleteDayBlock as deleteDayBlockApi, deleteDayPlan as deleteDayPlanApi, resequenceDayBlocks as resequenceDayBlocksApi, toggleBlockCompletion as toggleBlockCompletionApi, updateDayBlock as updateDayBlockApi, updateDayPlan as updateDayPlanApi, updateMood as updateMoodApi, updateReflection as updateReflectionApi } from '@/lib/api/day-plans';
 
 export async function createDayPlan(kind: 'today' | 'tomorrow', startMinutes: number, endMinutes: number) {
     if (!Number.isInteger(startMinutes) || !Number.isInteger(endMinutes)) {
@@ -89,6 +89,22 @@ export async function toggleBlockCompletion(dayPlanId: string, dayBlockId: strin
     } catch (error) {
         return {
             error: error instanceof Error ? error.message : 'Failed to toggle block completion',
+        };
+    }
+}
+
+export async function updateMood(dayPlanId: string, mood: number | null) {
+    if (!dayPlanId) {
+        return { error: 'Day plan id is required.' };
+    }
+
+    try {
+        await updateMoodApi(dayPlanId, mood);
+        revalidatePath('/day-plans');
+        return { success: true };
+    } catch (error) {
+        return {
+            error: error instanceof Error ? error.message : 'Failed to update mood',
         };
     }
 }

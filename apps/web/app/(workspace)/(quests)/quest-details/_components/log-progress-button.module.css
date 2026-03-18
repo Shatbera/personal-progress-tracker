@@ -11,7 +11,7 @@
 }
 
 .button:hover:not(:disabled) {
-    background-color: var(--color-text);
+    background-color: var(--color-text-primary);
 }
 
 .button:active:not(:disabled) {

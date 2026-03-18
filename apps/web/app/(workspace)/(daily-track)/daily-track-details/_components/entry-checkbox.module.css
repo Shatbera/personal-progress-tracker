@@ -12,12 +12,12 @@
 }
 
 .checkbox:hover {
-    border-color: var(--color-text);
+    border-color: var(--color-text-primary);
 }
 
 .checkbox:checked {
     background: transparent;
-    border-color: var(--color-text);
+    border-color: var(--color-text-primary);
 }
 
 .checkbox:checked::before {
@@ -25,18 +25,18 @@
     font-family: var(--font-header);
     font-size: 1.3rem;
     font-weight: 700;
-    color: var(--color-text);
+    color: var(--color-text-primary);
     line-height: 1;
     display: block;
 }
 
 .checkbox:focus-visible {
     outline: none;
-    border-color: var(--color-text);
+    border-color: var(--color-text-primary);
 }
 
 .checkbox:disabled {
     opacity: 0.25;
-    border-color: var(--color-text-muted);
+    border-color: var(--color-text-secondary);
     background: transparent;
 }

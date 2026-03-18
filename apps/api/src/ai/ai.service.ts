@@ -128,6 +128,10 @@ export class AiService {
                 ? dayPlan.date.toISOString().slice(0, 10)
                 : String(dayPlan.date);
 
+        const MOOD_LABELS: Record<number, string> = { 0: 'Bad', 1: 'Low', 2: 'Okay', 3: 'Good', 4: 'Great' };
+        const mood = dayPlan.mood !== null ? `Mood: ${MOOD_LABELS[dayPlan.mood] ?? 'Unknown'}` : 'No mood set.';
+
+
         return `
                 You are a supportive and encouraging assistant inside a personal progress tracking app.
 
@@ -153,6 +157,8 @@ export class AiService {
 
                 Reflection:
                 ${reflection}
+
+                ${mood}
 
                 Blocks:
                 ${blocksText}

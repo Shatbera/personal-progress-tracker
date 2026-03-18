@@ -55,6 +55,15 @@ export class DayPlansController {
 		return this.dayPlansService.toggleBlockCompletion(dayPlanId, dayBlockId, isCompleted, user);
 	}
 
+	@Patch(':id/mood')
+	public updateMood(
+		@Param('id') dayPlanId: string,
+		@Body('mood') mood: number | null,
+		@GetUser() user: User,
+	): Promise<DayPlan> {
+		return this.dayPlansService.updateMood(dayPlanId, mood ?? null, user);
+	}
+
 	@Patch(':id/reflection')
 	public updateReflection(
 		@Param('id') dayPlanId: string,

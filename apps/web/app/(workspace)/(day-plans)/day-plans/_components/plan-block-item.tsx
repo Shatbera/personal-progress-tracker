@@ -29,6 +29,7 @@ type PlanBlockItemProps = {
     heightPercent: number;
     readOnly: boolean;
     isFuture: boolean;
+    isPast: boolean;
     isContextMenuBusy: boolean;
     hasContextMenuOptions: boolean;
     onContextMenu: (blockId: string, x: number, y: number) => void;
@@ -44,6 +45,7 @@ export default function PlanBlockItem({
     heightPercent,
     readOnly,
     isFuture,
+    isPast,
     isContextMenuBusy,
     hasContextMenuOptions,
     onContextMenu,
@@ -68,7 +70,7 @@ export default function PlanBlockItem({
 
     return (
         <article
-            className={`${styles.planBlock} ${!readOnly ? styles.planBlockInteractive : ''} ${optimisticCompleted ? styles.planBlockCompleted : ''}`}
+            className={`${styles.planBlock} ${!readOnly && !isPast ? styles.planBlockInteractive : ''} ${optimisticCompleted ? styles.planBlockCompleted : ''}`}
             onContextMenu={(event) => {
                 if (readOnly || isContextMenuBusy || !hasContextMenuOptions) {
                     return;
@@ -95,9 +97,9 @@ export default function PlanBlockItem({
                     aria-hidden="true"
                 />
             )}
-            {!isFuture && (
+            {!isFuture && (!isPast || optimisticCompleted) && (
                 <div className={styles.blockCheckboxRow}>
-                    <CheckMark checked={optimisticCompleted} variant="light" onClick={handleCheckboxChange} />
+                    <CheckMark checked={optimisticCompleted} variant="light" disabled={isPast} onClick={isPast ? undefined : handleCheckboxChange} />
                 </div>
             )}
             {isStacked ? (

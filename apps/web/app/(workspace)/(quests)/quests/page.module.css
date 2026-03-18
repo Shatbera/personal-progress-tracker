@@ -22,7 +22,7 @@
 
 .subtitle {
     font-size: 1rem;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     margin: 0;
 }
 
@@ -42,18 +42,18 @@
 }
 
 .newQuestButton:hover {
-    background-color: var(--color-text);
+    background-color: var(--color-text-primary);
 }
 
 .noQuests {
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     font-style: italic;
     padding: 2rem;
     text-align: center;
 }
 
 .loading {
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     padding: 2rem;
     text-align: center;
 }

@@ -9,7 +9,7 @@
     justify-content: space-between;
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid var(--color-text-muted);
+    border: 1px solid var(--color-text-secondary);
     border-radius: 4px;
     font-size: 1rem;
     font-family: inherit;
@@ -30,13 +30,13 @@
 
 .chevron {
     font-size: 0.75rem;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     flex-shrink: 0;
 }
 
 .dropdown {
     background: var(--color-card);
-    border: 1px solid var(--color-text-muted);
+    border: 1px solid var(--color-text-secondary);
     border-radius: 6px;
     box-shadow: 0 4px 16px rgba(89, 59, 32, 0.1);
     z-index: 9999;
@@ -80,7 +80,7 @@
     cursor: pointer;
     padding: 0.375rem 0.5rem;
     font-size: 1rem;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     border-radius: 4px;
     line-height: 1;
     letter-spacing: 1px;
@@ -96,7 +96,7 @@
     right: 0;
     top: calc(100% + 2px);
     background: var(--color-card);
-    border: 1px solid var(--color-text-muted);
+    border: 1px solid var(--color-text-secondary);
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(89, 59, 32, 0.1);
     z-index: 200;
@@ -192,7 +192,7 @@
 
 .modalInput {
     padding: 0.75rem;
-    border: 1px solid var(--color-text-muted);
+    border: 1px solid var(--color-text-secondary);
     border-radius: 4px;
     font-size: 1rem;
     font-family: inherit;
@@ -216,11 +216,11 @@
 .modalCancelBtn {
     padding: 0.5rem 1rem;
     background: none;
-    border: 1px dashed var(--color-text-muted);
+    border: 1px dashed var(--color-text-secondary);
     border-radius: 4px;
     font-size: 0.875rem;
     cursor: pointer;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
 }
 
 .modalCancelBtn:hover {
@@ -239,14 +239,14 @@
 }
 
 .modalSubmitBtn:hover {
-    background-color: var(--color-text);
+    background-color: var(--color-text-primary);
 }
 
 /* Color picker */
 .colorPickerLabel {
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--color-text);
+    color: var(--color-text-primary);
     margin-bottom: -0.25rem;
 }
 

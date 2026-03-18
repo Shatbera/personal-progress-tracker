@@ -7,7 +7,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 0.75rem;
-    min-height: 120px;
+	min-height: 120px;
 }
 
 .header {
@@ -17,7 +17,7 @@
 }
 
 .title {
-	font-family: var(--font-header);
+	font-family: var(--font-stylized);
 	font-size: 1.25rem;
 	margin: 0;
 	color: var(--color-foreground);
@@ -44,17 +44,20 @@
 }
 
 .content {
-	font-size: 0.95rem;
+	font-size: 1.15rem;
+	font-weight: 400;
 	line-height: 1.5;
+	font-family: var(--font-stylized);
 }
 
+
 .loading {
-	color: var(--color-text-muted);
+	color: var(--color-text-secondary);
 	font-style: italic;
 	margin: 0;
 }
 
 .insight {
 	margin: 0;
-	color: var(--color-text-muted);
+	color: var(--color-text-secondary);
 }

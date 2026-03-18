@@ -59,6 +59,10 @@ export class DayPlansService {
 		return this.dayPlansRepository.toggleBlockCompletion(dayPlanId, dayBlockId, isCompleted, user);
 	}
 
+	public updateMood(dayPlanId: string, mood: number | null, user: User): Promise<DayPlan> {
+		return this.dayPlansRepository.updateMood(dayPlanId, mood, user);
+	}
+
 	public updateReflection(dayPlanId: string, reflection: string, user: User): Promise<DayPlan> {
 		return this.dayPlansRepository.updateReflection(dayPlanId, reflection, user);
 	}
