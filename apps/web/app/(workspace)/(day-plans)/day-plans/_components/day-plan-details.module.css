@@ -476,6 +476,9 @@
     /* background: var(--color-success);*/
     border-bottom: 3px solid var(--color-card); 
     background: #CDD5C6;
+    
+    /* background: #E6ECF5; */
+    
     border-left: 3px solid #6E8B6B;
     /* color: var(--background); */
     box-sizing: border-box;

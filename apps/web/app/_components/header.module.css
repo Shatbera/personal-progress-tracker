@@ -14,6 +14,12 @@
     color: inherit;
 }
 
+.logoWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .logo {
     font-size: 1.75rem;
     font-weight: 700;

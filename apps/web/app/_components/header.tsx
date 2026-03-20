@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { getAuthToken } from '@/lib/auth-server';
 import { signOut } from '@/actions/auth-actions';
+import { APP_NAME } from '@/lib/constants';
 import styles from './header.module.css';
 
 export default async function Header() {
@@ -10,7 +12,10 @@ export default async function Header() {
     return (
         <header className={styles.header}>
             <Link href="/" className={styles.logoLink}>
-                <h1 className={styles.logo}>Progress Tracker</h1>
+                <div className={styles.logoWrapper}>
+                    <Image src="/logo.png" alt="Penguin logo" width={36} height={36} />
+                    <h1 className={styles.logo}>{APP_NAME}</h1>
+                </div>
             </Link>
             <nav className={styles.nav}>
                 {!isAuthenticated && (
