@@ -14,7 +14,7 @@ export class AiService {
         @InjectRepository(DayPlan)
         private readonly dayPlansRepository: Repository<DayPlan>,
         private readonly configService: ConfigService,
-    ) { }
+    ) {}
 
     public async generateDailyInsight(user: User): Promise<DailyInsightResponseDto> {
         const key = this.configService.get<string>('OPENAI_API_KEY');
@@ -24,7 +24,6 @@ export class AiService {
         }
 
         const todayPlan = await this.getTodaysPlan(user);
-
         const prompt = (await this.getDailyInsightInput(todayPlan)).prompt;
 
         try {
@@ -33,15 +32,22 @@ export class AiService {
             });
 
             const response = await client.responses.create({
-                model: 'gpt-5.2',
+                model: 'gpt-5.4',
                 input: prompt,
             });
 
             if (response.output_text) {
-                const insight = response.output_text.trim();
-                if(todayPlan) {
-                    await this.dayPlansRepository.update({ id: todayPlan.id }, { insight });   
+                const insight = response.output_text
+                    .replace(/\s+/g, ' ')
+                    .trim();
+
+                if (todayPlan) {
+                    await this.dayPlansRepository.update(
+                        { id: todayPlan.id },
+                        { insight },
+                    );
                 }
+
                 return { insight };
             } else {
                 return { insight: 'No insight generated.' };
@@ -71,23 +77,21 @@ export class AiService {
         return todaysPlan || null;
     }
 
-
     private async getDailyInsightInput(todaysPlan: DayPlan | null): Promise<DailyInsightInputDto> {
-
         if (!todaysPlan) {
             return {
                 prompt: `
-                    You are a productivity coach inside a personal progress tracking app.
+You are a sharp but supportive coach inside a personal progress tracking app.
 
-                    The user has no plan for today.
-                    Write one very short response encouraging them to create a day plan first.
-                    Keep it to 1-2 sentences.
-                `.trim(),
+The user has no plan for today.
+Write 1 or 2 short sentences that push them to create structure for the day.
+Sound human, clear, and motivating.
+Do not sound cheesy, robotic, or generic.
+`.trim(),
             };
         }
 
         const prompt = this.buildDailyInsightPrompt(todaysPlan);
-
         return { prompt };
     }
 
@@ -103,24 +107,26 @@ export class AiService {
         const blocksText =
             blocks.length > 0
                 ? blocks
-                    .map((block, index) => {
-                        const start = this.formatMinute(block.startMinute);
-                        const end = this.formatMinute(block.endMinute);
+                      .map((block, index) => {
+                          const start = this.formatMinute(block.startMinute);
+                          const end = this.formatMinute(block.endMinute);
+                          const duration = block.endMinute - block.startMinute;
 
-                        const parts: string[] = [
-                            `${index + 1}. ${start}–${end}`,
-                            `Label: ${block.label}`,
-                        ];
+                          const parts: string[] = [
+                              `${index + 1}. ${start}-${end}`,
+                              `Duration: ${duration} min`,
+                              `Label: ${block.label}`,
+                          ];
 
-                        if (block.category?.name) {
-                            parts.push(`Category: ${block.category.name}`);
-                        }
+                          if (block.category?.name) {
+                              parts.push(`Category: ${block.category.name}`);
+                          }
 
-                        parts.push(`Completed: ${block.isCompleted ? 'yes' : 'no'}`);
+                          parts.push(`Completed: ${block.isCompleted ? 'yes' : 'no'}`);
 
-                        return parts.join(' | ');
-                    })
-                    .join('\n')
+                          return parts.join(' | ');
+                      })
+                      .join('\n')
                 : 'No blocks planned.';
 
         const planDate =
@@ -128,42 +134,103 @@ export class AiService {
                 ? dayPlan.date.toISOString().slice(0, 10)
                 : String(dayPlan.date);
 
-        const MOOD_LABELS: Record<number, string> = { 0: 'Bad', 1: 'Low', 2: 'Okay', 3: 'Good', 4: 'Great' };
-        const mood = dayPlan.mood !== null ? `Mood: ${MOOD_LABELS[dayPlan.mood] ?? 'Unknown'}` : 'No mood set.';
+        const MOOD_LABELS: Record<number, string> = {
+            0: 'Bad',
+            1: 'Low',
+            2: 'Okay',
+            3: 'Good',
+            4: 'Great',
+        };
 
+        const mood =
+            dayPlan.mood !== null
+                ? `Mood: ${MOOD_LABELS[dayPlan.mood] ?? 'Unknown'}`
+                : 'No mood set.';
 
         return `
-                You are a supportive and encouraging assistant inside a personal progress tracking app.
+You are a sharp but supportive performance coach inside a personal progress tracking app.
 
-                Your task is to write one short, human-sounding insight about the user's day plan.
+Your job is to notice what actually stands out in the structure of the day and say something useful.
+Write like a perceptive human coach reviewing the day of an ambitious person.
+Be warm, but direct.
+Have a point of view.
 
-                Tone:
-                - Warm
-                - Encouraging
-                - Natural
-                - Never sound robotic, harsh, or overly formal
+Focus on things like:
+- where the highest-energy hours are being used
+- whether creation is protected or buried
+- whether the day has too much switching
+- whether recovery is present
+- whether the sequence of blocks makes sense
+- whether the day feels intentional, weak, overloaded, balanced, or well-designed
 
-                Rules:
-                - Write only 2-4 sentences
-                - Be Objective and honest
-                - If there is a weakness or risk, mention it gently
-                - If it's too unproductive, don't hesitate to say that, but do it in a supportive way
-                - Do not use bullet points
-                - Sound like a thoughtful coach, not a machine
-                - don't use — or other symbols in the insight
+Rules:
+- Write 3 to 4 sentences
+- 70 to 110 words total
+- No bullet points
+- No emojis
+- No quotation marks
+- No dashes like — or --
+- Sound thoughtful, specific, and human
+- Do not sound like therapy
+- Do not sound like corporate feedback
+- Do not summarize every block
+- Pick the 1 or 2 most important observations only
+- If something is weak, say it clearly but constructively
+- If something is strong, explain why it is strong
+- Do not force criticism if the structure is good
+- Do not treat workout, health, or recovery as wasted time
+- Only criticize those blocks if they clearly damage the structure of the day
+- Prefer concrete judgments over vague praise
+- Prefer the most meaningful observation over the most obvious criticism
+- Prefer giving one clear adjustment over multiple vague suggestions
+- The final sentence must include one concrete, actionable adjustment to the day
+- Avoid vague advice like "worth reconsidering", "could be improved", or "something to think about"
 
-                Day plan date: ${planDate}
-                Available day range: ${this.formatMinute(dayPlan.startMinute)}–${this.formatMinute(dayPlan.endMinute)}
+Avoid generic phrases like:
+- good balance
+- thoughtful day
+- real momentum
+- strong mix
+- nice structure
+- productive day
+- well-rounded plan
+- disciplined but
+- overall this is
+- the best choice here
 
-                Reflection:
-                ${reflection}
+Preferred structure:
+- Sentence 1: identify the strongest structural quality
+- Sentence 2: identify the main tension or inefficiency
+- Sentence 3 or 4: give one concrete adjustment to improve the day
 
-                ${mood}
+Here is a GOOD example of the kind of insight you should sound like:
 
-                Blocks:
-                ${blocksText}
+This is a very solid structure because the day already has clear shape instead of feeling improvised. The strongest part is that learning, creation, training, and work each have a defined place, which reduces mental friction and makes the day feel intentional. The only real tension is whether creation should come before learning if your sharpest hours are limited, but that is a refinement issue, not a flaw. Move creation before learning if output is the real priority, or keep the current order if the goal is simply a balanced disciplined day.
 
-                Write one short encouraging insight about this day.
+Here is a BAD example of the kind of insight you should avoid:
+
+This plan has a strong mix of learning, creative work, health, and focused work time, which gives your day good balance. The main risk is the two hour workout in the middle, since it could drain energy for the long work block afterward. Overall, it looks like a thoughtful day with real momentum behind it.
+
+Match the depth, tone, and specificity of the GOOD example.
+Do not copy its wording.
+Do not use the BAD style.
+
+User context:
+This user is ambitious and values discipline, growth, and intentional structure.
+The insight should feel like it was written for someone serious about building a strong life, not for a casual to-do list app user.
+
+Day plan date: ${planDate}
+Available day range: ${this.formatMinute(dayPlan.startMinute)}-${this.formatMinute(dayPlan.endMinute)}
+
+Reflection:
+${reflection}
+
+${mood}
+
+Blocks:
+${blocksText}
+
+Now write one insight.
 `.trim();
     }
 

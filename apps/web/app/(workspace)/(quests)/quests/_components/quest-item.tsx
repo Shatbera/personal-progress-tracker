@@ -8,6 +8,7 @@ import { logProgress, resetProgress } from "@/actions/quest-event-actions";
 import { archiveQuest, unarchiveQuest, deleteQuest as deleteQuestAction } from "@/actions/quest-actions";
 import { addQuestToTodaysPlan } from "@/actions/day-plan-actions";
 import ConfirmDialog from '@/app/(workspace)/_components/confirm-dialog';
+import { Flame, CalendarCheck, Target, MoreVertical, Archive, CheckCircle } from 'lucide-react';
 
 export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTodaysPlan = false, hasTomorrowsPlan = false, todayStatus = null, dailyTrackCompletedToday = false, onQuestChange, onQuestDelete }: { quest: Quest; hideMenu?: boolean; hasTodaysPlan?: boolean; hasTomorrowsPlan?: boolean; todayStatus?: 'scheduled' | 'completed' | null; dailyTrackCompletedToday?: boolean; onQuestChange?: (quest: Quest) => void; onQuestDelete?: (id: string) => void }) {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -36,9 +37,13 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
         }
         : undefined;
 
-    const questTypeIcon = quest.questType === 'DAILY_TRACK' ? '🔥'
-        : quest.questType === 'WEEKLY_GOAL' ? '📅'
-        : '🎯';
+    const questTypeConfig = quest.questType === 'DAILY_TRACK'
+        ? { icon: Flame, color: '#F7A003' }
+        : quest.questType === 'WEEKLY_GOAL'
+        ? { icon: CalendarCheck, color: '#3999BF' }
+        : { icon: Target, color: '#8FA57A' };
+    const QuestTypeIcon = questTypeConfig.icon;
+    const questTypeColor = questTypeConfig.color;
 
     const handleDelete = () => {
         setMenuOpen(false);
@@ -195,7 +200,9 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
             )}
             <div className={styles.header}>
                 <h3 className={styles.questTitle}>
-                    <span className={styles.questTypeIcon}>{questTypeIcon}</span>
+                    <span className={styles.questTypeIconWrapper} style={{ backgroundColor: `${questTypeColor}1A` }}>
+                        <QuestTypeIcon className={styles.questTypeIcon} style={{ color: questTypeColor }} />
+                    </span>
                     {quest.title}
                 </h3>
                 {!hideMenu && (
@@ -205,7 +212,7 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
                         onClick={() => setMenuOpen(!menuOpen)}
                         aria-label="Quest options"
                     >
-                        ⋮
+                        <MoreVertical size={16} />
                     </button>
 
                     {menuOpen && (
@@ -233,11 +240,11 @@ export default function QuestItem({ quest: initialQuest, hideMenu = false, hasTo
             <div className={styles.progressContainer}>
                 {isArchived ? (
                     <div className={styles.archivedBadge}>
-                        📦 Archived
+                        <Archive size={14} /> Archived
                     </div>
                 ) : isCompleted ? (
                     <div className={styles.completedBadge}>
-                        ✓ Completed
+                        <CheckCircle size={14} /> Completed
                     </div>
                 ) : (
                     <div className={styles.progressWrapper}>

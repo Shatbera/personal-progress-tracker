@@ -60,15 +60,14 @@
 
 /* ── light variant (for colored / dark backgrounds) ── */
 
-/* .light .box {
-    border-color: rgba(255, 255, 255, 0.55);
-    background: rgba(255, 255, 255, 0.06);
+.light .box {
+    border-color: color-mix(in srgb, var(--foreground) 42%, transparent);
+    border-width: 1.5px;
 }
 
 .light .box:hover {
-    border-color: rgba(255, 255, 255, 0.85);
-    background: rgba(255, 255, 255, 0.12);
-} */
+    border-color: var(--color-success);
+}
 
 .light .checked {
     background: var(--color-success);

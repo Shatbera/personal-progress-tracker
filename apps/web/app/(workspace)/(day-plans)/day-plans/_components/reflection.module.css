@@ -17,10 +17,11 @@
     border: 1px solid var(--color-border);
     border-radius: 4px;
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 1rem;
     line-height: 1.5;
     resize: vertical;
     background: var(--color-card);
+    color: var(--color-text-secondary);
 }
 
 .textarea:focus {
@@ -29,8 +30,8 @@
 }
 
 .readOnlyText {
-    font-size: 0.9rem;
+    font-size: 1rem;
     line-height: 1.5;
-    color: color-mix(in srgb, var(--foreground) 70%, transparent);
+    color: var(--color-text-secondary);
     white-space: pre-wrap;
 }

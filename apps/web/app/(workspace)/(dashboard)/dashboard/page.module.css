@@ -32,7 +32,7 @@
 .subtitle {
     color: var(--color-text-secondary);
     margin: 0;
-    font-size: 0.9375rem;
+    font-size: 1rem;
 }
 
 .planAndQuests {

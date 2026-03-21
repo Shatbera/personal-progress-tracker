@@ -52,6 +52,7 @@ export default function PlanBlockItem({
     onClick,
 }: PlanBlockItemProps) {
     const isStacked = heightPercent >= STACKED_THRESHOLD_PERCENT;
+    const isShortBlock = (block.endMinute - block.startMinute) <= 30;
     const [optimisticCompleted, setOptimisticCompleted] = useState(block.isCompleted);
 
     useEffect(() => {
@@ -70,7 +71,7 @@ export default function PlanBlockItem({
 
     return (
         <article
-            className={`${styles.planBlock} ${!readOnly && !isPast ? styles.planBlockInteractive : ''} ${optimisticCompleted ? styles.planBlockCompleted : ''}`}
+            className={`${styles.planBlock} ${isShortBlock ? styles.planBlockShort : ''} ${!readOnly && !isPast ? styles.planBlockInteractive : ''} ${optimisticCompleted ? styles.planBlockCompleted : ''}`}
             onContextMenu={(event) => {
                 if (readOnly || isContextMenuBusy || !hasContextMenuOptions) {
                     return;
@@ -88,34 +89,18 @@ export default function PlanBlockItem({
             style={{
                 top: `${topPercent}%`,
                 height: `${heightPercent}%`,
-            }}
+                '--category-color': block.category?.color ?? 'var(--color-border)',
+            } as React.CSSProperties}
         >
-            {block.category && (
-                <span
-                    className={styles.categoryIndicatorLine}
-                    style={{ backgroundColor: block.category.color }}
-                    aria-hidden="true"
-                />
-            )}
-            {!isFuture && (!isPast || optimisticCompleted) && (
-                <div className={styles.blockCheckboxRow}>
-                    <CheckMark checked={optimisticCompleted} variant="light" disabled={isPast} onClick={isPast ? undefined : handleCheckboxChange} />
-                </div>
-            )}
-            {isStacked ? (
-                <div className={styles.segmentRow}>
+            <div className={styles.segmentRow}>
+                {isStacked ? (
                     <div className={styles.segmentHeader}>
                         <p className={styles.segmentLabel}>{block.label}</p>
                         <p className={styles.segmentTime}>
                             {minuteToClock(block.startMinute)} – {minuteToClock(block.endMinute)}
                         </p>
                     </div>
-                    {block.category && (
-                        <span className={styles.segmentCategoryBadge}>{block.category.name}</span>
-                    )}
-                </div>
-            ) : (
-                <div className={styles.segmentRow}>
+                ) : (
                     <div className={styles.segmentHeaderInline}>
                         <p className={styles.segmentLabel}>{block.label}</p>
                         <span className={styles.segmentSeparator} aria-hidden="true" />
@@ -123,11 +108,25 @@ export default function PlanBlockItem({
                             {minuteToClock(block.startMinute)} – {minuteToClock(block.endMinute)}
                         </p>
                     </div>
-                    {block.category && (
-                        <span className={styles.segmentCategoryBadge}>{block.category.name}</span>
-                    )}
-                </div>
-            )}
+                )}
+            </div>
+            <div className={styles.blockTopRight}>
+                {block.category && (
+                    <span
+                        className={styles.segmentCategoryBadge}
+                        style={{
+                            backgroundColor: `color-mix(in srgb, ${block.category.color} 20%, white)`,
+                            color: `color-mix(in srgb, ${block.category.color} 80%, #000)`,
+                            border: `1px solid ${block.category.color}99`,
+                        }}
+                    >
+                        {block.category.name}
+                    </span>
+                )}
+                {!isFuture && (!isPast || optimisticCompleted) && (
+                    <CheckMark checked={optimisticCompleted} variant="light" disabled={isPast} onClick={isPast ? undefined : handleCheckboxChange} />
+                )}
+            </div>
         </article>
     );
 }

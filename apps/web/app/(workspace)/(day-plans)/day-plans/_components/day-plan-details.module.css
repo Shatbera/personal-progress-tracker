@@ -138,7 +138,7 @@
     line-height: 1.1;
     font-weight: 500;
     text-align: right;
-    opacity: 0.72;
+    color: var(--color-text-secondary);
 }
 
 .emptyCalendarLine {
@@ -469,22 +469,32 @@
 
 .planBlock {
     position: absolute;
-    left: 0.45rem;
-    right: 0.45rem;
-    padding: 0.45rem 0.55rem 0.45rem 2.6rem;
-    border-radius: 0.2rem;
-    /* background: var(--color-success);*/
-    border-bottom: 3px solid var(--color-card); 
-    background: #CDD5C6;
-    
-    /* background: #E6ECF5; */
-    
-    border-left: 3px solid #6E8B6B;
-    /* color: var(--background); */
+    left: 0;
+    right: 0;
+    padding: 0.45rem 0.75rem;
+    border-radius: 0;
+    background: color-mix(in srgb, var(--category-color, var(--color-border)) 13%, #F8F7F5);
+    border-left: 3px solid var(--category-color, var(--color-border));
+    border-bottom: 1px solid color-mix(in srgb, var(--category-color, var(--color-border)) 30%, transparent);
+    box-shadow: 0 1px 1px color-mix(in srgb, var(--color-border) 13%, transparent);
     box-sizing: border-box;
     overflow: hidden;
     cursor: default;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
 
+.planBlockShort {
+    align-items: center;
+}
+
+.planBlock:nth-of-type(odd) {
+    background: color-mix(in srgb, var(--category-color, var(--color-border)) 13%, #F8F7F5);
+}
+
+.planBlock:nth-of-type(even) {
+    background: color-mix(in srgb, var(--category-color, var(--color-border)) 15%, #EDEAE5);
 }
 
 
@@ -537,7 +547,7 @@
 
 .segmentLabel {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
@@ -583,14 +593,14 @@
     align-items: center;
     gap: 0.5rem;
     min-width: 0;
-    width: 100%;
+    flex: 1;
 }
 
 .segmentSeparator {
     flex-shrink: 0;
     display: inline-block;
     width: 1px;
-    height: 0.75em;
+    height: 1rem;
     background: currentColor;
     opacity: 0.3;
     margin: 0 0.4rem;
@@ -599,8 +609,8 @@
 
 .segmentTime {
     margin: 0;
-    font-size: 0.8rem;
-    opacity: 0.75;
+    font-size: 0.9rem;
+    opacity: 0.85;
     white-space: nowrap;
     flex-shrink: 0;
 }
@@ -612,27 +622,34 @@
 .segmentCategoryBadge {
     flex-shrink: 0;
     font-size: 0.7rem;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1;
-    padding: 0.2em 0.45em;
-    border-radius: 0.25rem;
-    background: rgba(255, 255, 255, 0.22);
-    color: inherit;
+    padding: 0.2rem 0.65rem;
+    border-radius: 99px;
     white-space: nowrap;
 }
 
 .planBlockCompleted {
-    opacity: 0.65;
+    filter: saturate(0.65) brightness(1.03);
 }
 
-.blockCheckboxRow {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 2.4rem;
+.planBlockCompleted .segmentLabel,
+.planBlockCompleted .segmentTime {
+    opacity: 0.5;
+}
+
+.planBlockCompleted .segmentCategoryBadge {
+    opacity: 0.45;
+}
+
+.blockTopRight {
     display: flex;
     align-items: center;
-    justify-content: center;
-    z-index: 2;
+    gap: 0.65rem;
+    flex-shrink: 0;
+}
+
+.blockTopRight :global(.wrapper) {
+    margin: 0;
+    padding: 0;
 }

@@ -2,6 +2,7 @@ import { DailyInsightResponse, getDailyInsight } from "@/lib/api/ai";
 import { useState } from "react";
 import styles from "./ai-insight.module.css";
 import TypingText from "./typing-text";
+import { Sparkles } from "lucide-react";
 
 export default function AiInsight({ currentInsight, readOnly = false }: { currentInsight?: string; readOnly?: boolean }) {
     const [dailyInsight, setDailyInsight] = useState<DailyInsightResponse | null>(null);
@@ -27,7 +28,10 @@ export default function AiInsight({ currentInsight, readOnly = false }: { curren
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h3 className={styles.title}>✨ Insight</h3>
+                <h3 className={styles.title}>
+                    <Sparkles className={styles.titleIcon} strokeWidth={1.75} absoluteStrokeWidth />
+                    Insight
+                </h3>
 
                 {!readOnly && (
                     <button
