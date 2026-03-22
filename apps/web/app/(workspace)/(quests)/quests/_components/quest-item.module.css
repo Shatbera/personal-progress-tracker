@@ -220,14 +220,15 @@
     color: var(--color-background);
     border: none;
     border-radius: 4px;
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s;
 }
 
 .logProgressButton:hover {
-    background-color: var(--color-text-primary);
+    background-color: #1A2550;
+    color: #FFFFFF;
 }
 
 .logProgressButton:active {
@@ -262,19 +263,19 @@
 .addToPlanButton {
     padding: 0.75rem 0.9rem;
     background-color: transparent;
-    color: var(--color-foreground);
-    border: 1px dashed var(--color-text-primary);
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
     border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
     transition: background-color 0.2s, border-color 0.2s;
 }
 
 .addToPlanButton:hover {
-    background-color: rgba(217, 177, 102, 0.08);
-    border-color: var(--color-border);
+    background-color: var(--color-success);
+    color: #FFFFFF;
 }
 
 .completedBadge {

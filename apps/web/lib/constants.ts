@@ -1,1 +1,1 @@
-export const APP_NAME = 'Penguin Days';
+export const APP_NAME = 'Penguin Daily';

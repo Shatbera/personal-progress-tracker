@@ -512,16 +512,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--background) 90%, var(--foreground) 10%);
-    border: 1px dashed color-mix(in srgb, var(--foreground) 30%, transparent);
-    color: color-mix(in srgb, var(--foreground) 72%, transparent);
+    background: transparent;
+    border: 1px dashed var(--color-success);
+    color: var(--color-success);
     box-sizing: border-box;
     overflow: hidden;
     text-align: center;
-    font-size: 0.88rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 600;
     letter-spacing: 0.01em;
     cursor: pointer;
+}
+
+.addNextBlockButton:hover {
+    background: color-mix(in srgb, var(--color-success) 15%, transparent);
+    color: var(--color-success);
+    border-color: var(--color-success);
 }
 
 .segment {
