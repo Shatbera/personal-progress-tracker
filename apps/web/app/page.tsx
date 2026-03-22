@@ -1,11 +1,44 @@
+"use client";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const [lightbox, setLightbox] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const close = (e: KeyboardEvent) => { if (e.key === "Escape") setLightbox(null); };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, [lightbox]);
+
   return (
     <main className="overflow-y-auto h-full" style={{ background: "var(--color-background)" }}>
 
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+          style={{ background: "rgba(1,3,38,0.7)", backdropFilter: "blur(4px)" }}
+          onClick={() => setLightbox(null)}
+        >
+          <img
+            src={lightbox}
+            alt=""
+            className="max-h-full max-w-full rounded-2xl"
+            style={{ boxShadow: "0 24px 80px rgba(1,3,38,0.4)", border: "1px solid var(--color-border)" }}
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            onClick={() => setLightbox(null)}
+            className="absolute top-4 right-5 text-2xl leading-none"
+            style={{ color: "rgba(255,255,255,0.7)" }}
+            aria-label="Close"
+          >✕</button>
+        </div>
+      )}
+
       {/* ── Hero ── */}
-      <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center flex flex-col items-center">
+      <section className="max-w-5xl mx-auto px-6 pt-14 sm:pt-24 pb-16 text-center flex flex-col items-center">
         <h1
           className="text-4xl sm:text-5xl font-bold leading-tight max-w-2xl"
           style={{ color: "var(--color-foreground)", fontFamily: "var(--font-header)" }}
@@ -34,24 +67,26 @@ export default function Home() {
           </Link>
         </div>
 
-        <div
-          className="mt-16 w-full rounded-2xl flex items-center justify-center select-none"
-          style={{
-            maxWidth: "52rem",
-            aspectRatio: "16/9",
-            background: "var(--color-card)",
-            border: "1px solid var(--color-border)",
-            color: "var(--color-text-muted)",
-            fontSize: "0.875rem",
-            boxShadow: "0 12px 48px rgba(1,3,38,0.12), 0 2px 12px rgba(1,3,38,0.06)",
-          }}
+        <button
+          className="mt-16 w-full cursor-zoom-in"
+          style={{ background: "none", border: "none", padding: 0 }}
+          onClick={() => setLightbox("/screenshots/product.png")}
+          aria-label="Expand screenshot"
         >
-          Product screenshot
-        </div>
+          <img
+            src="/screenshots/product.png"
+            alt="Product screenshot"
+            className="w-full rounded-2xl"
+            style={{
+              boxShadow: "0 12px 48px rgba(1,3,38,0.12), 0 2px 12px rgba(1,3,38,0.06)",
+              border: "1px solid var(--color-border)",
+            }}
+          />
+        </button>
       </section>
 
       {/* ── How it works ── */}
-      <section className="max-w-4xl mx-auto px-6 py-20">
+      <section className="max-w-6xl mx-auto px-6 py-20">
         <h2
           className="text-2xl sm:text-3xl font-bold text-center"
           style={{ color: "var(--color-foreground)", fontFamily: "var(--font-header)" }}
@@ -62,7 +97,7 @@ export default function Home() {
           From intention to execution to improvement, every day.
         </p>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-5">
+        <div className="mt-10 grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
           <StepCard step="1" title="Set quests">
             Define weekly goals, milestones, or daily habits to track.
           </StepCard>
@@ -82,17 +117,17 @@ export default function Home() {
       </section>
 
       {/* ── Screenshots ── */}
-      <section className="max-w-5xl mx-auto px-6 py-16">
+      <section className="max-w-7xl mx-auto px-6 py-16">
         <h2
           className="text-2xl sm:text-3xl font-bold text-center"
           style={{ color: "var(--color-foreground)", fontFamily: "var(--font-header)" }}
         >
           See it in action
         </h2>
-        <div className="mt-10 grid gap-5 sm:grid-cols-3">
-          <ScreenPlaceholder label="Dashboard" />
-          <ScreenPlaceholder label="Day Plan" />
-          <ScreenPlaceholder label="Quest Progress" />
+        <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <Screenshot src="/screenshots/dashboard.png" label="Dashboard" onExpand={setLightbox} />
+          <Screenshot src="/screenshots/day-plan.png" label="Day Plan" onExpand={setLightbox} />
+          <Screenshot src="/screenshots/quest-progress.png" label="Quest Progress" onExpand={setLightbox} />
         </div>
       </section>
 
@@ -140,13 +175,23 @@ function StepCard({ step, title, children }: { step: string; title: string; chil
   );
 }
 
-function ScreenPlaceholder({ label }: { label: string }) {
+function Screenshot({ src, label, onExpand }: { src: string; label: string; onExpand: (src: string) => void }) {
   return (
-    <div
-      className="rounded-xl aspect-[4/3] flex items-center justify-center text-sm select-none"
-      style={{ background: "var(--color-card)", border: "1px solid var(--color-border)", color: "var(--color-text-muted)" }}
+    <button
+      className="cursor-zoom-in w-full"
+      style={{ background: "none", border: "none", padding: 0 }}
+      onClick={() => onExpand(src)}
+      aria-label={`Expand ${label}`}
     >
-      {label}
-    </div>
+      <img
+        src={src}
+        alt={label}
+        className="rounded-xl w-full"
+        style={{
+          border: "1px solid var(--color-border)",
+          boxShadow: "0 4px 16px rgba(1,3,38,0.07)",
+        }}
+      />
+    </button>
   );
 }

@@ -1,8 +1,8 @@
 # Personal Progress Tracker
 
-A full-stack application for creating, managing, and tracking personal quests and daily habits.
+A full-stack application for structuring your day, managing personal goals, and building better habits — with AI-powered daily insights.
 
-Built with NestJS (backend) and Next.js (frontend) with PostgreSQL database.
+Built with **NestJS** (backend) and **Next.js** (frontend), backed by PostgreSQL.
 
 ## Project Structure
 
@@ -12,26 +12,29 @@ personal-progress-tracker/
 │   ├── api/                        # NestJS backend
 │   │   ├── src/
 │   │   │   ├── auth/               # JWT authentication & user management
-│   │   │   ├── quests/             # Quest CRUD operations (Simple Goal & Daily Track types)
+│   │   │   ├── quests/             # Quest CRUD (Simple Goal & Daily Track types)
 │   │   │   ├── quest-categories/   # Built-in & custom quest categories
 │   │   │   ├── quest-events/       # Event logging for quest progress
-│   │   │   ├── daily-track/        # Daily habit tracking with entries
+│   │   │   ├── daily-track/        # Daily habit tracking with per-day entries
+│   │   │   ├── day-plans/          # Day plans with time blocks, mood & reflection
 │   │   │   ├── dashboard/          # Aggregated stats & recent activity
+│   │   │   ├── ai/                 # OpenAI-powered daily coaching insights
 │   │   │   ├── app.module.ts       # Database & module configuration
 │   │   │   ├── seed.ts             # Database seeding script
 │   │   │   └── main.ts             # App entry point
 │   │   └── docker-compose.yml      # PostgreSQL service
 │   │
 │   └── web/                        # Next.js frontend
-│       ├── app/                    # App router (Next.js 13+)
-│       │   ├── (auth)/             # Auth pages (login, signup)
+│       ├── app/                    # App router
+│       │   ├── (auth)/             # Login & signup pages
 │       │   └── (workspace)/        # Authenticated area
-│       │       ├── (dashboard)/    # Dashboard overview page
-│       │       ├── (quests)/       # Quest management pages
-│       │       └── (daily-track)/  # Daily track detail pages
+│       │       ├── (dashboard)/    # Dashboard overview
+│       │       ├── (quests)/       # Quest list, detail & creation
+│       │       ├── day-plans/      # Day planning interface
+│       │       └── daily-track-details/ # Daily habit detail view
 │       ├── actions/                # Server actions (API communication)
 │       ├── lib/                    # Utilities & API client
-│       └── public/                 # Static assets
+│       └── public/                 # Static assets & screenshots
 │
 └── README.md                       # This file
 ```
@@ -44,14 +47,18 @@ personal-progress-tracker/
 - **Quest Categories** — Organize quests with built-in or custom categories
 - **Progress Events** — Log events (complete, fail, partial, etc.) to update quest points
 - **Daily Tracking** — Track daily habit streaks with per-day entry logging
+- **Day Plans** — Schedule time blocks, attach quests to each block, and toggle completion
+- **Mood & Reflection** — Log mood and a short reflection at the end of each day
 - **Dashboard** — Overview of active quests, recent activity, and personal stats
+- **AI Insights** — OpenAI-generated daily coaching tip based on your plan and reflection
 
 ## Technology Stack
 
-- **Backend:** NestJS, TypeORM, PostgreSQL
-- **Frontend:** Next.js, React, TypeScript
+- **Backend:** NestJS 11, TypeORM, PostgreSQL 16
+- **Frontend:** Next.js 16, React 19, Tailwind CSS 4, TypeScript 5
 - **Database:** PostgreSQL 16
-- **Authentication:** JWT
+- **Authentication:** JWT (Passport)
+- **AI:** OpenAI API
 
 ## Quick Start
 
@@ -69,7 +76,7 @@ cd apps/api
 yarn run seed
 ```
 
-This populates the database with sample data for development.
+Populates the database with realistic demo data. Login: `demo` / `Password123!`
 
 ### 3. Run the API
 
