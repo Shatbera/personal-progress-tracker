@@ -13,15 +13,24 @@ import { ConfigModule } from '@nestjs/config/dist/config.module';
 @Module({
   imports: [
     QuestsModule,
+    // TypeOrmModule.forRoot({
+    //   type: 'postgres',
+    //   host: 'localhost',
+    //   port: 5432,
+    //   username: 'postgres',
+    //   password: 'postgres',
+    //   database: 'quests_db',
+    //   autoLoadEntities: true,
+    //   synchronize: true,
+    // }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'quests_db',
+      url: process.env.DATABASE_URL,
       autoLoadEntities: true,
-      synchronize: true,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+      synchronize: false,
     }),
     ConfigModule.forRoot({
       isGlobal: true,
