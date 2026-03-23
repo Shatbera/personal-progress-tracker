@@ -1,0 +1,9 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "buildCommand": "cd api && yarn install && yarn build"
+  },
+  "deploy": {
+    "startCommand": "cd api && yarn start:prod"
+  }
+}
