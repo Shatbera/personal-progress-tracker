@@ -9,7 +9,7 @@ import { User } from "./user.entity";
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(private readonly usersRepository: UsersRepository) {
         super({
-            secretOrKey: 'topSecret51',
+            secretOrKey: process.env.JWT_SECRET || 'topSecret51',
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         });
     }
