@@ -9,12 +9,15 @@ import { DailyTrackEntry } from './daily-track/daily-track-entry.entity';
 import { DayPlan } from './day-plans/day-plan.entity';
 import { DayBlock } from './day-plans/day-block.entity';
 
+// Use direct (non-pooler) URL for migrations if available, fall back to DATABASE_URL
+const migrationUrl = process.env.DATABASE_DIRECT_URL || process.env.DATABASE_URL;
+
 const AppDataSource = new DataSource({
   type: 'postgres',
-  url: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  url: migrationUrl,
+  ssl: migrationUrl?.includes('sslmode=require')
+    ? { rejectUnauthorized: false }
+    : false,
   entities: [
     User,
     Quest,
