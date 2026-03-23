@@ -1,7 +1,8 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "buildCommand": "cd apps/api && yarn install && yarn build"
+    "builder": "NIXPACKS",
+    "buildCommand": "corepack enable && yarn install && cd apps/api && yarn build"
   },
   "deploy": {
     "startCommand": "cd apps/api && yarn start:prod"
