@@ -1,12 +1,12 @@
 [phases.setup]
-nixPkgs = ["nodejs_20"]
+nixPkgs = ["nodejs_20", "yarn"]
 
 [phases.install]
-cmds = ["cd apps/api && npm install"]
+cmds = ["cd apps/api && yarn install"]
 
 [phases.build]
-cmds = ["cd apps/api && npm run build"]
+cmds = ["cd apps/api && yarn build"]
 
 [start]
-cmd = "cd apps/api && npm run start:prod"
+cmd = "cd apps/api && yarn start:prod"
 
