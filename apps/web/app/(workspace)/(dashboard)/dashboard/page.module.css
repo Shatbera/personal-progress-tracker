@@ -63,3 +63,21 @@
         grid-template-columns: 1fr;
     }
 }
+
+@media (max-width: 768px) {
+    .page {
+        padding: 1rem;
+        flex-direction: column;
+    }
+
+    .planAndQuests {
+        grid-template-columns: 1fr;
+    }
+
+    .aside {
+        width: 100%;
+        position: static;
+        max-height: none;
+        overflow: visible;
+    }
+}

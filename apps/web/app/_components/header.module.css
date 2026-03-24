@@ -51,3 +51,9 @@
 .navLink:hover {
     color: var(--color-foreground);
 }
+
+@media (max-width: 768px) {
+    .header {
+        padding-left: 4rem;
+    }
+}
