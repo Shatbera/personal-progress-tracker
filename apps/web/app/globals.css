@@ -31,6 +31,7 @@ p, label{
 
 
 body {
+  zoom: 0.8;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);

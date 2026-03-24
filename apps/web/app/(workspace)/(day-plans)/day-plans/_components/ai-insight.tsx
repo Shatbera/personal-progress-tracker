@@ -1,11 +1,11 @@
-import { DailyInsightResponse, getDailyInsight } from "@/lib/api/ai";
+import { getDailyInsight } from "@/actions/ai-actions";
 import { useState } from "react";
 import styles from "./ai-insight.module.css";
 import TypingText from "./typing-text";
 import { Sparkles } from "lucide-react";
 
 export default function AiInsight({ currentInsight, readOnly = false }: { currentInsight?: string; readOnly?: boolean }) {
-    const [dailyInsight, setDailyInsight] = useState<DailyInsightResponse | null>(null);
+    const [dailyInsight, setDailyInsight] = useState<{ insight: string } | null>(null);
     const [loading, setLoading] = useState(false);
 
     async function fetchDailyInsight() {
@@ -13,8 +13,12 @@ export default function AiInsight({ currentInsight, readOnly = false }: { curren
         setDailyInsight(null);
 
         try {
-            const insight = await getDailyInsight();
-            setDailyInsight(insight);
+            const result = await getDailyInsight();
+            if (result.error) {
+                setDailyInsight({ insight: "Something went wrong while generating your insight." });
+            } else {
+                setDailyInsight({ insight: result.insight! });
+            }
         } catch (error) {
             console.error("Error fetching daily insight:", error);
             setDailyInsight({
