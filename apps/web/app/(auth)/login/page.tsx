@@ -1,4 +1,4 @@
-import LogInForm from "./_components/log-in-from";
+import LogInForm from "./_components/log-in-form";
 
 export default function LoginPage({ searchParams }: { searchParams: { callbackUrl?: string } }){
     return <LogInForm callbackUrl={searchParams.callbackUrl} />;

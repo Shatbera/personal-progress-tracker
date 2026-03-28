@@ -1,6 +1,6 @@
 import { getAuthToken } from "../auth-server";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export async function apiFetch(endpoint: string, options: RequestInit = {}): Promise<Response> {
     const token = await getAuthToken();
